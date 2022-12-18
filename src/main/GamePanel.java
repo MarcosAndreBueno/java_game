@@ -1,9 +1,12 @@
 package main;
 
+import Inputs.KeyboardInputs;
+import Inputs.MouseInputs;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class GamePanel extends JPanel implements Runnable {
+public class GamePanel extends JPanel {
     // Screen settings
     final int baseTileSize = 16; //16x16 pixels
     final int scale = 3;
@@ -14,32 +17,14 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
 
-    Thread gameThread;
-
+    MouseInputs mouseInputs;
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true); // optimize game paint
     }
 
-    public void startGameThread() {
-        gameThread = new Thread(this);
-        gameThread.start(); // go to run method
-    }
-    @Override
-    public void run() {
-        while (gameThread != null) {
-            System.out.println("The game loop is running");
-
-            // update game information
-            update();
-            // draw the update information
-            repaint(); //go to paintComponent method
-        }
-    }
-
-    public void update() {
-
+    public void updateGame() {
     }
 
     public void paintComponent(Graphics g) {
