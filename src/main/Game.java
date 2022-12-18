@@ -17,12 +17,13 @@ public class Game implements Runnable{
     public Game() {
         gamePanel = new GamePanel();
         gameWindow = new GameWindow(gamePanel);
+        gamePanel.requestFocus(); //make inputs go to this panel
         startGameThread();
     }
 
     private void startGameThread() {
         gameThread = new Thread(this);
-        gameThread.start();
+        gameThread.start(); // go to run method
     }
 
     public void update() {
@@ -59,7 +60,7 @@ public class Game implements Runnable{
 
             // if more than 0.008333 seconds has passed
             if (deltaF >= 1) {
-                gamePanel.repaint();
+                gamePanel.repaint(); //go to paintComponent method
                 frames++;
                 deltaF--;
             }
