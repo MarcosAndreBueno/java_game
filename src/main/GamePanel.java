@@ -89,7 +89,9 @@ public class GamePanel extends JPanel {
                 aniIndexI = 0;
             else
                 aniIndexI++;
-                if (aniIndexI > WALKING)
+            if ((playerDirection == LEFT || playerDirection == RIGHT) && aniIndexI >= WALKING)
+                aniIndexI = 0;
+            else if (aniIndexI > WALKING)
                     aniIndexI = 1;
         }
     }
