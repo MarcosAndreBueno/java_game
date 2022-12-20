@@ -6,14 +6,9 @@ import static utilz.Constants.PlayerConstants.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
-    private BufferedImage img;
     private int aniTick, aniIndexI, aniSpeed = 30;
 
     private int playerAction = STANDING, playerDirection = DOWN;
@@ -23,7 +18,6 @@ public class Player extends Entity {
 
     public Player(float x, float y) {
         super(x, y);
-        importImg();
         loadAnimations();
     }
 
@@ -53,48 +47,41 @@ public class Player extends Entity {
     }
 
     private void updatePlayerInformations() {
+        boolean moving = false;
         if (leftPressed && !rightPressed) {
             setPositionX(-playerSpeed);
             setDirection(LEFT);
             setAction(WALKING);
+            moving = true;
         }
         if (rightPressed && !leftPressed) {
             setPositionX(playerSpeed);
             setDirection(RIGHT);
             setAction(WALKING);
+            moving = true;
         }
         if (upPressed && !downPressed) {
             setPositionY(-playerSpeed);
             setDirection(UP);
             setAction(WALKING);
+            moving = true;
         }
         if (downPressed && !upPressed) {
             setPositionY(playerSpeed);
             setDirection(DOWN);
             setAction(WALKING);
+            moving = true;
         }
+        if (!moving)
+            playerAction = STANDING;
     }
 
     private void loadAnimations() {
+        BufferedImage img = LoadSaveImage.GetSpriteAtlas(LoadSaveImage.PLAYER_ATLAS);
         animations = new BufferedImage[3][4];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
                 animations[i][j] = img.getSubimage(j*16,i*32,16,32);
-            }
-        }
-    }
-
-    private void importImg() {
-        InputStream is = getClass().getResourceAsStream("/res/sample_character_02.png");
-        try {
-            img = ImageIO.read(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
