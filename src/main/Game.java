@@ -1,6 +1,7 @@
 package main;
 
 import entities.Player;
+import levels.LevelManager;
 
 import java.awt.*;
 
@@ -16,6 +17,7 @@ public class Game implements Runnable{
     Thread gameThread;
 
     private Player player;
+    private LevelManager levelManager;
 
     public Game() {
         initialize();
@@ -29,6 +31,7 @@ public class Game implements Runnable{
 
     private void initialize() {
         player = new Player(100, 100);
+        levelManager = new LevelManager(this);
     }
 
     private void startGameThread() {
@@ -37,10 +40,12 @@ public class Game implements Runnable{
     }
 
     public void update() {
+        levelManager.update();
         player.update();
     }
 
     public void render(Graphics2D g2) {
+        levelManager.draw(g2);
         player.render(g2);
     }
 
