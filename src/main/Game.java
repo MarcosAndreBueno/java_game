@@ -1,5 +1,7 @@
 package main;
 
+import entities.Player;
+
 import java.awt.*;
 
 public class Game implements Runnable{
@@ -13,12 +15,20 @@ public class Game implements Runnable{
 
     Thread gameThread;
 
+    private Player player;
 
     public Game() {
-        gamePanel = new GamePanel();
+        initialize();
+
+        gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus(); //make inputs go to this panel
+
         startGameThread();
+    }
+
+    private void initialize() {
+        player = new Player(100, 100);
     }
 
     private void startGameThread() {
@@ -27,7 +37,19 @@ public class Game implements Runnable{
     }
 
     public void update() {
-        gamePanel.updateGame();
+        player.update();
+    }
+
+    public void render(Graphics2D g2) {
+        player.render(g2);
+    }
+
+    public void windowsFocusLost() {
+        player.resetDirBooleans();
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     @Override
