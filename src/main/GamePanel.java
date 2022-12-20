@@ -3,27 +3,13 @@ package main;
 import Inputs.KeyboardInputs;
 import Inputs.MouseInputs;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 
-import static utilz.Constants.PlayerConstants.*;
-import static utilz.Constants.Directions.*;
+import static main.GameWindow.ScreenSettings.ScreenWidth;
+import static main.GameWindow.ScreenSettings.ScreenHeight;
 
 public class GamePanel extends JPanel {
-    // Screen settings
-    final int baseTileSize = 16; //16x16 pixels
-    final int scale = 3;
-
-    final int tileSize = baseTileSize * scale;
-    final int maxScreenCol = 16;
-    final int maxScreenRow = 12;
-    final int screenWidth = tileSize * maxScreenCol;
-    final int screenHeight = tileSize * maxScreenRow;
-
     KeyboardInputs keyboardInputs;
     MouseInputs mouseInputs;
 
@@ -45,7 +31,7 @@ public class GamePanel extends JPanel {
     }
 
     private void setPanelConfigurations() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); //preferred size does not include borders if called by gamePanel
+        this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight)); //preferred size does not include borders if called by gamePanel
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true); // optimize game paint
     }
