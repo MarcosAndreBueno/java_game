@@ -10,6 +10,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static utilz.Constants.PlayerConstants.*;
+import static utilz.Constants.Directions.*;
+
 public class GamePanel extends JPanel {
     // Screen settings
     final int baseTileSize = 16; //16x16 pixels
@@ -21,12 +24,17 @@ public class GamePanel extends JPanel {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
 
-    private float xPos = 100, yPos = 100;
-    private float playerSpeed = 2;
     KeyboardInputs keyboardInputs;
     MouseInputs mouseInputs;
 
     private BufferedImage img;
+    private BufferedImage[][] animations;
+
+    private float xPos = 100, yPos = 100;
+    private float playerSpeed = 3;
+
+    private int aniTick, aniIndexI, playerAction, aniSpeed = 30;
+    private int playerDirection = DOWN;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight)); //preferred size does not include borders if inside gamePanel
@@ -34,6 +42,7 @@ public class GamePanel extends JPanel {
         this.setDoubleBuffered(true); // optimize game paint
 
         importImg();
+        loadAnimations();
 
         //inputs
         keyboardInputs = new KeyboardInputs(this);
@@ -42,6 +51,15 @@ public class GamePanel extends JPanel {
         addMouseListener(mouseInputs);
         addMouseMotionListener(mouseInputs);
         setFocusable(true); // starts with focus on window
+    }
+
+    private void loadAnimations() {
+        animations = new BufferedImage[3][4];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 4; j++) {
+                animations[i][j] = img.getSubimage(j*16,i*32,16,32);
+            }
+        }
     }
 
     private void importImg() {
@@ -60,20 +78,56 @@ public class GamePanel extends JPanel {
     }
 
     public void updateGame() {
-        if (keyboardInputs.upPressed)
-            yPos -= playerSpeed;
-        if (keyboardInputs.downPressed)
-            yPos += playerSpeed;
-        if (keyboardInputs.leftPressed)
-            xPos -= playerSpeed;
-        if (keyboardInputs.rightPressed)
-            xPos += playerSpeed;
+    }
+
+    //change image after few frames
+    private void updateAnimationTick() {
+        aniTick++;
+        if(aniTick >= aniSpeed) {
+            aniTick = 0;
+            if (playerAction == STANDING)
+                aniIndexI = 0;
+            else
+                aniIndexI++;
+                if (aniIndexI > WALKING)
+                    aniIndexI = 1;
+        }
+    }
+
+    private void setAnimations() {
+        if (keyboardInputs.upPressed || keyboardInputs.rightPressed || keyboardInputs.leftPressed || keyboardInputs.downPressed)
+            playerAction = WALKING;
+        else
+            playerAction = STANDING;
+    }
+
+    private void updatePosition() {
+        if (playerAction == WALKING) {
+            if (keyboardInputs.leftPressed) {
+                xPos -= playerSpeed;
+                playerDirection = LEFT;
+            } if (keyboardInputs.rightPressed) {
+                xPos += playerSpeed;
+                playerDirection = RIGHT;
+            } if (keyboardInputs.upPressed) {
+                yPos -= playerSpeed;
+                playerDirection = UP;
+            } if (keyboardInputs.downPressed) {
+                yPos += playerSpeed;
+                playerDirection = DOWN;
+            }
+        }
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g); //prepare panel
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawImage(img.getSubimage(0,0,16,32), (int) xPos, (int) yPos,64,128,null);
+
+        updateAnimationTick();
+        setAnimations();
+        updatePosition();
+
+        g2.drawImage(animations[aniIndexI][playerDirection], (int) xPos, (int) yPos, 100, 200,null);
         g2.dispose(); //it saves some memory
     }
 }

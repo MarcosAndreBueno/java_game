@@ -5,6 +5,10 @@ import main.GamePanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import static utilz.Constants.Directions.*;
+import static utilz.Constants.PlayerConstants.STANDING;
+import static utilz.Constants.PlayerConstants.WALKING;
+
 public class KeyboardInputs implements KeyListener {
 
     private GamePanel gamePanel;
@@ -37,7 +41,7 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_W -> upPressed = false;
             case KeyEvent.VK_S -> downPressed = false;
             case KeyEvent.VK_A -> leftPressed = false;
-            case KeyEvent.VK_D -> rightPressed = false;
+            case KeyEvent.VK_D -> rightPressed= false;
         }
     }
 }
