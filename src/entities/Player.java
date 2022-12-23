@@ -1,5 +1,9 @@
 package entities;
 
+import main.Game;
+import main.GameWindow;
+
+import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
@@ -10,14 +14,26 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
     private BufferedImage[][] animations;
     private int aniTick, aniIndexI, aniSpeed = 30;
+    private int playerWidth = 30, playerHeight = 60;
 
     private int playerAction = STANDING, playerDirection = DOWN;
-    private float playerSpeed = 3.0f;
+    private float playerSpeed = 0.8f;
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
 
-    public Player(float x, float y) {
-        super(x, y);
+    //center camera on player
+    public static float ScreenCenterX = (ScreenWidth/2) - (TileSize/2);
+    public static float ScreenCenterY = (ScreenHeight/2) - (TileSize);
+    private float playerCenterX = ScreenCenterX;
+    private float playerCenterY = ScreenCenterY;
+
+    public Game game;
+    public int levelMaxWidth;
+    public int levelMaxHeight;
+
+    public Player(Game game) {
+        super(200, 200);
+        this.game = game;
         loadAnimations();
     }
 
@@ -27,7 +43,7 @@ public class Player extends Entity {
     }
 
     public void render(Graphics2D g2) {
-        g2.drawImage(animations[aniIndexI][playerDirection], (int) x, (int) y, 100, 200,null);
+        g2.drawImage(animations[aniIndexI][playerDirection], (int)playerCenterX, (int)playerCenterY, playerWidth, playerHeight,null);
     }
 
     //change image after few frames
@@ -74,6 +90,21 @@ public class Player extends Entity {
         }
         if (!moving)
             playerAction = STANDING;
+
+        this.levelMaxWidth = game.getLevelManager().getLevelMaxWidth();
+        this.levelMaxHeight = game.getLevelManager().getLevelMaxHeight();
+
+        //player movement if the screen reaches the edge of the level
+        if (x + ScreenWidth > levelMaxWidth) {      //right
+            playerCenterX = x - (levelMaxWidth - ScreenWidth - ScreenCenterX);
+        }
+        else if (x <= 0)                            //left
+            playerCenterX = x + ScreenCenterX;
+        if (y + ScreenHeight > levelMaxHeight) {    //down
+            playerCenterY = y - (levelMaxHeight - ScreenHeight - ScreenCenterY);
+        }
+        else if (y <= 0)                            //up
+            playerCenterY = y + ScreenCenterY;
     }
 
     private void loadAnimations() {
@@ -99,6 +130,14 @@ public class Player extends Entity {
 
     private void setPositionY(float y) {
         this.y += y;
+    }
+
+    public float getPositionX() {
+        return x;
+    }
+
+    public float getPositionY() {
+        return y;
     }
 
     private void setDirection(int direction) {

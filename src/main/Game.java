@@ -30,7 +30,7 @@ public class Game implements Runnable{
     }
 
     private void initialize() {
-        player = new Player(100, 100);
+        player = new Player(this);
         levelManager = new LevelManager(this);
     }
 
@@ -55,6 +55,10 @@ public class Game implements Runnable{
 
     public Player getPlayer() {
         return player;
+    }
+
+    public LevelManager getLevelManager() {
+        return levelManager;
     }
 
     @Override
@@ -95,7 +99,7 @@ public class Game implements Runnable{
             //print fps and ups
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
+//                System.out.println("FPS: " + frames + " | UPS: " + updates);
                 frames = 0;
                 updates = 0;
 
