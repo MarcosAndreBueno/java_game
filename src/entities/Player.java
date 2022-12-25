@@ -1,9 +1,11 @@
 package entities;
 
+import main.Collision;
 import main.Game;
 import main.GameWindow;
 
 import static main.GameWindow.ScreenSettings.*;
+import static test.TestColors.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
@@ -30,10 +32,12 @@ public class Player extends Entity {
     public Game game;
     public int levelMaxWidth;
     public int levelMaxHeight;
+    public int count = 0;
 
     public Player(Game game) {
-        super(200, 200);
+        super(250, 850);
         this.game = game;
+        setHitbox(playerCenterX,playerCenterY,playerWidth,playerHeight);
         loadAnimations();
     }
 
@@ -43,6 +47,7 @@ public class Player extends Entity {
     }
 
     public void render(Graphics2D g2) {
+        drawHitBox(g2);
         g2.drawImage(animations[aniIndexI][playerDirection], (int)playerCenterX, (int)playerCenterY, playerWidth, playerHeight,null);
     }
 
@@ -63,48 +68,60 @@ public class Player extends Entity {
     }
 
     private void updatePlayerInformations() {
-        boolean moving = false;
         if (leftPressed && !rightPressed) {
             setPositionX(-playerSpeed);
             setDirection(LEFT);
-            setAction(WALKING);
-            moving = true;
         }
         if (rightPressed && !leftPressed) {
             setPositionX(playerSpeed);
             setDirection(RIGHT);
-            setAction(WALKING);
-            moving = true;
         }
         if (upPressed && !downPressed) {
             setPositionY(-playerSpeed);
             setDirection(UP);
-            setAction(WALKING);
-            moving = true;
         }
         if (downPressed && !upPressed) {
             setPositionY(playerSpeed);
             setDirection(DOWN);
-            setAction(WALKING);
-            moving = true;
         }
-        if (!moving)
+
+        if (!upPressed && !downPressed && !leftPressed && !rightPressed)
             playerAction = STANDING;
 
-        this.levelMaxWidth = game.getLevelManager().getLevelMaxWidth();
-        this.levelMaxHeight = game.getLevelManager().getLevelMaxHeight();
+        //test collision
+        else if (Collision.checkCollision(this, x, y)) {
+            count += 1;
+            if (count >= 120) {
+                System.out.println("Houve colisao");
+                count = 0;
+            }
+            if (leftPressed && !rightPressed)
+                resetPositionX(-playerSpeed);
+            else if (rightPressed && !leftPressed)
+                resetPositionX(playerSpeed);
+            if (upPressed && !downPressed)
+                resetPositionY(-playerSpeed);
+            else if (downPressed && !upPressed)
+                resetPositionY(playerSpeed);
+        }
+        else {
+            setAction(WALKING);
 
-        //player movement if the screen reaches the edge of the level
-        if (x + ScreenWidth > levelMaxWidth) {      //right
-            playerCenterX = x - (levelMaxWidth - ScreenWidth - ScreenCenterX);
+            this.levelMaxWidth = game.getLevelManager().getLevelMaxWidth();
+            this.levelMaxHeight = game.getLevelManager().getLevelMaxHeight();
+
+            //player movement if the screen reaches the edge of the level
+            if (x + ScreenWidth > levelMaxWidth)      //right
+                playerCenterX = x - (levelMaxWidth - ScreenWidth - ScreenCenterX);
+            else if (x <= 0)                          //left
+                playerCenterX = x + ScreenCenterX;
+            if (y + ScreenHeight > levelMaxHeight)   //down
+                playerCenterY = y - (levelMaxHeight - ScreenHeight - ScreenCenterY);
+            else if (y <= 0)                          //up
+                playerCenterY = y + ScreenCenterY;
+
+            updateHitBox(playerCenterX,playerCenterY);
         }
-        else if (x <= 0)                            //left
-            playerCenterX = x + ScreenCenterX;
-        if (y + ScreenHeight > levelMaxHeight) {    //down
-            playerCenterY = y - (levelMaxHeight - ScreenHeight - ScreenCenterY);
-        }
-        else if (y <= 0)                            //up
-            playerCenterY = y + ScreenCenterY;
     }
 
     private void loadAnimations() {
@@ -124,12 +141,12 @@ public class Player extends Entity {
         downPressed = false;
     }
 
-    private void setPositionX(float x) {
-        this.x += x;
+    public float getPlayerCenterX() {
+        return playerCenterX;
     }
 
-    private void setPositionY(float y) {
-        this.y += y;
+    public float getPlayerCenterY() {
+        return playerCenterY;
     }
 
     public float getPositionX() {

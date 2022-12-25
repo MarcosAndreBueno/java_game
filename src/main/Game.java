@@ -2,6 +2,7 @@ package main;
 
 import entities.Player;
 import levels.LevelManager;
+import test.TestColors;
 
 import java.awt.*;
 
@@ -30,6 +31,7 @@ public class Game implements Runnable{
     }
 
     private void initialize() {
+        new TestColors().getColors();
         player = new Player(this);
         levelManager = new LevelManager(this);
     }
