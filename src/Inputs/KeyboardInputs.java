@@ -25,10 +25,10 @@ public class KeyboardInputs implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode(); //number of the key pressed
         switch (code) {
-            case KeyEvent.VK_W -> gamePanel.getGame().getPlayer().setUpPressed(true);
-            case KeyEvent.VK_S -> gamePanel.getGame().getPlayer().setDownPressed(true);
-            case KeyEvent.VK_A -> gamePanel.getGame().getPlayer().setLeftPressed(true);
-            case KeyEvent.VK_D -> gamePanel.getGame().getPlayer().setRightPressed(true);
+            case KeyEvent.VK_W, KeyEvent.VK_UP -> gamePanel.getGame().getPlayer().setUpPressed(true);
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> gamePanel.getGame().getPlayer().setDownPressed(true);
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> gamePanel.getGame().getPlayer().setLeftPressed(true);
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> gamePanel.getGame().getPlayer().setRightPressed(true);
         }
     }
 
@@ -36,10 +36,10 @@ public class KeyboardInputs implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode(); //number of the key released
         switch (code) {
-            case KeyEvent.VK_W -> gamePanel.getGame().getPlayer().setUpPressed(false);
-            case KeyEvent.VK_S -> gamePanel.getGame().getPlayer().setDownPressed(false);
-            case KeyEvent.VK_A -> gamePanel.getGame().getPlayer().setLeftPressed(false);
-            case KeyEvent.VK_D -> gamePanel.getGame().getPlayer().setRightPressed(false);
+            case KeyEvent.VK_W, KeyEvent.VK_UP -> gamePanel.getGame().getPlayer().setUpPressed(false);
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> gamePanel.getGame().getPlayer().setDownPressed(false);
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> gamePanel.getGame().getPlayer().setLeftPressed(false);
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT-> gamePanel.getGame().getPlayer().setRightPressed(false);
         }
     }
 }

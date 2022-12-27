@@ -1,10 +1,9 @@
 package entities;
 
-import main.Collision;
 import main.Game;
+import tiles.Collision;
 
 import static main.GameWindow.ScreenSettings.*;
-import static test.TestColors.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
@@ -14,11 +13,11 @@ import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
-    private int aniTick, aniIndexI, aniSpeed = 30;
-    private int playerWidth = 32, playerHeight = 64;
+    private int aniTick, aniIndexI, aniSpeed = (int) (12 * Scale);
+    private int playerWidth = (int) (13 * Scale), playerHeight = (int) (26 * Scale);
 
     private int playerAction = STANDING, playerDirection = DOWN;
-    private float playerSpeed = 0.8f;
+    private float playerSpeed = 0.32f * Scale;
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
 
@@ -29,14 +28,13 @@ public class Player extends Entity {
     private float playerCenterY = ScreenCenterY;
 
     public Game game;
-    public int levelMaxWidth;
-    public int levelMaxHeight;
-    public int count = 0;
+    public int mapMaxWidth;
+    public int mapMaxHeight;
 
     public Player(Game game) {
-        super(250, 850);
+        super(200, 600);
         this.game = game;
-        setHitbox(playerCenterX,playerCenterY,playerWidth,playerHeight);
+        setHitbox(0,playerHeight,playerHeight/2,playerWidth);
         loadAnimations();
     }
 
@@ -47,7 +45,6 @@ public class Player extends Entity {
 
     public void render(Graphics2D g2) {
         g2.drawImage(animations[aniIndexI][playerDirection], (int)playerCenterX, (int)playerCenterY, playerWidth, playerHeight,null);
-        drawHitBox(g2);
     }
 
     //change image after few frames
@@ -70,64 +67,51 @@ public class Player extends Entity {
         if (leftPressed && !rightPressed) {
             setPositionX(-playerSpeed);
             setDirection(LEFT);
+            if (leftPressed && !rightPressed)
+                if (Collision.checkPlayerCollision(this, LEFT))
+                    resetPositionX(-playerSpeed);
         }
         if (rightPressed && !leftPressed) {
             setPositionX(playerSpeed);
             setDirection(RIGHT);
+            if (rightPressed && !leftPressed)
+                if (Collision.checkPlayerCollision(this, RIGHT))
+                    resetPositionX(playerSpeed);
         }
         if (upPressed && !downPressed) {
             setPositionY(-playerSpeed);
             setDirection(UP);
+            if (upPressed && !downPressed)
+                if (Collision.checkPlayerCollision(this, UP))
+                    resetPositionY(-playerSpeed);
         }
         if (downPressed && !upPressed) {
             setPositionY(playerSpeed);
             setDirection(DOWN);
+            if (downPressed && !upPressed)
+                if (Collision.checkPlayerCollision(this, DOWN))
+                    resetPositionY(playerSpeed);
         }
+
 
         if (!upPressed && !downPressed && !leftPressed && !rightPressed)
             playerAction = STANDING;
-
-        //test collision
-        else if (collision.checkCollision(this, x, y)) {
-//            count += 1;
-//            if (count >= 120) {
-//                System.out.println("Houve colisao");
-//                count = 0;
-//            }
-            if (leftPressed && !rightPressed)
-                resetPositionX(-playerSpeed);
-            else if (rightPressed && !leftPressed)
-                resetPositionX(playerSpeed);
-            if (upPressed && !downPressed)
-                resetPositionY(-playerSpeed);
-            else if (downPressed && !upPressed)
-                resetPositionY(playerSpeed);
-        }
         else {
             setAction(WALKING);
 
-            this.levelMaxWidth = game.getLevelManager().getLevelMaxWidth();
-            this.levelMaxHeight = game.getLevelManager().getLevelMaxHeight();
+            mapMaxWidth = game.getMapManager().getMapMaxWidth();
+            mapMaxHeight = game.getMapManager().getMapMaxHeight();
 
-            //player movement if the screen reaches the edge of the level
-            if (x + ScreenWidth > levelMaxWidth)      //right
-                playerCenterX = x - (levelMaxWidth - ScreenWidth - ScreenCenterX);
+            //player movement if the screen reaches the edge of the map
+            if (x + ScreenWidth > mapMaxWidth)      //right
+                playerCenterX = x - (mapMaxWidth - ScreenWidth - ScreenCenterX);
             else if (x <= 0)                          //left
                 playerCenterX = x + ScreenCenterX;
-            if (y + ScreenHeight > levelMaxHeight)   //down
-                playerCenterY = y - (levelMaxHeight - ScreenHeight - ScreenCenterY);
+            if (y + ScreenHeight > mapMaxHeight)   //down
+                playerCenterY = y - (mapMaxHeight - ScreenHeight - ScreenCenterY);
             else if (y <= 0)                          //up
                 playerCenterY = y + ScreenCenterY;
-
-            updateHitBox(playerCenterX,playerCenterY);
         }
-
-//        count += 1;
-//        if (count == 240) {
-//            count = 0;
-//            System.out.printf("\nleft [%s][%s]: = %s\n", ((int) y + 200)/16, ((int) x + 340)/16, countOne[((int) y + 200 + 16 * 2)/16][((int) x + 340)/16]);
-//            System.out.println("left y: " + (y + 200) + " | x: " + (x + 340));
-//        }
     }
 
     private void loadAnimations() {
@@ -147,22 +131,6 @@ public class Player extends Entity {
         downPressed = false;
     }
 
-    public float getPlayerCenterX() {
-        return playerCenterX;
-    }
-
-    public float getPlayerCenterY() {
-        return playerCenterY;
-    }
-
-    public float getPositionX() {
-        return x;
-    }
-
-    public float getPositionY() {
-        return y;
-    }
-
     private void setDirection(int direction) {
         playerDirection = direction;
     }
@@ -171,32 +139,16 @@ public class Player extends Entity {
         playerAction = action;
     }
 
-    public boolean isUpPressed() {
-        return upPressed;
-    }
-
     public void setUpPressed(boolean upPressed) {
         this.upPressed = upPressed;
-    }
-
-    public boolean isDownPressed() {
-        return downPressed;
     }
 
     public void setDownPressed(boolean downPressed) {
         this.downPressed = downPressed;
     }
 
-    public boolean isLeftPressed() {
-        return leftPressed;
-    }
-
     public void setLeftPressed(boolean leftPressed) {
         this.leftPressed = leftPressed;
-    }
-
-    public boolean isRightPressed() {
-        return rightPressed;
     }
 
     public void setRightPressed(boolean rightPressed) {

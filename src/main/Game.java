@@ -1,8 +1,8 @@
 package main;
 
 import entities.Player;
-import levels.LevelManager;
-import test.TestColors;
+import maps.MapManager;
+import tiles.Tiles;
 
 import java.awt.*;
 
@@ -18,7 +18,9 @@ public class Game implements Runnable{
     Thread gameThread;
 
     private Player player;
-    private LevelManager levelManager;
+    private MapManager mapManager;
+
+    Tiles tiles;
 
     public Game() {
         initialize();
@@ -31,9 +33,10 @@ public class Game implements Runnable{
     }
 
     private void initialize() {
-        new TestColors().getColors();
+        tiles = new Tiles();
+        tiles.findSolids();
         player = new Player(this);
-        levelManager = new LevelManager(this);
+        mapManager = new MapManager(this);
     }
 
     private void startGameThread() {
@@ -42,12 +45,12 @@ public class Game implements Runnable{
     }
 
     public void update() {
-        levelManager.update();
+        mapManager.update();
         player.update();
     }
 
     public void render(Graphics2D g2) {
-        levelManager.draw(g2);
+        mapManager.draw(g2);
         player.render(g2);
     }
 
@@ -59,8 +62,8 @@ public class Game implements Runnable{
         return player;
     }
 
-    public LevelManager getLevelManager() {
-        return levelManager;
+    public MapManager getMapManager() {
+        return mapManager;
     }
 
     @Override
@@ -101,7 +104,7 @@ public class Game implements Runnable{
             //print fps and ups
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-//                System.out.println("FPS: " + frames + " | UPS: " + updates);
+                System.out.println("FPS: " + frames + " | UPS: " + updates);
                 frames = 0;
                 updates = 0;
 
