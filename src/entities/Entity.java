@@ -1,5 +1,7 @@
 package entities;
 
+import main.Collision;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -7,10 +9,17 @@ public abstract class Entity {
 
     protected float x,y;
     protected Rectangle2D.Float hitbox;
+    protected float leftHit;
+    protected float rightHit;
+    protected float upHit;
+    protected float downHit;
+
+    protected Collision collision;
 
     public Entity(float x, float y) {
         this.x = x;
         this.y = y;
+        collision = new Collision(this);
     }
 
     public void drawHitBox(Graphics2D g2) {
@@ -24,6 +33,10 @@ public abstract class Entity {
 
     public void setHitbox(float playerCenterX, float playerCenterY, float playerWidth, float playerHeight) {
         hitbox = new Rectangle2D.Float(playerCenterX+5, playerCenterY+35, playerWidth-10, playerHeight-35);
+        leftHit = 0;
+        rightHit = 14*2;
+        upHit = 16*2;
+        downHit = 32*2;
     }
 
     public void setPositionX(float x) {

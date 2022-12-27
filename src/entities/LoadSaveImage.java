@@ -8,7 +8,8 @@ import java.io.InputStream;
 public class LoadSaveImage {
 
     public static final String PLAYER_ATLAS = "res/characters/sample_character_02.png";
-    public static final String SCHOOL_OUTSIDE = "test/school_outside.png";
+    public static final String SCHOOL_OUTSIDE = "res/levels/school_outside.png";
+    public static final String TEST_SHORT_IMAGE = "test/test_school_outside.png";
 
     public static BufferedImage GetSpriteAtlas(String filename) {
         BufferedImage img = null;

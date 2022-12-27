@@ -10,26 +10,53 @@ import static utilz.Constants.Directions.*;
 
 public class Collision {
 
-    public static boolean checkCollision(Player player, float x, float y) {
-        if (player.isUpPressed() || (player.isUpPressed() && (player.isRightPressed() || player.isLeftPressed()))) {
-            for (int i = 0; i < 30; i++)
-                if (countOne[(int) y + 200 + 35][(int) x + 340 + i] == 2)
-                    return true;
-        }
-        else if (player.isDownPressed() || (player.isDownPressed() && (player.isLeftPressed() || player.isRightPressed())))
-            for (int i = 0; i < 30; i++)
-                if (countOne[(int) y + 200 + 60][(int) x + 340 + i] == 2)
-                    return true;
+    private Entity entity;
+    static int count = 0;
 
-        if (player.isLeftPressed()) {
-            for (int i = 16; i < 60; i++)
-                if (countOne[(int) y + 200 + i][(int) x + 340 + 5] == 1)
-                    return true;
+    public Collision(Entity entity) {
+        this.entity = entity;
+    }
+
+    public boolean checkCollision(Player player, float x, float y) {
+        count+= 1;
+        if (count >= 240) {
+            System.out.printf("\n| x: %s | y: %s |", x, y);
+            System.out.printf("\nArray position: [%s][%s] = %s", (((int) y + 200 + 16 * 2) / 16), (((int) x + 340) / 16), (countOne[((int) y + 200 + 16 * 2) / 16][((int) x + 340) / 16]) );
+            count = 0;
+            System.out.println("\nchecar: " + countOne[(1114) / 16][(780) / 16]);
         }
-        else if (player.isRightPressed())
-            for (int i = 16; i < 60; i++)
-                if (countOne[(int) y + 200 + i][(int) x + 340 + 20] == 1)
-                    return true;
+        if (player.isUpPressed() || (player.isUpPressed() && (player.isRightPressed() || player.isLeftPressed()))) {
+            //upleft
+            if (countOne[((int) y + 200 + 16 * 2) / 16][((int) x + 340) / 16] == 1)
+                return true;
+            //upright
+            else if (countOne[((int) y + 200 + 16 * 2) / 16][((int) x + 340 + 14 * 2) / 16] == 1)
+                return true;
+        }
+        else if (player.isDownPressed() || (player.isDownPressed() && (player.isLeftPressed() || player.isRightPressed()))) {
+            //downleft
+            if (countOne[((int) y + 200 + 32 * 2) / 16][((int) x + 340) / 16] == 1)
+                return true;
+            //downright
+            else if (countOne[((int) y + 200 + 32 * 2) / 16][((int) x + 340 + 14 * 2) / 16] == 1)
+                return true;
+        }
+        if (player.isLeftPressed()) {
+            //head
+            if (countOne[((int) y + 200 + 16 * 2) / 16][((int) x + 340) / 16] == 1)
+                return true;
+            //feet
+            else if (countOne[((int) y + 200 + 32 * 2) / 16][((int) x + 340) / 16] == 1)
+                return true;
+        }
+        else if (player.isRightPressed()) {
+            //head
+            if (countOne[((int) y + 200 + 16 * 2) / 16][((int) x + 340 + 14 * 2) / 16] == 1)
+                return true;
+            //feet
+            else if (countOne[((int) y + 200 + 32 * 2) / 16][((int) x + 340 + 14 * 2) / 16] == 1)
+                return true;
+        }
 
         return false;
     }

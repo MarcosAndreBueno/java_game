@@ -2,7 +2,6 @@ package entities;
 
 import main.Collision;
 import main.Game;
-import main.GameWindow;
 
 import static main.GameWindow.ScreenSettings.*;
 import static test.TestColors.*;
@@ -16,7 +15,7 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
     private BufferedImage[][] animations;
     private int aniTick, aniIndexI, aniSpeed = 30;
-    private int playerWidth = 30, playerHeight = 60;
+    private int playerWidth = 32, playerHeight = 64;
 
     private int playerAction = STANDING, playerDirection = DOWN;
     private float playerSpeed = 0.8f;
@@ -47,8 +46,8 @@ public class Player extends Entity {
     }
 
     public void render(Graphics2D g2) {
-        drawHitBox(g2);
         g2.drawImage(animations[aniIndexI][playerDirection], (int)playerCenterX, (int)playerCenterY, playerWidth, playerHeight,null);
+        drawHitBox(g2);
     }
 
     //change image after few frames
@@ -89,12 +88,12 @@ public class Player extends Entity {
             playerAction = STANDING;
 
         //test collision
-        else if (Collision.checkCollision(this, x, y)) {
-            count += 1;
-            if (count >= 120) {
-                System.out.println("Houve colisao");
-                count = 0;
-            }
+        else if (collision.checkCollision(this, x, y)) {
+//            count += 1;
+//            if (count >= 120) {
+//                System.out.println("Houve colisao");
+//                count = 0;
+//            }
             if (leftPressed && !rightPressed)
                 resetPositionX(-playerSpeed);
             else if (rightPressed && !leftPressed)
@@ -122,6 +121,13 @@ public class Player extends Entity {
 
             updateHitBox(playerCenterX,playerCenterY);
         }
+
+//        count += 1;
+//        if (count == 240) {
+//            count = 0;
+//            System.out.printf("\nleft [%s][%s]: = %s\n", ((int) y + 200)/16, ((int) x + 340)/16, countOne[((int) y + 200 + 16 * 2)/16][((int) x + 340)/16]);
+//            System.out.println("left y: " + (y + 200) + " | x: " + (x + 340));
+//        }
     }
 
     private void loadAnimations() {

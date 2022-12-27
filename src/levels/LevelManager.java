@@ -25,7 +25,7 @@ public class LevelManager {
     }
 
     public void initialize() {
-        this.levelSprite = LoadSaveImage.GetSpriteAtlas(LoadSaveImage.SCHOOL_OUTSIDE);
+        this.levelSprite = LoadSaveImage.GetSpriteAtlas(LoadSaveImage.TEST_SHORT_IMAGE);
         this.levelMaxWidth = levelSprite.getWidth();
         this.levelMaxHeight = levelSprite.getHeight();
     }
