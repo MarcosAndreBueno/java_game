@@ -35,9 +35,9 @@ public class GameWindow {
         public static final int BaseTileSize = 16; //16x16 pixels
         public static final float Scale = 2.0f;
         public static final int TileSize = (int) (BaseTileSize * Scale); //40
-        public static final int MaxScreenWidth = 28;
-        public static final int MaxScreenHeight = 20;
-        public static final int ScreenWidth = TileSize * MaxScreenWidth; //720
-        public static final int ScreenHeight = TileSize * MaxScreenHeight; //480
+        public static final int MaxScreenWidth = 32;
+        public static final int MaxScreenHeight = 18;
+        public static final int ScreenWidth = TileSize * MaxScreenWidth; //1280
+        public static final int ScreenHeight = TileSize * MaxScreenHeight; // 720
     }
 }

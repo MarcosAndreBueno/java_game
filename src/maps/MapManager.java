@@ -3,6 +3,8 @@ package maps;
 import entities.LoadSaveImage;
 import entities.Player;
 import main.Game;
+import tiles.CSVHandle;
+import utilz.Constants.Maps;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,6 +19,7 @@ public class MapManager {
     private int mapMaxHeight;
     private float playerX;
     private float playerY;
+    private CSVHandle csvHandle = new CSVHandle();
 
     public MapManager(Game game) {
         this.game = game;
@@ -24,9 +27,10 @@ public class MapManager {
     }
 
     public void initialize() {
-        this.mapSprite = LoadSaveImage.GetSpriteAtlas(LoadSaveImage.SCHOOL_OUTSIDE);
+        this.mapSprite = LoadSaveImage.GetSpriteAtlas(Maps.SCHOOL_OUTSIDE);
         this.mapMaxWidth = mapSprite.getWidth();
         this.mapMaxHeight = mapSprite.getHeight();
+        csvHandle.createMapInfoFromCSV(Maps.SCHOOL_OUTSIDE_INFO, Maps.SCHOOL_OUTSIDE_HEIGHT, Maps.SCHOOL_OUTSIDE_WIDTH);
     }
 
     public int getMapMaxWidth() {

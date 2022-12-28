@@ -16,4 +16,15 @@ public class Constants {
             return 3;
         }
     }
+
+    public static class Maps {
+        public static final String SCHOOL_OUTSIDE = "res/maps/school_outside.png";
+        public static final String SCHOOL_OUTSIDE_INFO = "res/maps/school_outside.csv";
+        public static final int SCHOOL_OUTSIDE_HEIGHT = 1584;
+        public static final int SCHOOL_OUTSIDE_WIDTH = 1104;
+    }
+
+    public static class Entities {
+        public static final String PLAYER_ATLAS = "res/characters/sample_character_02.png";
+    }
 }

@@ -4,9 +4,11 @@ import main.Game;
 import tiles.Collision;
 
 import static main.GameWindow.ScreenSettings.*;
+import static tiles.CSVHandle.mapInfo;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
+import utilz.Constants.Entities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -32,7 +34,7 @@ public class Player extends Entity {
     public int mapMaxHeight;
 
     public Player(Game game) {
-        super(200, 600);
+        super(0, 600);
         this.game = game;
         setHitbox(0,playerHeight,playerHeight/2,playerWidth);
         loadAnimations();
@@ -64,39 +66,30 @@ public class Player extends Entity {
     }
 
     private void updatePlayerInformations() {
-        if (leftPressed && !rightPressed) {
-            setPositionX(-playerSpeed);
-            setDirection(LEFT);
-            if (leftPressed && !rightPressed)
-                if (Collision.checkPlayerCollision(this, LEFT))
-                    resetPositionX(-playerSpeed);
-        }
-        if (rightPressed && !leftPressed) {
-            setPositionX(playerSpeed);
-            setDirection(RIGHT);
-            if (rightPressed && !leftPressed)
-                if (Collision.checkPlayerCollision(this, RIGHT))
-                    resetPositionX(playerSpeed);
-        }
-        if (upPressed && !downPressed) {
-            setPositionY(-playerSpeed);
-            setDirection(UP);
-            if (upPressed && !downPressed)
-                if (Collision.checkPlayerCollision(this, UP))
-                    resetPositionY(-playerSpeed);
-        }
-        if (downPressed && !upPressed) {
-            setPositionY(playerSpeed);
-            setDirection(DOWN);
-            if (downPressed && !upPressed)
-                if (Collision.checkPlayerCollision(this, DOWN))
-                    resetPositionY(playerSpeed);
-        }
-
-
         if (!upPressed && !downPressed && !leftPressed && !rightPressed)
             playerAction = STANDING;
         else {
+            if (leftPressed && !rightPressed) {
+                setPositionX(-playerSpeed);
+                setDirection(LEFT);
+                checkCollisionLeft();
+            }
+            else if (rightPressed && !leftPressed) {
+                setPositionX(playerSpeed);
+                setDirection(RIGHT);
+                checkCollisionRight();
+            }
+            if (upPressed && !downPressed) {
+                setPositionY(-playerSpeed);
+                setDirection(UP);
+                checkCollisionUp();
+            }
+            else if (downPressed && !upPressed) {
+                setPositionY(playerSpeed);
+                setDirection(DOWN);
+                checkCollisionDown();
+            }
+
             setAction(WALKING);
 
             mapMaxWidth = game.getMapManager().getMapMaxWidth();
@@ -114,8 +107,41 @@ public class Player extends Entity {
         }
     }
 
+    private void checkCollisionLeft() {
+        int direction = ((int) x + (int)ScreenCenterX + hitbox[LEFT]) / BaseTileSize;
+        int cornerOne = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;     //head
+        int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
+        if (Collision.isTileSolid(cornerOne, direction) ||
+                Collision.isTileSolid(cornerTwo, direction))
+            resetPositionX(-playerSpeed);
+    }
+    private void checkCollisionRight() {
+        int direction = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;
+        int cornerOne = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;     //head
+        int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
+        if (Collision.isTileSolid(cornerOne, direction) ||
+                Collision.isTileSolid(cornerTwo, direction))
+            resetPositionX(playerSpeed);
+    }
+    private void checkCollisionUp() {
+        int direction = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;
+        int cornerOne = ((int) x + (int)ScreenCenterX + hitbox[LEFT]) / BaseTileSize;   //upleft
+        int cornerTwo = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;  //upright
+        if (Collision.isTileSolid(direction, cornerOne) ||
+                Collision.isTileSolid(direction, cornerTwo))
+            resetPositionY(-playerSpeed);
+    }
+    private void checkCollisionDown() {
+        int direction = ((int) y + (int) ScreenCenterY + hitbox[DOWN]) / BaseTileSize;
+        int cornerOne = ((int) x + (int) ScreenCenterX + hitbox[LEFT]) / BaseTileSize;  //downleft
+        int cornerTwo = ((int) x + (int) ScreenCenterX + hitbox[RIGHT]) / BaseTileSize; //downright
+        if (Collision.isTileSolid(direction, cornerOne) ||
+                Collision.isTileSolid(direction, cornerTwo))
+            resetPositionY(playerSpeed);
+    }
+
     private void loadAnimations() {
-        BufferedImage img = LoadSaveImage.GetSpriteAtlas(LoadSaveImage.PLAYER_ATLAS);
+        BufferedImage img = LoadSaveImage.GetSpriteAtlas(Entities.PLAYER_ATLAS);
         animations = new BufferedImage[3][4];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {

@@ -6,11 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class LoadSaveImage {
-
-    public static final String PLAYER_ATLAS = "res/characters/sample_character_02.png";
-    public static final String SCHOOL_OUTSIDE = "res/maps/school_outside.png";
-    public static final String TEST_SHORT_IMAGE = "tiles/test_school_outside.png";
-
     public static BufferedImage GetSpriteAtlas(String filename) {
         BufferedImage img = null;
         InputStream is = LoadSaveImage.class.getResourceAsStream("/" + filename);

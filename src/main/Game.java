@@ -2,7 +2,6 @@ package main;
 
 import entities.Player;
 import maps.MapManager;
-import tiles.Tiles;
 
 import java.awt.*;
 
@@ -20,8 +19,6 @@ public class Game implements Runnable{
     private Player player;
     private MapManager mapManager;
 
-    Tiles tiles;
-
     public Game() {
         initialize();
 
@@ -33,8 +30,6 @@ public class Game implements Runnable{
     }
 
     private void initialize() {
-        tiles = new Tiles();
-        tiles.findSolids();
         player = new Player(this);
         mapManager = new MapManager(this);
     }
