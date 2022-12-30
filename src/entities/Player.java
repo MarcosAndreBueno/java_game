@@ -8,6 +8,8 @@ import static tiles.CSVHandle.mapInfo;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
+
+import utilz.Constants;
 import utilz.Constants.Entities;
 
 import java.awt.*;
@@ -24,20 +26,32 @@ public class Player extends Entity {
     private boolean upPressed, downPressed, leftPressed, rightPressed;
 
     //center camera on player
-    public static float ScreenCenterX = (ScreenWidth/2) - (TileSize/2);
-    public static float ScreenCenterY = (ScreenHeight/2) - (TileSize);
-    private float playerCenterX = ScreenCenterX;
-    private float playerCenterY = ScreenCenterY;
+    public static float ScreenCenterX;
+    public static float ScreenCenterY;
+    private float playerCenterX;
+    private float playerCenterY;
 
     public Game game;
     public int mapMaxWidth;
     public int mapMaxHeight;
 
     public Player(Game game) {
-        super(0, 600);
+        super(45, 800);
         this.game = game;
-        setHitbox(0,playerHeight,playerHeight/2,playerWidth);
+        initialize();
+    }
+
+    public void initialize() {
         loadAnimations();
+        setHitbox(0, playerHeight, playerHeight / 2, playerWidth);
+
+        mapMaxWidth = game.getMapManager().getMapMaxWidth();
+        mapMaxHeight = game.getMapManager().getMapMaxHeight();
+        ScreenCenterX = (ScreenWidth / 2) - (TileSize / 2);
+        ScreenCenterY = (ScreenHeight / 2) - (TileSize);
+        playerCenterX = ScreenCenterX;
+        playerCenterY = ScreenCenterY;
+        setPlayerCenter();
     }
 
     public void update() {
@@ -91,20 +105,22 @@ public class Player extends Entity {
             }
 
             setAction(WALKING);
-
-            mapMaxWidth = game.getMapManager().getMapMaxWidth();
-            mapMaxHeight = game.getMapManager().getMapMaxHeight();
-
-            //player movement if the screen reaches the edge of the map
-            if (x + ScreenWidth > mapMaxWidth)      //right
-                playerCenterX = x - (mapMaxWidth - ScreenWidth - ScreenCenterX);
-            else if (x <= 0)                          //left
-                playerCenterX = x + ScreenCenterX;
-            if (y + ScreenHeight > mapMaxHeight)   //down
-                playerCenterY = y - (mapMaxHeight - ScreenHeight - ScreenCenterY);
-            else if (y <= 0)                          //up
-                playerCenterY = y + ScreenCenterY;
+            setPlayerCenter();
         }
+    }
+
+    //player movement if the screen reaches the edge of the map
+    private void setPlayerCenter() {
+        mapMaxWidth = game.getMapManager().getMapMaxWidth();
+        mapMaxHeight = game.getMapManager().getMapMaxHeight();
+        if (x + ScreenWidth > mapMaxWidth)      //right
+            playerCenterX = x - (mapMaxWidth - ScreenWidth - ScreenCenterX);
+        else if (x <= 0)                        //left
+            playerCenterX = x + ScreenCenterX;
+        if (y + ScreenHeight > mapMaxHeight)    //down
+            playerCenterY = y - (mapMaxHeight - ScreenHeight - ScreenCenterY);
+        else if (y <= 0)                        //up
+            playerCenterY = y + ScreenCenterY;
     }
 
     private void checkCollisionLeft() {
@@ -179,5 +195,13 @@ public class Player extends Entity {
 
     public void setRightPressed(boolean rightPressed) {
         this.rightPressed = rightPressed;
+    }
+
+    public float getPlayerCenterX() {
+        return playerCenterX;
+    }
+
+    public float getPlayerCenterY() {
+        return playerCenterY;
     }
 }

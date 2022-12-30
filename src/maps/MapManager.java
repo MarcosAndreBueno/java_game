@@ -57,6 +57,7 @@ public class MapManager {
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(mapSprite.getSubimage((int)playerX, (int)playerY, ScreenWidth, ScreenHeight),0,0,null);
+        g2.drawImage(mapSprite.getSubimage((int)playerX, (int)playerY, ScreenWidth, ScreenHeight),
+                0,0,ScreenWidth, ScreenHeight,null);
     }
 }

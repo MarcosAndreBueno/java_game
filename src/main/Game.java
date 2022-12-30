@@ -30,8 +30,8 @@ public class Game implements Runnable{
     }
 
     private void initialize() {
-        player = new Player(this);
         mapManager = new MapManager(this);
+        player = new Player(this);
     }
 
     private void startGameThread() {
@@ -40,8 +40,8 @@ public class Game implements Runnable{
     }
 
     public void update() {
-        mapManager.update();
         player.update();
+        mapManager.update();
     }
 
     public void render(Graphics2D g2) {
@@ -99,7 +99,9 @@ public class Game implements Runnable{
             //print fps and ups
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
+//                System.out.println("FPS: " + frames + " | UPS: " + updates);
+                System.out.println(player.getPositionX() + " " + player.getPositionY() + " (pos real   xy) " );
+                System.out.println(player.getPlayerCenterX() + " " + player.getPlayerCenterY() + " (pos player xy) \n" );
                 frames = 0;
                 updates = 0;
 
