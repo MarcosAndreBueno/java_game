@@ -16,14 +16,14 @@ public class GamePanel extends JPanel {
     private Game game;
 
     public GamePanel(Game game) {
+        this.game = game;
         setPanelConfigurations();
         initializeInputs();
-        this.game = game;
     }
 
     private void initializeInputs() {
-        keyboardInputs = new KeyboardInputs(this);
-        mouseInputs = new MouseInputs(this);
+        keyboardInputs = new KeyboardInputs(game);
+        mouseInputs = new MouseInputs(game);
         addKeyListener(keyboardInputs);
         addMouseListener(mouseInputs);
         addMouseMotionListener(mouseInputs);
@@ -46,7 +46,7 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g); //prepare panel
         Graphics2D g2 = (Graphics2D) g;
-        game.render(g2);
+        game.draw(g2);
         g2.dispose(); //it saves some memory
     }
 }

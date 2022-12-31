@@ -1,36 +1,36 @@
 package maps;
 
-import entities.LoadSaveImage;
-import entities.Player;
-import main.Game;
+import utilz.LoadSaveImage;
+import game_states.Playing;
 import tiles.CSVHandle;
-import utilz.Constants.Maps;
+import tiles.Collision;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static main.GameWindow.ScreenSettings.ScreenHeight;
-import static main.GameWindow.ScreenSettings.ScreenWidth;
+public abstract class MapManager {
+    protected Playing playing;
+    protected BufferedImage mapSprite;
+    protected int mapMaxWidth;
+    protected int mapMaxHeight;
+    protected int [][] mapHitbox;
+    private CSVHandle csvHandle;
+    private String mapName;
+    private Collision collision;
 
-public class MapManager {
-    private Game game;
-    private BufferedImage mapSprite;
-    private int mapMaxWidth;
-    private int mapMaxHeight;
-    private float playerX;
-    private float playerY;
-    private CSVHandle csvHandle = new CSVHandle();
-
-    public MapManager(Game game) {
-        this.game = game;
-        initialize();
+    public MapManager(Playing playing, String mapName) {
+        this.playing = playing;
+        this.mapName = mapName;
+        this.csvHandle = new CSVHandle();
+        this.collision = new Collision();
+        loadMapInfo();
     }
 
-    public void initialize() {
-        this.mapSprite = LoadSaveImage.GetSpriteAtlas(Maps.SCHOOL_OUTSIDE);
-        this.mapMaxWidth = mapSprite.getWidth();
-        this.mapMaxHeight = mapSprite.getHeight();
-        csvHandle.createMapInfoFromCSV(Maps.SCHOOL_OUTSIDE_INFO, Maps.SCHOOL_OUTSIDE_HEIGHT, Maps.SCHOOL_OUTSIDE_WIDTH);
+    public void loadMapInfo() {
+        mapSprite = LoadSaveImage.GetSpriteAtlas(mapName);
+        mapMaxWidth = mapSprite.getWidth();
+        mapMaxHeight = mapSprite.getHeight();
+        collision.setMapManager(this);
+        mapHitbox = csvHandle.getMapHitbox(mapName, mapMaxWidth, mapMaxHeight);
     }
 
     public int getMapMaxWidth() {
@@ -41,23 +41,11 @@ public class MapManager {
         return mapMaxHeight;
     }
 
-    public void update() {
-        Player pl = game.getPlayer();
-        playerX = pl.getPositionX();
-        playerY = pl.getPositionY();
-        //freezes the camera if the screen hits the edge of the map
-        if (playerX + ScreenWidth >= mapMaxWidth)
-            playerX = mapMaxWidth - ScreenWidth;
-        else if (playerX <= 0)
-            playerX = 0;
-        if (playerY + ScreenHeight >= mapMaxHeight)
-            playerY = mapMaxHeight - ScreenHeight;
-        else if (playerY <= 0)
-            playerY = 0;
+    public int[][] getMapHitbox() {
+        return mapHitbox;
     }
 
-    public void draw(Graphics2D g2) {
-        g2.drawImage(mapSprite.getSubimage((int)playerX, (int)playerY, ScreenWidth, ScreenHeight),
-                0,0,ScreenWidth, ScreenHeight,null);
+    public Collision getCollision() {
+        return collision;
     }
 }

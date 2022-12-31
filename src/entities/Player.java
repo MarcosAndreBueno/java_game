@@ -1,54 +1,39 @@
 package entities;
 
-import main.Game;
-import tiles.Collision;
+import game_states.Playing;
 
 import static main.GameWindow.ScreenSettings.*;
-import static tiles.CSVHandle.mapInfo;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
 
-import utilz.Constants;
+import main.GameWindow;
 import utilz.Constants.Entities;
+import utilz.LoadSaveImage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
-    private BufferedImage[][] animations;
-    private int aniTick, aniIndexI, aniSpeed = (int) (12 * Scale);
-    private int playerWidth = (int) (13 * Scale), playerHeight = (int) (26 * Scale);
-
-    private int playerAction = STANDING, playerDirection = DOWN;
-    private float playerSpeed = 0.32f * Scale;
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
 
     //center camera on player
-    public static float ScreenCenterX;
-    public static float ScreenCenterY;
     private float playerCenterX;
     private float playerCenterY;
 
-    public Game game;
-    public int mapMaxWidth;
-    public int mapMaxHeight;
-
-    public Player(Game game) {
-        super(45, 800);
-        this.game = game;
+    public Player(Playing playing) {
+        super(45, 800, playing);
         initialize();
     }
 
     public void initialize() {
         loadAnimations();
         setHitbox(0, playerHeight, playerHeight / 2, playerWidth);
+    }
 
-        mapMaxWidth = game.getMapManager().getMapMaxWidth();
-        mapMaxHeight = game.getMapManager().getMapMaxHeight();
-        ScreenCenterX = (ScreenWidth / 2) - (TileSize / 2);
-        ScreenCenterY = (ScreenHeight / 2) - (TileSize);
+    //if changing the map
+    public void setPlayerInitialCenter(){
         playerCenterX = ScreenCenterX;
         playerCenterY = ScreenCenterY;
         setPlayerCenter();
@@ -111,14 +96,12 @@ public class Player extends Entity {
 
     //player movement if the screen reaches the edge of the map
     private void setPlayerCenter() {
-        mapMaxWidth = game.getMapManager().getMapMaxWidth();
-        mapMaxHeight = game.getMapManager().getMapMaxHeight();
-        if (x + ScreenWidth > mapMaxWidth)      //right
-            playerCenterX = x - (mapMaxWidth - ScreenWidth - ScreenCenterX);
+        if (x + ScreenWidth > playing.getMapManager().getMapMaxWidth())      //right
+            playerCenterX = x - (playing.getMapManager().getMapMaxWidth() - ScreenWidth - ScreenCenterX);
         else if (x <= 0)                        //left
             playerCenterX = x + ScreenCenterX;
-        if (y + ScreenHeight > mapMaxHeight)    //down
-            playerCenterY = y - (mapMaxHeight - ScreenHeight - ScreenCenterY);
+        if (y + ScreenHeight > playing.getMapManager().getMapMaxHeight())    //down
+            playerCenterY = y - (playing.getMapManager().getMapMaxHeight() - ScreenHeight - ScreenCenterY);
         else if (y <= 0)                        //up
             playerCenterY = y + ScreenCenterY;
     }
@@ -127,32 +110,32 @@ public class Player extends Entity {
         int direction = ((int) x + (int)ScreenCenterX + hitbox[LEFT]) / BaseTileSize;
         int cornerOne = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;     //head
         int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
-        if (Collision.isTileSolid(cornerOne, direction) ||
-                Collision.isTileSolid(cornerTwo, direction))
+        if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
+                playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
             resetPositionX(-playerSpeed);
     }
     private void checkCollisionRight() {
         int direction = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;
         int cornerOne = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;     //head
         int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
-        if (Collision.isTileSolid(cornerOne, direction) ||
-                Collision.isTileSolid(cornerTwo, direction))
+        if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
+                playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
             resetPositionX(playerSpeed);
     }
     private void checkCollisionUp() {
         int direction = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;
         int cornerOne = ((int) x + (int)ScreenCenterX + hitbox[LEFT]) / BaseTileSize;   //upleft
         int cornerTwo = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;  //upright
-        if (Collision.isTileSolid(direction, cornerOne) ||
-                Collision.isTileSolid(direction, cornerTwo))
+        if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
+                playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
             resetPositionY(-playerSpeed);
     }
     private void checkCollisionDown() {
         int direction = ((int) y + (int) ScreenCenterY + hitbox[DOWN]) / BaseTileSize;
         int cornerOne = ((int) x + (int) ScreenCenterX + hitbox[LEFT]) / BaseTileSize;  //downleft
         int cornerTwo = ((int) x + (int) ScreenCenterX + hitbox[RIGHT]) / BaseTileSize; //downright
-        if (Collision.isTileSolid(direction, cornerOne) ||
-                Collision.isTileSolid(direction, cornerTwo))
+        if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
+                playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
             resetPositionY(playerSpeed);
     }
 

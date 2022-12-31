@@ -1,20 +1,19 @@
 package Inputs;
 
-import main.GamePanel;
+import main.Game;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static utilz.Constants.Directions.*;
-import static utilz.Constants.PlayerConstants.STANDING;
-import static utilz.Constants.PlayerConstants.WALKING;
+import static utilz.Constants.GameStates.MENU;
+import static utilz.Constants.GameStates.PLAYING;
 
 public class KeyboardInputs implements KeyListener {
 
-    private GamePanel gamePanel;
+    private Game game;
 
-    public KeyboardInputs(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    public KeyboardInputs(Game game) {
+        this.game = game;
     }
 
     @Override
@@ -23,23 +22,17 @@ public class KeyboardInputs implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int code = e.getKeyCode(); //number of the key pressed
-        switch (code) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> gamePanel.getGame().getPlayer().setUpPressed(true);
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> gamePanel.getGame().getPlayer().setDownPressed(true);
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> gamePanel.getGame().getPlayer().setLeftPressed(true);
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> gamePanel.getGame().getPlayer().setRightPressed(true);
+        switch (game.getState().getGameState()) {
+            case MENU -> game.getMenu().keyPressed(e);
+            case PLAYING -> game.getPlaying().keyPressed(e);
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int code = e.getKeyCode(); //number of the key released
-        switch (code) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> gamePanel.getGame().getPlayer().setUpPressed(false);
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> gamePanel.getGame().getPlayer().setDownPressed(false);
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> gamePanel.getGame().getPlayer().setLeftPressed(false);
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT-> gamePanel.getGame().getPlayer().setRightPressed(false);
+        switch (game.getState().getGameState()) {
+            case MENU -> game.getMenu().keyReleased(e);
+            case PLAYING -> game.getPlaying().keyReleased(e);
         }
     }
 }

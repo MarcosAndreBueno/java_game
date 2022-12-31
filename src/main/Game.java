@@ -1,23 +1,29 @@
 package main;
 
-import entities.Player;
-import maps.MapManager;
+import game_states.GameMenu;
+import game_states.Playing;
+import game_states.State;
 
 import java.awt.*;
+
+import static utilz.Constants.GameStates.*;
 
 public class Game implements Runnable{
 
     private GameWindow gameWindow;
     private GamePanel gamePanel;
 
+    private Playing playing;
+    private GameMenu menu;
+    private State state;
+
     // FPS
     final int FPS = 120;
     final int UPS = 200; //control update
 
-    Thread gameThread;
+    private Thread gameThread;
 
-    private Player player;
-    private MapManager mapManager;
+    public int count = 0;
 
     public Game() {
         initialize();
@@ -30,8 +36,10 @@ public class Game implements Runnable{
     }
 
     private void initialize() {
-        mapManager = new MapManager(this);
-        player = new Player(this);
+        state = new State();
+        menu = new GameMenu(this);
+        playing = new Playing(this);
+        playing.getPlayer().setPlayerInitialCenter();
     }
 
     private void startGameThread() {
@@ -40,26 +48,33 @@ public class Game implements Runnable{
     }
 
     public void update() {
-        player.update();
-        mapManager.update();
+        switch (state.getGameState()) {
+            case MENU -> menu.update();
+            case PLAYING -> {
+                playing.update();
+            }
+        }
     }
 
-    public void render(Graphics2D g2) {
-        mapManager.draw(g2);
-        player.render(g2);
+    public void draw(Graphics2D g2) {
+        playing.draw(g2);
+        if (state.getGameState() == MENU)
+            menu.draw(g2);
     }
 
-    public void windowsFocusLost() {
-        player.resetDirBooleans();
+    public Playing getPlaying() {
+        return playing;
     }
 
-    public Player getPlayer() {
-        return player;
+    public GameMenu getMenu() {
+        return menu;
     }
 
-    public MapManager getMapManager() {
-        return mapManager;
+    public State getState() {
+        return state;
     }
+
+    public void windowsFocusLost() {}
 
     @Override
     public void run() {
@@ -99,12 +114,10 @@ public class Game implements Runnable{
             //print fps and ups
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-//                System.out.println("FPS: " + frames + " | UPS: " + updates);
-                System.out.println(player.getPositionX() + " " + player.getPositionY() + " (pos real   xy) " );
-                System.out.println(player.getPlayerCenterX() + " " + player.getPlayerCenterY() + " (pos player xy) \n" );
+                System.out.println("FPS: " + frames + " | UPS: " + updates);
                 frames = 0;
                 updates = 0;
-
+                count += 1;
             }
         }
     }

@@ -1,5 +1,6 @@
 package Inputs;
 
+import main.Game;
 import main.GamePanel;
 
 import java.awt.event.MouseEvent;
@@ -8,10 +9,10 @@ import java.awt.event.MouseMotionListener;
 
 public class MouseInputs implements MouseListener, MouseMotionListener {
 
-    GamePanel gamePanel;
+    private Game game;
 
-    public MouseInputs(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    public MouseInputs(Game game) {
+        this.game = game;
     }
 
     @Override
