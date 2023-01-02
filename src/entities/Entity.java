@@ -13,22 +13,39 @@ import static utilz.Constants.PlayerConstants.STANDING;
 
 public abstract class Entity {
 
-    protected float x,y;
-    protected int[] hitbox;
     protected Playing playing;
 
-    protected BufferedImage[][] animations;
-    protected int aniTick, aniIndexI, aniSpeed = (int) (12 * Scale);
-    protected int playerWidth = (int) (13 * Scale), playerHeight = (int) (26 * Scale);
+    //entity position
+    protected float x,y;
+    protected int[] hitbox;
 
-    protected int playerAction = STANDING, playerDirection = DOWN;
-    protected float playerSpeed = 0.4f * Scale;
+    //entity animation
+    protected BufferedImage[][] animations;
+    protected int aniAction;
+    protected int aniTick, aniIndexI;
+    protected int aniSpeed;
+    protected int aniDirection;
+    protected int aniWidth;
+    protected int aniHeight;
+
+    //entity movement
+    protected float entitySpeed;
 
 
     public Entity(float x, float y, Playing playing) {
         this.x = x;
         this.y = y;
         this.playing = playing;
+        setEntityDefaultValues();
+    }
+
+    private void setEntityDefaultValues() {
+        aniWidth = (int) (13 * Scale);
+        aniHeight = (int) (26 * Scale);
+        aniAction = STANDING;
+        aniDirection = DOWN;
+        aniSpeed = (int) (12 * Scale);
+        entitySpeed = 0.4f * Scale;
     }
 
     public void setHitbox(float left, float down, float up, float right) {
@@ -63,4 +80,8 @@ public abstract class Entity {
     public void resetPositionY(float y) {
         this.y += y * -1;
     }
+
+    public void update() {}
+
+    public void draw(Graphics2D g2) {}
 }

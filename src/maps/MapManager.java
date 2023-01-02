@@ -21,7 +21,7 @@ public abstract class MapManager {
         this.playing = playing;
         this.mapName = mapName;
         this.csvHandle = new CSVHandle();
-        this.collision = new Collision();
+        this.collision = new Collision(this);
         loadMapInfo();
     }
 
@@ -47,5 +47,9 @@ public abstract class MapManager {
 
     public Collision getCollision() {
         return collision;
+    }
+
+    public Playing getPlaying() {
+        return playing;
     }
 }

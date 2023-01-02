@@ -1,5 +1,7 @@
 package game_states;
 
+import entities.Entity;
+import entities.NPC_Test;
 import entities.Player;
 import main.Game;
 import maps.SchoolOutside;
@@ -10,6 +12,7 @@ import java.awt.event.KeyEvent;
 public class Playing implements GameStates{
     private Game game;
     protected Player player;
+    protected Entity[] npcs;
     protected SchoolOutside mapManager;
 
 
@@ -17,6 +20,18 @@ public class Playing implements GameStates{
         this.game = game;
         this.mapManager = new SchoolOutside(this);
         this.player = new Player(this);
+        loadNPCs();
+    }
+
+    private void loadNPCs() {
+        npcs = new Entity[1];
+//        npcs[0] = new NPC_Test(0,400, this);
+        npcs[0] = new NPC_Test(300,400, this);
+//        npcs[0] = new NPC_Test(700,100, this);
+//        npcs[0] = new NPC_Test(300,50, this);
+//        npcs[0] = new NPC_Test(300,200, this);
+//        npcs[0] = new NPC_Test(300,300, this);
+//        npcs[0] = new NPC_Test(300,400, this);
     }
 
     @Override
@@ -41,12 +56,18 @@ public class Playing implements GameStates{
 
     public void draw(Graphics2D g2) {
         mapManager.draw(g2);
-        player.render(g2);
+        player.draw(g2);
+
+        if (npcs != null)
+            for (Entity npc : npcs) npc.draw(g2);
     }
 
     public void update() {
         player.update();
         mapManager.update();
+
+        if (npcs != null)
+            for (Entity npc : npcs) npc.update();
     }
 
     public Player getPlayer() {

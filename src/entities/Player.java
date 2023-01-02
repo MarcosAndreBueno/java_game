@@ -14,26 +14,28 @@ import utilz.LoadSaveImage;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Player extends Entity {
+public class Player extends Entity implements GameEntity{
 
-    private boolean upPressed, downPressed, leftPressed, rightPressed;
+    //player movement
+    protected boolean upPressed, downPressed, leftPressed, rightPressed;
 
     //center camera on player
     private float playerCenterX;
     private float playerCenterY;
 
     public Player(Playing playing) {
-        super(45, 800, playing);
+        super(45, 360, playing);
         initialize();
     }
 
     public void initialize() {
         loadAnimations();
-        setHitbox(0, playerHeight, playerHeight / 2, playerWidth);
+        setHitbox(0, aniHeight, aniHeight / 2, aniWidth);
+        setEntityInitialCenter();
     }
 
-    //if changing the map
-    public void setPlayerInitialCenter(){
+    //when the player gets into a new map
+    public void setEntityInitialCenter(){
         playerCenterX = ScreenCenterX;
         playerCenterY = ScreenCenterY;
         setPlayerCenter();
@@ -44,8 +46,9 @@ public class Player extends Entity {
         updateAnimationTick();
     }
 
-    public void render(Graphics2D g2) {
-        g2.drawImage(animations[aniIndexI][playerDirection], (int)playerCenterX, (int)playerCenterY, playerWidth, playerHeight,null);
+    public void draw(Graphics2D g2) {
+        g2.drawImage(animations[aniIndexI][aniDirection], (int)playerCenterX, (int)playerCenterY,
+                aniWidth, aniHeight,null);
     }
 
     //change image after few frames
@@ -53,11 +56,11 @@ public class Player extends Entity {
         aniTick++;
         if(aniTick >= aniSpeed) {
             aniTick = 0;
-            if (playerAction == STANDING)
+            if (aniAction == STANDING)
                 aniIndexI = 0;
             else
                 aniIndexI++;
-            if ((playerDirection == LEFT || playerDirection == RIGHT) && aniIndexI >= WALKING)
+            if ((aniDirection == LEFT || aniDirection == RIGHT) && aniIndexI >= WALKING)
                 aniIndexI = 0;
             else if (aniIndexI > WALKING)
                 aniIndexI = 1;
@@ -66,25 +69,25 @@ public class Player extends Entity {
 
     private void updatePlayerInformations() {
         if (!upPressed && !downPressed && !leftPressed && !rightPressed)
-            playerAction = STANDING;
+            aniAction = STANDING;
         else {
             if (leftPressed && !rightPressed) {
-                setPositionX(-playerSpeed);
+                setPositionX(-entitySpeed);
                 setDirection(LEFT);
                 checkCollisionLeft();
             }
             else if (rightPressed && !leftPressed) {
-                setPositionX(playerSpeed);
+                setPositionX(entitySpeed);
                 setDirection(RIGHT);
                 checkCollisionRight();
             }
             if (upPressed && !downPressed) {
-                setPositionY(-playerSpeed);
+                setPositionY(-entitySpeed);
                 setDirection(UP);
                 checkCollisionUp();
             }
             else if (downPressed && !upPressed) {
-                setPositionY(playerSpeed);
+                setPositionY(entitySpeed);
                 setDirection(DOWN);
                 checkCollisionDown();
             }
@@ -112,7 +115,7 @@ public class Player extends Entity {
         int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
         if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
                 playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
-            resetPositionX(-playerSpeed);
+            resetPositionX(-entitySpeed);
     }
     private void checkCollisionRight() {
         int direction = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;
@@ -120,7 +123,7 @@ public class Player extends Entity {
         int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
         if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
                 playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
-            resetPositionX(playerSpeed);
+            resetPositionX(entitySpeed);
     }
     private void checkCollisionUp() {
         int direction = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;
@@ -128,7 +131,7 @@ public class Player extends Entity {
         int cornerTwo = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;  //upright
         if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
                 playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
-            resetPositionY(-playerSpeed);
+            resetPositionY(-entitySpeed);
     }
     private void checkCollisionDown() {
         int direction = ((int) y + (int) ScreenCenterY + hitbox[DOWN]) / BaseTileSize;
@@ -136,10 +139,10 @@ public class Player extends Entity {
         int cornerTwo = ((int) x + (int) ScreenCenterX + hitbox[RIGHT]) / BaseTileSize; //downright
         if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
                 playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
-            resetPositionY(playerSpeed);
+            resetPositionY(entitySpeed);
     }
 
-    private void loadAnimations() {
+    public void loadAnimations() {
         BufferedImage img = LoadSaveImage.GetSpriteAtlas(Entities.PLAYER_ATLAS);
         animations = new BufferedImage[3][4];
         for (int i = 0; i < 3; i++) {
@@ -157,11 +160,11 @@ public class Player extends Entity {
     }
 
     private void setDirection(int direction) {
-        playerDirection = direction;
+        aniDirection = direction;
     }
 
     private void setAction(int action) {
-        playerAction = action;
+        aniAction = action;
     }
 
     public void setUpPressed(boolean upPressed) {

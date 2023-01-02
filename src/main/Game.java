@@ -23,7 +23,7 @@ public class Game implements Runnable{
 
     private Thread gameThread;
 
-    public int count = 0;
+    public int gameCycles = 0;
 
     public Game() {
         initialize();
@@ -39,7 +39,6 @@ public class Game implements Runnable{
         state = new State();
         menu = new GameMenu(this);
         playing = new Playing(this);
-        playing.getPlayer().setPlayerInitialCenter();
     }
 
     private void startGameThread() {
@@ -114,10 +113,12 @@ public class Game implements Runnable{
             //print fps and ups
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
+//                System.out.println("FPS: " + frames + " | UPS: " + updates);
+//                System.out.println(playing.getPlayer().getPositionX() + " " + playing.getPlayer().getPositionY());
+//                System.out.println();
                 frames = 0;
                 updates = 0;
-                count += 1;
+                gameCycles += 1;
             }
         }
     }

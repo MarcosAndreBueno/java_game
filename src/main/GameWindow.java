@@ -32,14 +32,14 @@ public class GameWindow {
     }
 
     public static class ScreenSettings {
-        public static final int BaseTileSize = 16; //16x16 pixels
-        public static final float Scale = 1.0f;
-        public static final int TileSize = (int) (BaseTileSize * Scale); //32
+        public static final int BaseTileSize = 16;                              //16x16 pixels
+        public static final float Scale = 2.0f;
+        public static final int TileSize = (int) (BaseTileSize * Scale);        //32
         public static final int MaxScreenWidth = 32;
         public static final int MaxScreenHeight = 18;
-        public static final int ScreenWidth = TileSize * MaxScreenWidth; //1024
-        public static final int ScreenHeight = TileSize * MaxScreenHeight; // 576
-        public static float ScreenCenterX = (ScreenWidth / 2) - (TileSize / 2);
-        public static float ScreenCenterY = (ScreenHeight / 2) - (TileSize);
+        public static final int ScreenWidth = TileSize * MaxScreenWidth;        //1024
+        public static final int ScreenHeight = TileSize * MaxScreenHeight;      //576
+        public static float ScreenCenterX = (ScreenWidth / 2) - (TileSize / 2); //480
+        public static float ScreenCenterY = (ScreenHeight / 2) - (TileSize);    //272
     }
 }
