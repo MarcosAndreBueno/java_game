@@ -19,7 +19,7 @@ public class NPC_Test extends Entity implements GameEntity{
     private float oldX = playing.getPlayer().getPositionX();
     private float oldY = playing.getPlayer().getPositionY();
     int count = 0;
-    int pressedButton = -1;
+    int pressedButton = 1;
     float npcCenterX, npcCenterY;
     float px, py;
 
@@ -30,7 +30,7 @@ public class NPC_Test extends Entity implements GameEntity{
 
     public void initialize() {
         loadAnimations();
-        setHitbox(0, aniHeight, aniHeight / 2, aniWidth);
+        setHitbox(0, aniHeight, aniHeight/2.8f , aniWidth);
         setEntityInitialCenter();
         aniIndexI = 0;
     }
@@ -62,7 +62,7 @@ public class NPC_Test extends Entity implements GameEntity{
         //random NPC movement
         Random random = new Random();
         int number = random.nextInt(4);
-        if (count >= 120*2) {
+        if (count >= 120*4) {
             switch (number) {
                 case 0 -> { pressedButton = LEFT; aniDirection = LEFT; aniAction = WALKING; }
                 case 1 -> { pressedButton = DOWN; aniDirection = DOWN; aniAction = WALKING; }
@@ -91,7 +91,7 @@ public class NPC_Test extends Entity implements GameEntity{
                 case 3 -> { x += entitySpeed; npcCenterX += entitySpeed; checkCollisionRight(); }
             }
 
-        if (count >= 120*2) {
+        if (count >= 120*4) {
             System.out.println(x + " " + y + " " + px + " " + py);
             System.out.println( (x - (px - oldX)) + " | " + (y - (py - oldY)));
             count = 0;
@@ -123,6 +123,10 @@ public class NPC_Test extends Entity implements GameEntity{
         if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
                 playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
             resetPositionX(-entitySpeed);
+        if (playing.getMapManager().getCollision().isPlayerHereX(x,y,hitbox,LEFT))
+            resetPositionX(-entitySpeed);
+        if (playing.getMapManager().getCollision().isEntityHereX(x,y,hitbox,LEFT))
+            resetPositionX(-entitySpeed);
     }
     private void checkCollisionRight() {
         int direction = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;
@@ -130,6 +134,10 @@ public class NPC_Test extends Entity implements GameEntity{
         int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
         if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
                 playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
+            resetPositionX(entitySpeed);
+        if (playing.getMapManager().getCollision().isPlayerHereX(x,y,hitbox,RIGHT))
+            resetPositionX(entitySpeed);
+        if (playing.getMapManager().getCollision().isEntityHereX(x,y,hitbox,RIGHT))
             resetPositionX(entitySpeed);
     }
     private void checkCollisionUp() {
@@ -139,6 +147,10 @@ public class NPC_Test extends Entity implements GameEntity{
         if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
                 playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
             resetPositionY(-entitySpeed);
+        if (playing.getMapManager().getCollision().isPlayerHereY(x,y,hitbox,UP))
+            resetPositionY(-entitySpeed);
+        if (playing.getMapManager().getCollision().isEntityHereY(x,y,hitbox,UP))
+            resetPositionY(-entitySpeed);
     }
     private void checkCollisionDown() {
         int direction = ((int) y + (int) ScreenCenterY + hitbox[DOWN]) / BaseTileSize;
@@ -146,6 +158,10 @@ public class NPC_Test extends Entity implements GameEntity{
         int cornerTwo = ((int) x + (int) ScreenCenterX + hitbox[RIGHT]) / BaseTileSize; //downright
         if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
                 playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
+            resetPositionY(entitySpeed);
+        if (playing.getMapManager().getCollision().isPlayerHereY(x,y,hitbox,DOWN))
+            resetPositionY(entitySpeed);
+        if (playing.getMapManager().getCollision().isEntityHereY(x,y,hitbox,DOWN))
             resetPositionY(entitySpeed);
     }
 

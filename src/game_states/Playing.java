@@ -24,14 +24,14 @@ public class Playing implements GameStates{
     }
 
     private void loadNPCs() {
-        npcs = new Entity[1];
+        npcs = new Entity[6];
 //        npcs[0] = new NPC_Test(0,400, this);
-        npcs[0] = new NPC_Test(300,400, this);
-//        npcs[0] = new NPC_Test(700,100, this);
-//        npcs[0] = new NPC_Test(300,50, this);
-//        npcs[0] = new NPC_Test(300,200, this);
-//        npcs[0] = new NPC_Test(300,300, this);
-//        npcs[0] = new NPC_Test(300,400, this);
+        npcs[0] = new NPC_Test(400,420, this);
+        npcs[1] = new NPC_Test(600,400, this);
+        npcs[2] = new NPC_Test(330,390, this);
+        npcs[3] = new NPC_Test(350,410, this);
+        npcs[4] = new NPC_Test(390,360, this);
+        npcs[5] = new NPC_Test(430,400, this);
     }
 
     @Override
@@ -56,16 +56,14 @@ public class Playing implements GameStates{
 
     public void draw(Graphics2D g2) {
         mapManager.draw(g2);
-        player.draw(g2);
-
         if (npcs != null)
             for (Entity npc : npcs) npc.draw(g2);
+        player.draw(g2);
     }
 
     public void update() {
-        player.update();
         mapManager.update();
-
+        player.update();
         if (npcs != null)
             for (Entity npc : npcs) npc.update();
     }
@@ -80,5 +78,9 @@ public class Playing implements GameStates{
 
     public Game getGame() {
         return game;
+    }
+
+    public Entity[] getNpcs() {
+        return npcs;
     }
 }

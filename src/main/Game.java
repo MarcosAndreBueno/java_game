@@ -73,7 +73,9 @@ public class Game implements Runnable{
         return state;
     }
 
-    public void windowsFocusLost() {}
+    public void windowsFocusLost() {
+        playing.getPlayer().resetDirBooleans();
+    }
 
     @Override
     public void run() {
