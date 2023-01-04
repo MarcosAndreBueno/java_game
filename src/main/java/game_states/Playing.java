@@ -26,12 +26,12 @@ public class Playing implements GameStates{
     private void loadNPCs() {
         npcs = new Entity[6];
 //        npcs[0] = new NPC_Test(0,400, this);
-        npcs[0] = new NPC_Test(400,420, this);
-        npcs[1] = new NPC_Test(600,400, this);
-        npcs[2] = new NPC_Test(330,390, this);
-        npcs[3] = new NPC_Test(350,410, this);
-        npcs[4] = new NPC_Test(390,360, this);
-        npcs[5] = new NPC_Test(430,400, this);
+        npcs[0] = new NPC_Test(-50,620, this);
+        npcs[1] = new NPC_Test(250,700, this);
+        npcs[2] = new NPC_Test(100,490, this);
+        npcs[3] = new NPC_Test(-200,510, this);
+        npcs[4] = new NPC_Test(150,460, this);
+        npcs[5] = new NPC_Test(430,500, this);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class NPC_Test extends Entity implements GameEntity{
     private float oldX = playing.getPlayer().getPositionX();
     private float oldY = playing.getPlayer().getPositionY();
     int count = 0;
-    int pressedButton = 1;
+    int pressedButton = -1;
     float npcCenterX, npcCenterY;
     float px, py;
 
@@ -30,7 +30,7 @@ public class NPC_Test extends Entity implements GameEntity{
 
     public void initialize() {
         loadAnimations();
-        setHitbox(0, aniHeight, aniHeight/2.8f , aniWidth);
+        setHitbox(0, aniHeight/1.05f, aniHeight/3.5f , aniWidth);
         setEntityInitialCenter();
         aniIndexI = 0;
     }
@@ -48,10 +48,8 @@ public class NPC_Test extends Entity implements GameEntity{
 
     @Override
     public void setEntityInitialCenter() {
-        x -= 450;
-        y += 100;
-        npcCenterX = x + 450;
-        npcCenterY = y - 100;
+        npcCenterX = x + ScreenCenterX - playing.getPlayer().getPositionX();
+        npcCenterY = y + ScreenCenterY - playing.getPlayer().getPositionY();
     }
 
     @Override
@@ -92,8 +90,8 @@ public class NPC_Test extends Entity implements GameEntity{
             }
 
         if (count >= 120*4) {
-            System.out.println(x + " " + y + " " + px + " " + py);
-            System.out.println( (x - (px - oldX)) + " | " + (y - (py - oldY)));
+//            System.out.println(x + " " + y + " " + px + " " + py);
+//            System.out.println( (x - (px - oldX)) + " | " + (y - (py - oldY)));
             count = 0;
         }
 

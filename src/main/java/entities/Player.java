@@ -24,7 +24,7 @@ public class Player extends Entity implements GameEntity{
     private float playerCenterY;
 
     public Player(Playing playing) {
-        super(45, 360, playing);
+        super(45, 560, playing);
         initialize();
     }
 
