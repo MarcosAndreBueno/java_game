@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
 public class Playing implements GameStates{
     private Game game;
     protected Player player;
-    protected Entity[] npcs;
+    protected Entity[] entities;
     protected SchoolOutside mapManager;
 
 
@@ -24,14 +24,14 @@ public class Playing implements GameStates{
     }
 
     private void loadNPCs() {
-        npcs = new Entity[6];
-//        npcs[0] = new NPC_Test(0,400, this);
-        npcs[0] = new NPC_Test(-50,620, this);
-        npcs[1] = new NPC_Test(250,700, this);
-        npcs[2] = new NPC_Test(100,490, this);
-        npcs[3] = new NPC_Test(-200,510, this);
-        npcs[4] = new NPC_Test(150,460, this);
-        npcs[5] = new NPC_Test(430,500, this);
+        entities = new Entity[7];
+        entities[0] = new NPC_Test(-50,620, this);
+        entities[1] = new NPC_Test(250,700, this);
+        entities[2] = new NPC_Test(100,490, this);
+        entities[3] = new NPC_Test(-200,510, this);
+        entities[4] = new NPC_Test(150,460, this);
+        entities[5] = new NPC_Test(430,500, this);
+        entities[6] = player; //the player will be the last one drawn and updated.
     }
 
     @Override
@@ -56,16 +56,14 @@ public class Playing implements GameStates{
 
     public void draw(Graphics2D g2) {
         mapManager.draw(g2);
-        if (npcs != null)
-            for (Entity npc : npcs) npc.draw(g2);
-        player.draw(g2);
+        if (entities != null)
+            for (Entity npc : entities) if (npc != null) npc.draw(g2);
     }
 
     public void update() {
         mapManager.update();
-        player.update();
-        if (npcs != null)
-            for (Entity npc : npcs) npc.update();
+        if (entities != null)
+            for (Entity npc : entities) if (npc != null) npc.update();
     }
 
     public Player getPlayer() {
@@ -80,7 +78,7 @@ public class Playing implements GameStates{
         return game;
     }
 
-    public Entity[] getNpcs() {
-        return npcs;
+    public Entity[] getEntities() {
+        return entities;
     }
 }

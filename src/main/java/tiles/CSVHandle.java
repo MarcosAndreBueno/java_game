@@ -30,7 +30,6 @@ public class CSVHandle {
 
         int i = 0;
         mapHitbox = new int[(mapHeight / BaseTileSize)][mapWidth / BaseTileSize];
-        System.out.println((mapHeight / BaseTileSize) + " " + (mapWidth / BaseTileSize));
         for (CSVRecord rec : csvParser) {
             for (int k = 0; k < mapWidth / BaseTileSize; k++)
                 mapHitbox[i][k] = Integer.parseInt(rec.get(k));

@@ -24,7 +24,7 @@ public class Player extends Entity implements GameEntity{
     private float playerCenterY;
 
     public Player(Playing playing) {
-        super(45, 560, playing);
+        super(0, 560, playing);
         initialize();
     }
 
@@ -110,43 +110,27 @@ public class Player extends Entity implements GameEntity{
     }
 
     private void checkCollisionLeft() {
-        int direction = ((int) x + (int)ScreenCenterX + hitbox[LEFT]) / BaseTileSize;
-        int cornerOne = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;     //head
-        int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
-        if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
-                playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
+        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox, LEFT))
             resetPositionX(-entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHereX(x,y, hitbox, LEFT))
+        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox, LEFT))
             resetPositionX(-entitySpeed);
     }
     private void checkCollisionRight() {
-        int direction = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;
-        int cornerOne = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;     //head
-        int cornerTwo = ((int) y + (int)ScreenCenterY + hitbox[DOWN]) / BaseTileSize;   //feet
-        if (playing.getMapManager().getCollision().isTileSolid(cornerOne, direction) ||
-                playing.getMapManager().getCollision().isTileSolid(cornerTwo, direction))
+        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,RIGHT))
             resetPositionX(entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHereX(x,y, hitbox, RIGHT))
+        if (playing.getMapManager().getCollision().isEntityHere(x,y, hitbox, RIGHT))
             resetPositionX(entitySpeed);
     }
     private void checkCollisionUp() {
-        int direction = ((int) y + (int)ScreenCenterY + hitbox[UP]) / BaseTileSize;
-        int cornerOne = ((int) x + (int)ScreenCenterX + hitbox[LEFT]) / BaseTileSize;   //upleft
-        int cornerTwo = ((int) x + (int)ScreenCenterX + hitbox[RIGHT]) / BaseTileSize;  //upright
-        if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
-                playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
+        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,UP))
             resetPositionY(-entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHereY(x,y, hitbox, UP))
+        if (playing.getMapManager().getCollision().isEntityHere(x,y, hitbox, UP))
             resetPositionY(-entitySpeed);
     }
     private void checkCollisionDown() {
-        int direction = ((int) y + (int) ScreenCenterY + hitbox[DOWN]) / BaseTileSize;
-        int cornerOne = ((int) x + (int) ScreenCenterX + hitbox[LEFT]) / BaseTileSize;  //downleft
-        int cornerTwo = ((int) x + (int) ScreenCenterX + hitbox[RIGHT]) / BaseTileSize; //downright
-        if (playing.getMapManager().getCollision().isTileSolid(direction, cornerOne) ||
-                playing.getMapManager().getCollision().isTileSolid(direction, cornerTwo))
+        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,DOWN))
             resetPositionY(entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHereY(x,y,hitbox, DOWN))
+        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox, DOWN))
             resetPositionY(entitySpeed);
     }
 
