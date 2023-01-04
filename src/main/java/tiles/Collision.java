@@ -69,7 +69,8 @@ public class Collision {
             else
                 oppositeDirection = UP;
 
-            return (checkCollisionBetweenEntities(movingEntityDireciton, movingEntityCornerOne,movingEntityCornerTwo, entityDirection, oppositeDirection));
+            return (checkCollisionBetweenEntities(movingEntityDireciton, movingEntityCornerOne,
+                    movingEntityCornerTwo, entityDirection, oppositeDirection));
         }else {
             //entities position already considering the hitbox
             float movingEntityDireciton = entityX + entityHitbox[entityDirection];
@@ -82,7 +83,8 @@ public class Collision {
             else
                 oppositeDirection = LEFT;
 
-            return (checkCollisionBetweenEntities(movingEntityDireciton, movingEntityCornerOne, movingEntityCornerTwo, entityDirection, oppositeDirection));
+            return (checkCollisionBetweenEntities(movingEntityDireciton, movingEntityCornerOne,
+                    movingEntityCornerTwo, entityDirection, oppositeDirection));
         }
     }
 

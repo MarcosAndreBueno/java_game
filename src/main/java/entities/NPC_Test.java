@@ -48,8 +48,14 @@ public class NPC_Test extends Entity implements GameEntity{
 
     @Override
     public void setEntityInitialCenter() {
-        npcCenterX = x + ScreenCenterX - playing.getPlayer().getPositionX();
-        npcCenterY = y + ScreenCenterY - playing.getPlayer().getPositionY();
+        if (playing.getPlayer().getPositionX() >= 0)
+            npcCenterX = x + ScreenCenterX - playing.getPlayer().getPositionX();
+        else
+            npcCenterX = x + ScreenCenterX;
+        if (playing.getPlayer().getPositionY() >= 0)
+            npcCenterY = y + ScreenCenterY - playing.getPlayer().getPositionY();
+        else
+            npcCenterY = y + ScreenCenterY;
     }
 
     @Override
