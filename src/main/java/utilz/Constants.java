@@ -21,8 +21,28 @@ public class Constants {
         public static final String SCHOOL_OUTSIDE = "maps/school_outside";
     }
 
+    public static class NpcCsv {
+        public static final int ID = 0;
+        public static final int POSITION_X = 1;
+        public static final int POSITION_Y = 2;
+        public static final int HITBOX_LEFT = 3;
+        public static final int HITBOX_DOWN = 4;
+        public static final int HITBOX_UP = 5;
+        public static final int HITBOX_RIGHT = 6;
+        public static final int DIRECTION = 7;
+        public static final int CAN_MOVE = 8;
+        public static final int NAME = 9;
+        public static final int SPRITE_ATLAS = 10;
+
+    }
+
     public static class Entities {
-        public static final String PLAYER_ATLAS = "characters/sample_character_02";
+        public static final String PLAYER_ATLAS = "characters/player";
+        public static final String NPC_01 = "characters/npc_tony";
+        public static final String NPC_02 = "characters/npc_klay";
+        public static final String NPC_03 = "characters/npc_john";
+        public static final String NPC_04 = "characters/npc_samantha";
+        public static final String NPC_05 = "characters/npc_jay";
     }
 
     public static class GameStates {

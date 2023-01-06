@@ -2,8 +2,9 @@ package tiles;
 
 
 import entities.Entity;
-import entities.Player;
 import maps.MapManager;
+
+import java.util.ArrayList;
 
 import static main.GameWindow.ScreenSettings.*;
 import static main.GameWindow.ScreenSettings.BaseTileSize;
@@ -90,7 +91,7 @@ public class Collision {
 
     // checks the 4 corners of each entity's hitbox on the map
     public boolean checkCollisionBetweenEntities(float movingEntityDirection, float movingEntityCornerOne, float movingEntityCornerTwo, int entityDirection, int oppositeDirection) {
-        Entity[] entities = mapManager.getPlaying().getEntities();
+        ArrayList<Entity> entities = mapManager.getPlaying().getEntities();
         boolean collision = false;
 
         float actualEntityDirection = -1;

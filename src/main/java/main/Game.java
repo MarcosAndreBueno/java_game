@@ -20,10 +20,10 @@ public class Game implements Runnable{
     // FPS
     final int FPS = 120;
     final int UPS = 200; //control update
+    private long gameTime = System.currentTimeMillis();
 
     private Thread gameThread;
 
-    public int gameCycles = 0;
 
     public Game() {
         initialize();
@@ -77,6 +77,10 @@ public class Game implements Runnable{
         playing.getPlayer().resetDirBooleans();
     }
 
+    public long getGameTime() {
+        return gameTime;
+    }
+
     @Override
     public void run() {
         double drawInterval = 1000000000.0 / FPS;
@@ -116,9 +120,9 @@ public class Game implements Runnable{
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
 //                System.out.println("FPS: " + frames + " | UPS: " + updates);
+                gameTime += 1;
                 frames = 0;
                 updates = 0;
-                gameCycles += 1;
             }
         }
     }

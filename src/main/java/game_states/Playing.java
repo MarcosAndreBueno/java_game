@@ -1,37 +1,39 @@
 package game_states;
 
 import entities.Entity;
-import entities.NPC_Test;
 import entities.Player;
 import main.Game;
 import maps.SchoolOutside;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
+import static utilz.Constants.Entities.*;
 
 public class Playing implements GameStates{
     private Game game;
     protected Player player;
-    protected Entity[] entities;
+    protected ArrayList<Entity> entities;
     protected SchoolOutside mapManager;
 
 
     public Playing(Game game) {
         this.game = game;
         this.mapManager = new SchoolOutside(this);
-        this.player = new Player(this);
-        loadNPCs();
+        this.player = new Player(-50, 500, PLAYER_ATLAS, this);
+        this.entities = new ArrayList<>();
+        loadMapInfo();
+        loadEntities();
     }
 
-    private void loadNPCs() {
-        entities = new Entity[7];
-        entities[0] = new NPC_Test(-50,620, this);
-        entities[1] = new NPC_Test(250,700, this);
-        entities[2] = new NPC_Test(100,490, this);
-        entities[3] = new NPC_Test(-200,510, this);
-        entities[4] = new NPC_Test(150,460, this);
-        entities[5] = new NPC_Test(430,500, this);
-        entities[6] = player; //the player will be the last one drawn and updated.
+    private void loadMapInfo() {
+        mapManager.loadMapInfo();
+    }
+
+    private void loadEntities() {
+        entities = mapManager.loadEntities(entities);
+        entities.add(player);
     }
 
     @Override
@@ -54,12 +56,14 @@ public class Playing implements GameStates{
         }
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         mapManager.draw(g2);
         if (entities != null)
             for (Entity npc : entities) if (npc != null) npc.draw(g2);
     }
 
+    @Override
     public void update() {
         mapManager.update();
         if (entities != null)
@@ -78,7 +82,7 @@ public class Playing implements GameStates{
         return game;
     }
 
-    public Entity[] getEntities() {
+    public ArrayList<Entity> getEntities() {
         return entities;
     }
 }

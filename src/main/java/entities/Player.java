@@ -17,14 +17,14 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity implements GameEntity{
 
     //player movement
-    protected boolean upPressed, downPressed, leftPressed, rightPressed;
+    private boolean upPressed, downPressed, leftPressed, rightPressed;
 
     //center camera on player
     private float playerCenterX;
     private float playerCenterY;
 
-    public Player(Playing playing) {
-        super(-50, -200, playing);
+    public Player(float x, float y, String sprite, Playing playing) {
+        super(x, y, sprite, playing);
         initialize();
     }
 
@@ -107,31 +107,6 @@ public class Player extends Entity implements GameEntity{
             playerCenterY = y - (playing.getMapManager().getMapMaxHeight() - ScreenHeight - ScreenCenterY);
         else if (y <= 0)                        //up
             playerCenterY = y + ScreenCenterY;
-    }
-
-    private void checkCollisionLeft() {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox, LEFT))
-            resetPositionX(-entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox, LEFT))
-            resetPositionX(-entitySpeed);
-    }
-    private void checkCollisionRight() {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,RIGHT))
-            resetPositionX(entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y, hitbox, RIGHT))
-            resetPositionX(entitySpeed);
-    }
-    private void checkCollisionUp() {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,UP))
-            resetPositionY(-entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y, hitbox, UP))
-            resetPositionY(-entitySpeed);
-    }
-    private void checkCollisionDown() {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,DOWN))
-            resetPositionY(entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox, DOWN))
-            resetPositionY(entitySpeed);
     }
 
     public void loadAnimations() {

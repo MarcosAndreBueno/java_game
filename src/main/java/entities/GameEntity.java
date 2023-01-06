@@ -2,6 +2,9 @@ package entities;
 
 import java.awt.*;
 
+import static utilz.Constants.Directions.*;
+import static utilz.Constants.Directions.DOWN;
+
 public interface GameEntity {
     //in parent class
     public void setHitbox(float left, float down, float up, float right);
@@ -12,6 +15,11 @@ public interface GameEntity {
     public float getPositionY();
     public void resetPositionX(float x);
     public void resetPositionY(float y);
+
+    public void checkCollisionLeft();
+    public void checkCollisionRight();
+    public void checkCollisionUp();
+    public void checkCollisionDown();
 
     //in child class
     public void loadAnimations();

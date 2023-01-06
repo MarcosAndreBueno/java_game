@@ -2,7 +2,7 @@ package maps;
 
 import utilz.LoadSaveImage;
 import game_states.Playing;
-import tiles.CSVHandle;
+import utilz.CSVHandle;
 import tiles.Collision;
 
 import java.awt.image.BufferedImage;
@@ -22,10 +22,10 @@ public abstract class MapManager {
         this.mapName = mapName;
         this.csvHandle = new CSVHandle();
         this.collision = new Collision(this);
-        loadMapInfo();
+        initialize();
     }
 
-    public void loadMapInfo() {
+    public void initialize() {
         mapSprite = LoadSaveImage.GetSpriteAtlas(mapName);
         mapMaxWidth = mapSprite.getWidth();
         mapMaxHeight = mapSprite.getHeight();

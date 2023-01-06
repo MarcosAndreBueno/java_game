@@ -9,7 +9,6 @@ import static main.GameWindow.ScreenSettings.*;
 
 public class GameMenu implements GameStates{
     private Game game;
-
     public GameMenu(Game game) {
         this.game = game;
     }
@@ -36,8 +35,20 @@ public class GameMenu implements GameStates{
     }
 
     public void draw(Graphics2D g2) {
+        //pause screen
+        g2.setColor(new Color(0,0,0,200));
         g2.fillRect(ScreenWidth/2-ScreenWidth/4,ScreenHeight/2-ScreenHeight/4-TileSize*4,
                 ScreenWidth/2,ScreenHeight-TileSize*2);
+
+        //game time
+        g2.setColor(new Color(255,255,255,255));
+        long time = System.currentTimeMillis() - game.getGameTime();
+        long seconds = time/1000;
+        String secondsPrint = Long.toString(seconds % 60);
+        String minutes = Long.toString(seconds / 60 % 60);
+        String hours = Long.toString(seconds/60/60);
+        g2.drawString((hours + " : " + minutes + " : " + secondsPrint),
+                ScreenWidth/2-ScreenWidth/4,ScreenHeight/2-ScreenHeight/4-TileSize*4 + 50);
     }
 
     public void update() {}

@@ -1,21 +1,38 @@
 package maps;
 
-import entities.Player;
+import entities.Entity;
+import entities.npcs.*;
 import game_states.Playing;
-import main.Game;
+import utilz.CSVHandle;
 import utilz.Constants.Maps;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import static main.GameWindow.ScreenSettings.ScreenHeight;
 import static main.GameWindow.ScreenSettings.ScreenWidth;
+import static utilz.Constants.Maps.SCHOOL_OUTSIDE;
 
 public class SchoolOutside extends MapManager{
     private float playerX;
     private float playerY;
+    private String[][] npcInfo;
 
     public SchoolOutside(Playing playing) {
         super(playing, Maps.SCHOOL_OUTSIDE);
+    }
+
+    public void loadMapInfo() {
+        npcInfo = new CSVHandle().getNPCInformation(SCHOOL_OUTSIDE);
+    }
+
+    public ArrayList<Entity> loadEntities(ArrayList<Entity> entities) {
+        entities.add(new npc_Tony(0, npcInfo, playing));
+        entities.add(new npc_Klay(1, npcInfo, playing));
+        entities.add(new npc_John(2, npcInfo, playing));
+        entities.add(new npc_Samantha(3, npcInfo, playing));
+        entities.add(new npc_Jay(4, npcInfo, playing));
+        return entities;
     }
 
     public void update() {
