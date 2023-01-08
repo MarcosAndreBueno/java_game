@@ -98,15 +98,19 @@ public class Player extends Entity implements GameEntity{
     }
 
     //player movement if the screen reaches the edge of the map
-    private void setPlayerCenter() {
-        if (x + ScreenWidth > playing.getMapManager().getMapMaxWidth())      //right
-            playerCenterX = x - (playing.getMapManager().getMapMaxWidth() - ScreenWidth - ScreenCenterX);
-        else if (x <= 0)                        //left
+    public void setPlayerCenter() {
+        //left or maps smaller than the screen width
+        if (x <= 0 || playing.getMapManager().getMapMaxWidth() < ScreenWidth)
             playerCenterX = x + ScreenCenterX;
-        if (y + ScreenHeight > playing.getMapManager().getMapMaxHeight())    //down
-            playerCenterY = y - (playing.getMapManager().getMapMaxHeight() - ScreenHeight - ScreenCenterY);
-        else if (y <= 0)                        //up
+        //right
+        else if (x + ScreenWidth > playing.getMapManager().getMapMaxWidth())
+            playerCenterX = x - (playing.getMapManager().getMapMaxWidth() - ScreenWidth - ScreenCenterX);
+        //up or maps smaller than the screen height
+        if (y <= 0 || playing.getMapManager().getMapMaxHeight() < ScreenHeight)
             playerCenterY = y + ScreenCenterY;
+        //down
+        else if (y + ScreenHeight > playing.getMapManager().getMapMaxHeight())
+            playerCenterY = y - (playing.getMapManager().getMapMaxHeight() - ScreenHeight - ScreenCenterY);
     }
 
     public void loadAnimations() {

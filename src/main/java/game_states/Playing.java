@@ -2,8 +2,10 @@ package game_states;
 
 import entities.Entity;
 import entities.Player;
+import entities.npcs.NPCEntity;
 import main.Game;
-import maps.SchoolOutside;
+import maps.TestMap;
+
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -15,24 +17,23 @@ public class Playing implements GameStates{
     private Game game;
     protected Player player;
     protected ArrayList<Entity> entities;
-    protected SchoolOutside mapManager;
+    protected TestMap testMap;
 
 
     public Playing(Game game) {
         this.game = game;
-        this.mapManager = new SchoolOutside(this);
-        this.player = new Player(-50, 500, PLAYER_ATLAS, this);
-        this.entities = new ArrayList<>();
+        this.testMap = new TestMap(this);
+        this.player = new Player(0, 0, PLAYER_ATLAS, this);
         loadMapInfo();
         loadEntities();
     }
 
     private void loadMapInfo() {
-        mapManager.loadMapInfo();
+        testMap.loadMapInfo();
     }
 
     private void loadEntities() {
-        entities = mapManager.loadEntities(entities);
+        entities = testMap.loadEntities();
         entities.add(player);
     }
 
@@ -58,14 +59,14 @@ public class Playing implements GameStates{
 
     @Override
     public void draw(Graphics2D g2) {
-        mapManager.draw(g2);
+        testMap.draw(g2);
         if (entities != null)
             for (Entity npc : entities) if (npc != null) npc.draw(g2);
     }
 
     @Override
     public void update() {
-        mapManager.update();
+        testMap.update();
         if (entities != null)
             for (Entity npc : entities) if (npc != null) npc.update();
     }
@@ -74,8 +75,8 @@ public class Playing implements GameStates{
         return player;
     }
 
-    public SchoolOutside getMapManager() {
-        return mapManager;
+    public TestMap getMapManager() {
+        return testMap;
     }
 
     public Game getGame() {

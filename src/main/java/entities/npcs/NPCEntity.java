@@ -9,20 +9,33 @@ import java.util.Random;
 
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
+import static utilz.Constants.NpcCsv.*;
+import static utilz.Constants.NpcCsv.SPRITE_ATLAS;
 import static utilz.Constants.PlayerConstants.WALKING;
 
 public abstract class NPCEntity extends Entity implements GameEntity {
 
     protected int aniTick, aniIndexI;
+
     protected float oldX = playing.getPlayer().getPositionX();
     protected float oldY = playing.getPlayer().getPositionY();
-    protected long previousTime = playing.getGame().getGameTime();
-    protected int pressedButton = -1;
     protected float npcCenterX, npcCenterY;
     protected float px, py;
 
-    public NPCEntity(float x, float y, String sprite, Playing playing) {
-        super(x, y, sprite, playing);
+    protected long previousTime = playing.getGame().getGameTime();
+    protected int pressedButton = -1;
+
+    protected String[][] npcInfo;
+    protected final int npcID;
+
+    public NPCEntity(int npcID, String[][]npcInfo, Playing playing) {
+        super(Float.parseFloat(npcInfo[npcID][POSITION_X]),
+                Float.parseFloat(npcInfo[npcID][POSITION_Y]),
+                npcInfo[npcID][SPRITE_ATLAS],
+                playing);
+
+        this.npcInfo = npcInfo;
+        this.npcID = npcID;
     }
 
     public void setEntityInitialCenter() {
@@ -79,5 +92,9 @@ public abstract class NPCEntity extends Entity implements GameEntity {
     public void resetPositionY(float y) {
         this.y += y * -1;
         this.npcCenterY += y * -1;
+    }
+
+    public String getName() {
+        return npcInfo[npcID][NAME];
     }
 }

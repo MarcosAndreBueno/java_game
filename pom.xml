@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>music_game</name>
+    <name>java_game</name>
     <description>Simple game using java</description>
 
-    <groupId>com.musicgame</groupId>
-    <artifactId>music_game</artifactId>
+    <groupId>com.javagame</groupId>
+    <artifactId>java_game</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

@@ -19,21 +19,22 @@ public class Constants {
 
     public static class Maps {
         public static final String SCHOOL_OUTSIDE = "maps/school_outside";
+        public static final String TEST_MAP = "maps/school_outside";
     }
 
     public static class NpcCsv {
         public static final int ID = 0;
-        public static final int POSITION_X = 1;
-        public static final int POSITION_Y = 2;
-        public static final int HITBOX_LEFT = 3;
-        public static final int HITBOX_DOWN = 4;
-        public static final int HITBOX_UP = 5;
-        public static final int HITBOX_RIGHT = 6;
-        public static final int DIRECTION = 7;
-        public static final int CAN_MOVE = 8;
-        public static final int NAME = 9;
-        public static final int SPRITE_ATLAS = 10;
-
+        public static final int IS_ON_MAP = 1;
+        public static final int POSITION_X = 2;
+        public static final int POSITION_Y = 3;
+        public static final int HITBOX_LEFT = 4;
+        public static final int HITBOX_DOWN = 5;
+        public static final int HITBOX_UP = 6;
+        public static final int HITBOX_RIGHT = 7;
+        public static final int DIRECTION = 8;
+        public static final int CAN_MOVE = 9;
+        public static final int NAME = 10;
+        public static final int SPRITE_ATLAS = 11;
     }
 
     public static class Entities {

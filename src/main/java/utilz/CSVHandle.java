@@ -72,7 +72,7 @@ public class CSVHandle {
 //        String[][] npcInfo = npcData();
 
         //create map information
-        File csvFile = new File("src/main/resources/maps/school_outside_info.csv");
+        File csvFile = new File("src/main/resources/maps/testMap.csv");
         String[][] mapInfo = mapData();
 
         FileWriter fileWriter = null;
@@ -102,18 +102,18 @@ public class CSVHandle {
     private String[][] mapData() {
         //npc data rows | npc data columns | map name
         return new String[][]{
-                {"5,11," + SCHOOL_OUTSIDE}
+                {"5,11," + TEST_MAP}
         };
     }
 
     public String[][] npcData() {
         return new String[][]{
-        //ID | position: x,y | hitbox: left,down,up,right | direction | can move | name | sprite
-            {"0," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Tony,"     + NPC_01},
-            {"1," + "250,700,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Klay,"     + NPC_02},
-            {"2," + "100,490,"  + "8.6,1.05,3.5,1," + "1," + "0," + "John,"     + NPC_03},
-            {"3," + "-200,510," + "8.6,1.05,3.5,1," + "1," + "1," + "Samantha," + NPC_04},
-            {"4," + "150,560,"  + "8.6,1.05,3.5,1," + "1," + "1," + "Jay,"      + NPC_05}
+        //ID | is on map | position: x,y | hitbox: left,down,up,right | direction | can move | name | sprite
+            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Tony,"     + NPC_01},
+            {"1," + "1," + "250,700,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Klay,"     + NPC_02},
+            {"2," + "1," + "100,490,"  + "8.6,1.05,3.5,1," + "1," + "0," + "John,"     + NPC_03},
+            {"3," + "1," + "-200,510," + "8.6,1.05,3.5,1," + "1," + "1," + "Samantha," + NPC_04},
+            {"4," + "1," + "150,560,"  + "8.6,1.05,3.5,1," + "1," + "1," + "Jay,"      + NPC_05}
         };
     }
 

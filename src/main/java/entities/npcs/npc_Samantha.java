@@ -13,18 +13,8 @@ import static utilz.Constants.PlayerConstants.WALKING;
 
 public class npc_Samantha extends NPCEntity{
 
-    private final int npcID;
-    public String[][] npcInfo;
-
     public npc_Samantha(int npcID, String[][] npcInfo, Playing playing) {
-        super(Float.parseFloat(npcInfo[npcID][POSITION_X]),
-                Float.parseFloat(npcInfo[npcID][POSITION_Y]),
-                npcInfo[npcID][SPRITE_ATLAS],
-                playing);
-
-        this.npcInfo = npcInfo;
-        this.npcID = npcID;
-
+        super(npcID, npcInfo, playing);
         initialize();
     }
 
@@ -80,10 +70,6 @@ public class npc_Samantha extends NPCEntity{
             else if (aniIndexI > WALKING)
                 aniIndexI = 1;
         }
-    }
-
-    public String getName() {
-        return npcInfo[npcID][NAME];
     }
 
     @Override
