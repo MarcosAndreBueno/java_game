@@ -1,4 +1,4 @@
-package entities.npcs;
+package entities;
 
 import entities.Entity;
 import entities.GameEntity;
@@ -51,10 +51,10 @@ public abstract class NPCEntity extends Entity implements GameEntity {
     protected void checkCollision() {
         if (pressedButton > -1)
             switch (pressedButton) {
-                case 0 -> { x += -entitySpeed; npcCenterX += -entitySpeed; checkCollisionLeft(); }
-                case 1 -> { y += entitySpeed; npcCenterY += entitySpeed; checkCollisionDown(); }
-                case 2 -> { y += -entitySpeed; npcCenterY += -entitySpeed; checkCollisionUp(); }
-                case 3 -> { x += entitySpeed; npcCenterX += entitySpeed; checkCollisionRight(); }
+                case LEFT -> { x += -entitySpeed; npcCenterX += -entitySpeed; checkCollisionLeft(); }
+                case DOWN -> { y += entitySpeed; npcCenterY += entitySpeed; checkCollisionDown(); }
+                case UP -> { y += -entitySpeed; npcCenterY += -entitySpeed; checkCollisionUp(); }
+                case RIGHT -> { x += entitySpeed; npcCenterX += entitySpeed; checkCollisionRight(); }
             }
     }
 
@@ -77,12 +77,12 @@ public abstract class NPCEntity extends Entity implements GameEntity {
         Random random = new Random();
         int number = random.nextInt(4);
         long currentTime = playing.getGame().getGameTime();
-        if (currentTime - previousTime >= 3) {
+        if (currentTime - previousTime >= 1) {
             switch (number) {
-                case 0 -> { pressedButton = LEFT; aniDirection = LEFT; aniAction = WALKING; }
-                case 1 -> { pressedButton = DOWN; aniDirection = DOWN; aniAction = WALKING; }
-                case 2 -> { pressedButton = UP; aniDirection = UP; aniAction = WALKING; }
-                case 3 -> { pressedButton = RIGHT; aniDirection = RIGHT; aniAction = WALKING; }
+                case LEFT -> { pressedButton = LEFT; direction = LEFT; aniAction = WALKING; }
+                case DOWN -> { pressedButton = DOWN; direction = DOWN; aniAction = WALKING; }
+                case UP -> { pressedButton = UP; direction = UP; aniAction = WALKING; }
+                case RIGHT -> { pressedButton = RIGHT; direction = RIGHT; aniAction = WALKING; }
             }
             previousTime = currentTime;
         }

@@ -1,39 +1,43 @@
 package entities.npcs;
 
+import entities.NPCEntity;
 import game_states.Playing;
 import utilz.LoadSaveImage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static main.GameWindow.ScreenSettings.Scale;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.NpcCsv.*;
 import static utilz.Constants.PlayerConstants.STANDING;
 import static utilz.Constants.PlayerConstants.WALKING;
 
-public class npc_Samantha extends NPCEntity{
+public class npc_chemist extends NPCEntity {
 
-    public npc_Samantha(int npcID, String[][] npcInfo, Playing playing) {
+    public npc_chemist(int npcID, String[][] npcInfo, Playing playing) {
         super(npcID, npcInfo, playing);
         initialize();
     }
 
     private void initialize() {
         loadAnimations();
-        setHitbox(aniWidth/Float.parseFloat(npcInfo[npcID][HITBOX_LEFT]),
+        setHitbox(aniHeight/Float.parseFloat(npcInfo[npcID][HITBOX_UP]),
+                aniWidth/Float.parseFloat(npcInfo[npcID][HITBOX_LEFT]),
                 aniHeight/Float.parseFloat(npcInfo[npcID][HITBOX_DOWN]),
-                aniHeight/Float.parseFloat(npcInfo[npcID][HITBOX_UP]),
                 aniWidth/Float.parseFloat(npcInfo[npcID][HITBOX_RIGHT]));
         setEntityInitialCenter();
         aniIndexI = Integer.parseInt(npcInfo[npcID][DIRECTION]);
+        aniWidth = (int) (20*Scale);
+        aniHeight= (int) (30*Scale);
     }
 
     public void loadAnimations() {
         BufferedImage img = LoadSaveImage.GetSpriteAtlas(sprite);
-        animations = new BufferedImage[3][4];
-        for (int i = 0; i < 3; i++) {
+        animations = new BufferedImage[4][4];
+        for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                animations[i][j] = img.getSubimage(j*16,i*32,16,32);
+                animations[i][j] = img.getSubimage(j*32,i*48,32,48);
             }
         }
     }
@@ -61,20 +65,24 @@ public class npc_Samantha extends NPCEntity{
         aniTick++;
         if (aniTick >= aniSpeed) {
             aniTick = 0;
-            if (aniAction == STANDING)
-                aniIndexI = 0;
-            else
-                aniIndexI++;
-            if ((aniDirection == LEFT || aniDirection == RIGHT) && aniIndexI >= WALKING)
-                aniIndexI = 0;
-            else if (aniIndexI > WALKING)
-                aniIndexI = 1;
+            switch (aniAction) {
+                case STANDING:
+                    aniFrame = 0;
+                    aniDirection = direction;
+                    break;
+                case WALKING:
+                    aniFrame++;
+                    aniDirection = direction;
+                    if (aniFrame >= 4)
+                        aniFrame = 1;
+                    break;
+            }
         }
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.drawImage(animations[aniIndexI][aniDirection], (int)npcCenterX,(int)npcCenterY,
+        g2.drawImage(animations[aniDirection][aniFrame], (int)npcCenterX,(int)npcCenterY,
                 aniWidth, aniHeight, null);
     }
 }

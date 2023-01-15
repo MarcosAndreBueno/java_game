@@ -30,7 +30,9 @@ public class Player extends Entity implements GameEntity{
 
     public void initialize() {
         loadAnimations();
-        setHitbox(0, aniHeight, aniHeight / 2, aniWidth);
+        setHitbox(16, 5, 68, 48);
+        aniWidth = (int) (32*Scale);
+        aniHeight= (int) (32*Scale);
         setEntityInitialCenter();
     }
 
@@ -47,8 +49,12 @@ public class Player extends Entity implements GameEntity{
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(animations[aniIndexI][aniDirection], (int)playerCenterX, (int)playerCenterY,
-                aniWidth, aniHeight,null);
+        if (aniDirection >= ATTACKING_01)
+            g2.drawImage(animations[aniDirection][aniFrame], (int) playerCenterX-64, (int) playerCenterY-64,
+                    aniWidth*3, aniHeight*3, null);
+        else
+            g2.drawImage(animations[aniDirection][aniFrame], (int) playerCenterX, (int) playerCenterY,
+                    aniWidth, aniHeight, null);
     }
 
     //change image after few frames
@@ -56,45 +62,60 @@ public class Player extends Entity implements GameEntity{
         aniTick++;
         if(aniTick >= aniSpeed) {
             aniTick = 0;
-            if (aniAction == STANDING)
-                aniIndexI = 0;
-            else
-                aniIndexI++;
-            if ((aniDirection == LEFT || aniDirection == RIGHT) && aniIndexI >= WALKING)
-                aniIndexI = 0;
-            else if (aniIndexI > WALKING)
-                aniIndexI = 1;
+            switch (aniAction) {
+                case STANDING:
+                    aniFrame = 0;
+                    aniDirection = direction;
+                    break;
+                case WALKING:
+                    aniFrame++;
+                    aniDirection = direction;
+                    if (aniFrame > WALKING_FRAMES)
+                        aniFrame = 1;
+                    break;
+                case ATTACKING_01:
+                    aniFrame++;
+                    aniDirection = direction + ATTACKING_01;
+                    if (aniFrame >= ATTACKING_01_FRAMES) {
+                        aniFrame = 1;
+                        aniAction = STANDING;
+                    }
+                    break;
+                case ATTACKING_02:
+                    aniFrame++;
+                    aniDirection = direction + ATTACKING_02;
+                    if (aniFrame >= ATTACKING_02_FRAMES) {
+                        aniFrame = 1;
+                        aniAction = STANDING;
+                    }
+                    break;
+            }
         }
     }
 
     private void updatePlayerInformations() {
-        if (!upPressed && !downPressed && !leftPressed && !rightPressed)
-            aniAction = STANDING;
-        else {
-            if (leftPressed && !rightPressed) {
-                setPositionX(-entitySpeed);
-                setDirection(LEFT);
-                checkCollisionLeft();
-            }
-            else if (rightPressed && !leftPressed) {
-                setPositionX(entitySpeed);
-                setDirection(RIGHT);
-                checkCollisionRight();
-            }
-            if (upPressed && !downPressed) {
-                setPositionY(-entitySpeed);
-                setDirection(UP);
-                checkCollisionUp();
-            }
-            else if (downPressed && !upPressed) {
-                setPositionY(entitySpeed);
-                setDirection(DOWN);
-                checkCollisionDown();
-            }
-
-            setAction(WALKING);
-            setPlayerCenter();
+        if (!leftPressed && !rightPressed && !upPressed && !downPressed &&
+                aniAction != ATTACKING_01 && aniAction != ATTACKING_02)
+            setAction(STANDING);
+        if (leftPressed && !rightPressed) {
+            setPositionX(-entitySpeed);
+            setDirection(LEFT);
+            checkCollisionLeft();
+        } else if (rightPressed && !leftPressed) {
+            setPositionX(entitySpeed);
+            setDirection(RIGHT);
+            checkCollisionRight();
         }
+        if (upPressed && !downPressed) {
+            setPositionY(-entitySpeed);
+            setDirection(UP);
+            checkCollisionUp();
+        } else if (downPressed && !upPressed) {
+            setPositionY(entitySpeed);
+            setDirection(DOWN);
+            checkCollisionDown();
+        }
+        setPlayerCenter();
     }
 
     //player movement if the screen reaches the edge of the map
@@ -115,11 +136,25 @@ public class Player extends Entity implements GameEntity{
 
     public void loadAnimations() {
         BufferedImage img = LoadSaveImage.GetSpriteAtlas(Entities.PLAYER_ATLAS);
-        animations = new BufferedImage[3][4];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 4; j++) {
-                animations[i][j] = img.getSubimage(j*16,i*32,16,32);
+        animations = new BufferedImage[12][9];
+        int tempI = 8;
+        //walk movement
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 9; j++) {
+                animations[i][j] = img.getSubimage(j * 64, tempI * 64, 64, 64);
             }
+            tempI += 1;
+        }
+        //attack animations
+        tempI = 21;
+        int tempJ = 0;
+        for (int i = 4; i < 12; i++) {
+            for (int j = 0; j < 8; j++) {
+                animations[i][j] = img.getSubimage(tempJ * 64, tempI * 64,64*3, 64*3);
+                tempJ += 3;
+            }
+            tempI += 3;
+            tempJ = 0;
         }
     }
 
@@ -131,10 +166,10 @@ public class Player extends Entity implements GameEntity{
     }
 
     private void setDirection(int direction) {
-        aniDirection = direction;
+        this.direction = direction;
     }
 
-    private void setAction(int action) {
+    public void setAction(int action) {
         aniAction = action;
     }
 

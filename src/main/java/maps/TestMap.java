@@ -4,7 +4,6 @@ import entities.Entity;
 import entities.npcs.*;
 import game_states.Playing;
 import utilz.CSVHandle;
-import utilz.Constants.Maps;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,16 +31,9 @@ public class TestMap extends MapManager{
 
     public ArrayList<Entity> loadEntities() {
         ArrayList<Entity> entities = new ArrayList<>();
-        if (npcInfo[0][IS_ON_MAP].equals("1"))
-            entities.add(new npc_Tony(0, npcInfo, playing));
-        if (npcInfo[1][IS_ON_MAP].equals("1"))
-            entities.add(new npc_Klay(1, npcInfo, playing));
-        if (npcInfo[2][IS_ON_MAP].equals("1"))
-            entities.add(new npc_John(2, npcInfo, playing));
-        if (npcInfo[3][IS_ON_MAP].equals("1"))
-            entities.add(new npc_Samantha(3, npcInfo, playing));
-        if (npcInfo[4][IS_ON_MAP].equals("1"))
-            entities.add(new npc_Jay(4, npcInfo, playing));
+        for (int i = 0; i < 17; i++) {
+            entities.add(new npc_chemist(i, npcInfo, playing));
+        }
         return entities;
     }
 

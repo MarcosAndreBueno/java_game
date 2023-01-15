@@ -24,15 +24,12 @@ public abstract class Entity {
     protected BufferedImage[][] animations;
     protected String sprite;
     protected int aniAction;
-    protected int aniTick, aniIndexI;
-    protected int aniSpeed;
-    protected int aniDirection;
-    protected int aniWidth;
-    protected int aniHeight;
+    protected int aniTick, aniFrame, aniSpeed;
+    protected int direction, aniDirection;
+    protected int aniWidth, aniHeight;
 
     //entity movement
     protected float entitySpeed;
-
 
     public Entity(float x, float y, String sprite, Playing playing) {
         this.x = x;
@@ -52,8 +49,9 @@ public abstract class Entity {
         entitySpeed = 0.3f * Scale;
     }
 
-    public void setHitbox(float left, float down, float up, float right) {
-        hitbox = new int[]{(int) left, (int) down, (int) up, (int) right};
+    public void setHitbox(float up, float left, float down, float right) {
+//        hitbox = new int[]{(int) left, (int) down, (int) up, (int) right};
+        hitbox = new int[]{(int) up, (int) left, (int) down, (int) right};
     }
 
     public void checkCollisionLeft() {

@@ -2,7 +2,6 @@ package game_states;
 
 import entities.Entity;
 import entities.Player;
-import entities.npcs.NPCEntity;
 import main.Game;
 import maps.TestMap;
 
@@ -12,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import static utilz.Constants.Entities.*;
+import static utilz.Constants.PlayerConstants.*;
+import static utilz.Constants.PlayerConstants.WALKING;
 
 public class Playing implements GameStates{
     private Game game;
@@ -40,20 +41,22 @@ public class Playing implements GameStates{
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> game.getPlaying().getPlayer().setUpPressed(true);
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> game.getPlaying().getPlayer().setDownPressed(true);
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> game.getPlaying().getPlayer().setLeftPressed(true);
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> game.getPlaying().getPlayer().setRightPressed(true);
+            case KeyEvent.VK_W, KeyEvent.VK_UP -> { player.setUpPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> { player.setDownPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> { player.setLeftPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> { player.setRightPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_J -> player.setAction(ATTACKING_01);
+            case KeyEvent.VK_L -> player.setAction(ATTACKING_02);
             case KeyEvent.VK_ESCAPE -> { player.resetDirBooleans(); game.getState().changeGameState(); }
         }
     }
 
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> game.getPlaying().getPlayer().setUpPressed(false);
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> game.getPlaying().getPlayer().setDownPressed(false);
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> game.getPlaying().getPlayer().setLeftPressed(false);
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> game.getPlaying().getPlayer().setRightPressed(false);
+            case KeyEvent.VK_W, KeyEvent.VK_UP -> player.setUpPressed(false);
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> player.setDownPressed(false);
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> player.setLeftPressed(false);
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> player.setRightPressed(false);
         }
     }
 
