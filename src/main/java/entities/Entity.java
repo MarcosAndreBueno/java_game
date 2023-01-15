@@ -50,7 +50,6 @@ public abstract class Entity {
     }
 
     public void setHitbox(float up, float left, float down, float right) {
-//        hitbox = new int[]{(int) left, (int) down, (int) up, (int) right};
         hitbox = new int[]{(int) up, (int) left, (int) down, (int) right};
     }
 

@@ -30,7 +30,7 @@ public class Player extends Entity implements GameEntity{
 
     public void initialize() {
         loadAnimations();
-        setHitbox(16, 5, 68, 48);
+        setHitbox(aniHeight/2f, aniWidth/2f, aniHeight, aniWidth/0.65f);
         aniWidth = (int) (32*Scale);
         aniHeight= (int) (32*Scale);
         setEntityInitialCenter();

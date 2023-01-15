@@ -14,7 +14,7 @@ public class CSVHandle {
     Exception exception = new Exception();
 
     public int[][] getMapHitbox(String mapCSV, int mapWidth, int mapHeight) {
-        CSVParser csvParser = loadCSV("src/main/resources/" + mapCSV + ".csv");
+        CSVParser csvParser = loadCSV("src/main/resources/" + mapCSV + "_collision.csv");
 
         int i = 0;
         int[][] mapHitbox = new int[(mapHeight / BaseTileSize)][mapWidth / BaseTileSize];
@@ -72,7 +72,7 @@ public class CSVHandle {
 //        String[][] npcInfo = npcData();
 
         //create map information
-        File csvFile = new File("src/main/resources/maps/testMap.csv");
+        File csvFile = new File("src/main/resources/maps/testMap_collision.csv");
         String[][] mapInfo = mapData();
 
         FileWriter fileWriter = null;
@@ -108,8 +108,8 @@ public class CSVHandle {
 
     public String[][] npcData() {
         return new String[][]{
-        //ID | is on map | position: x,y | hitbox: left,down,up,right | direction | can move | name | sprite
-            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist,"     + NPC_01},
+        //ID | is on map | position: x,y | hitbox: left,down,up,right | direction | can move | name | aniframe | sprite
+            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1" + NPC_01},
         };
     }
 

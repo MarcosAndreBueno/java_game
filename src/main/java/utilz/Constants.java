@@ -3,10 +3,6 @@ package utilz;
 public class Constants {
 
     public static class Directions {
-//        public static final int LEFT = 0;
-//        public static final int DOWN = 1;
-//        public static final int UP = 2;
-//        public static final int RIGHT = 3;
         public static final int UP = 0;
         public static final int LEFT = 1;
         public static final int DOWN = 2;
@@ -25,7 +21,6 @@ public class Constants {
     }
 
     public static class Maps {
-        public static final String SCHOOL_OUTSIDE = "maps/school_outside";
         public static final String TEST_MAP = "maps/testMap";
     }
 
@@ -38,14 +33,11 @@ public class Constants {
         public static final int HITBOX_LEFT = 5;
         public static final int HITBOX_DOWN = 6;
         public static final int HITBOX_RIGHT = 7;
-//        public static final int HITBOX_LEFT = 4;
-//        public static final int HITBOX_DOWN = 5;
-//        public static final int HITBOX_UP = 6;
-//        public static final int HITBOX_RIGHT = 7;
         public static final int DIRECTION = 8;
         public static final int CAN_MOVE = 9;
         public static final int NAME = 10;
-        public static final int SPRITE_ATLAS = 11;
+        public static final int ANI_FRAME = 11;
+        public static final int SPRITE_ATLAS = 12;
     }
 
     public static class Entities {

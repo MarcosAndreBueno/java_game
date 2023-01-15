@@ -73,7 +73,7 @@ public class npc_chemist extends NPCEntity {
                 case WALKING:
                     aniFrame++;
                     aniDirection = direction;
-                    if (aniFrame >= 4)
+                    if (aniFrame >= Integer.parseInt(npcInfo[npcID][ANI_FRAME]))
                         aniFrame = 1;
                     break;
             }
