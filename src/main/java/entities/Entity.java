@@ -27,6 +27,7 @@ public abstract class Entity {
     protected int aniTick, aniFrame, aniSpeed;
     protected int direction, aniDirection;
     protected int aniWidth, aniHeight;
+    protected int maxHP, hp;
 
     //entity movement
     protected float entitySpeed;
@@ -47,6 +48,8 @@ public abstract class Entity {
         aniDirection = DOWN;
         aniSpeed = (int) (12 * Scale);
         entitySpeed = 0.3f * Scale;
+        maxHP = 50;
+        hp = maxHP;
     }
 
     public void setHitbox(float up, float left, float down, float right) {
@@ -78,6 +81,13 @@ public abstract class Entity {
             resetPositionY(entitySpeed);
     }
 
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
 
     public int[] getHitbox() {
         return hitbox;

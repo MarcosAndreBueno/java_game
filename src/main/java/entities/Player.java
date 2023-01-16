@@ -49,12 +49,19 @@ public class Player extends Entity implements GameEntity{
     }
 
     public void draw(Graphics2D g2) {
+        //animation
         if (aniDirection >= ATTACKING_01)
             g2.drawImage(animations[aniDirection][aniFrame], (int) playerCenterX-64, (int) playerCenterY-64,
                     aniWidth*3, aniHeight*3, null);
         else
             g2.drawImage(animations[aniDirection][aniFrame], (int) playerCenterX, (int) playerCenterY,
                     aniWidth, aniHeight, null);
+
+        //HP
+        g2.fillRect(30,20,150,12);
+        g2.setColor(Color.RED);
+        int w = hp * 100 / maxHP;
+        g2.fillRect(30,20,w+50,12);
     }
 
     //change image after few frames

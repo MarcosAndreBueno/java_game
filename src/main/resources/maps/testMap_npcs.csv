@@ -1,22 +1,22 @@
-0,1,30,30,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-1,1,60,30,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-2,1,100,30,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-3,1,130,30,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-4,1,180,30,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
+0,1,30,30,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+1,1,60,30,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+2,1,100,30,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+3,1,130,30,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+4,1,180,30,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
 
-5,1,30,180,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-6,1,60,180,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-7,1,100,180,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-8,1,130,180,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-9,1,180,180,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-
-
-10,1,180,100,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-11,1,180,60,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-12,1,180,130,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-13,1,30,60,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-14,1,30,100,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
-15,1,30,130,-6,8.6,1.05,1,1,1,Chemist,4,characters/npc_01_chemist
+5,1,30,180,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+6,1,60,180,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+7,1,100,180,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+8,1,130,180,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+9,1,180,180,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
 
 
-16,1,100,85,-6,8.6,0.8,1,1,1,Chemist,4,characters/npc_01_chemist
+10,1,180,100,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+11,1,180,60,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+12,1,180,130,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+13,1,30,60,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+14,1,30,100,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+15,1,30,130,-6,8.6,1.05,1,1,1,Chemist,4,50,characters/npc_01_chemist
+
+
+16,1,100,85,-6,8.6,0.8,1,1,1,Chemist,4,50,characters/npc_01_chemist

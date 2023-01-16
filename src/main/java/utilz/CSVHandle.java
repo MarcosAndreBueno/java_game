@@ -9,6 +9,7 @@ import static utilz.Constants.Directions.*;
 import static utilz.Constants.Entities.*;
 import static utilz.Constants.Maps.*;
 
+
 public class CSVHandle {
 
     Exception exception = new Exception();
@@ -32,9 +33,11 @@ public class CSVHandle {
     public String[][] getNPCInformation(String mapCSV) {
 
         CSVParser csvParser = loadCSV("src/main/resources/" + mapCSV + "_npcs.csv");
-
         CSVRecord csvRecord = getMapInfo(mapCSV);
+
+        //amount of npc's in the map
         int rows = Integer.parseInt(csvRecord.get(0));
+        //amount of npc information
         int columns = Integer.parseInt(csvRecord.get(1));
 
         int i = 0;
@@ -51,7 +54,7 @@ public class CSVHandle {
     }
 
     public CSVRecord getMapInfo(String mapCSV) {
-        CSVParser csvParser = loadCSV("src/main/resources/" + mapCSV + "_info.csv");
+        CSVParser csvParser = loadCSV("src/main/resources/" + "maps/allmaps" + "_info.csv");
         for (CSVRecord rec : csvParser) {
             if (rec.get(2).equals(mapCSV)) {
                 closeCSV(csvParser);
@@ -108,8 +111,9 @@ public class CSVHandle {
 
     public String[][] npcData() {
         return new String[][]{
-        //ID | is on map | position: x,y | hitbox: left,down,up,right | direction | can move | name | aniframe | sprite
-            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1" + NPC_01},
+        //ID | is on map | position: x,y | hitbox: left,down,up,right | direction | can move |
+                // name | aniframe | sprite || max_hp
+            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1" + "50" + NPC_01},
         };
     }
 

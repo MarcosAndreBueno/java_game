@@ -30,6 +30,8 @@ public class npc_chemist extends NPCEntity {
         aniIndexI = Integer.parseInt(npcInfo[npcID][DIRECTION]);
         aniWidth = (int) (20*Scale);
         aniHeight= (int) (30*Scale);
+        maxHP = Integer.parseInt(npcInfo[npcID][MAX_HP]);
+        hp = maxHP;
     }
 
     public void loadAnimations() {
@@ -82,7 +84,15 @@ public class npc_chemist extends NPCEntity {
 
     @Override
     public void draw(Graphics2D g2) {
+        //animations
         g2.drawImage(animations[aniDirection][aniFrame], (int)npcCenterX,(int)npcCenterY,
                 aniWidth, aniHeight, null);
+
+        //HP
+        g2.setColor(Color.BLACK);
+        g2.fillRect((int)npcCenterX-5,(int)npcCenterY-10,51,5);
+        g2.setColor(Color.RED);
+        int w = (hp * 100 / maxHP) / 2;
+        g2.fillRect((int)npcCenterX-5,(int)npcCenterY-10,w+1,5);
     }
 }

@@ -37,7 +37,8 @@ public class Constants {
         public static final int CAN_MOVE = 9;
         public static final int NAME = 10;
         public static final int ANI_FRAME = 11;
-        public static final int SPRITE_ATLAS = 12;
+        public static final int MAX_HP = 12;
+        public static final int SPRITE_ATLAS = 13;
     }
 
     public static class Entities {
