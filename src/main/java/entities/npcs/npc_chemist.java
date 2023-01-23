@@ -15,6 +15,8 @@ import static utilz.Constants.PlayerConstants.WALKING;
 
 public class npc_chemist extends NPCEntity {
 
+    protected int maxHP, hp;
+
     public npc_chemist(int npcID, String[][] npcInfo, Playing playing) {
         super(npcID, npcInfo, playing);
         initialize();
@@ -32,6 +34,7 @@ public class npc_chemist extends NPCEntity {
         aniHeight= (int) (30*Scale);
         maxHP = Integer.parseInt(npcInfo[npcID][MAX_HP]);
         hp = maxHP;
+        entityName = npcInfo[npcID][NAME];
     }
 
     public void loadAnimations() {
@@ -65,7 +68,7 @@ public class npc_chemist extends NPCEntity {
 
     private void updateAnimationTick() {
         aniTick++;
-        if (aniTick >= aniSpeed) {
+        if (aniTick >= aniMoveSpeed) {
             aniTick = 0;
             switch (aniAction) {
                 case STANDING:
@@ -83,16 +86,31 @@ public class npc_chemist extends NPCEntity {
     }
 
     @Override
+    public int getHp() {
+        return hp;
+    }
+
+    @Override
+    public void setHp(int hp) {
+        this.hp += hp;
+        if (this.hp > maxHP)
+            this.hp = maxHP;
+        else if (this.hp < 0)
+            this.hp = 0;
+    }
+
+    @Override
     public void draw(Graphics2D g2) {
         //animations
         g2.drawImage(animations[aniDirection][aniFrame], (int)npcCenterX,(int)npcCenterY,
                 aniWidth, aniHeight, null);
 
         //HP
+        int w1 = (int) (25*Scale);
         g2.setColor(Color.BLACK);
-        g2.fillRect((int)npcCenterX-5,(int)npcCenterY-10,51,5);
+        g2.fillRect((int)npcCenterX-5,(int)npcCenterY-10,w1,(int) (2*Scale));
         g2.setColor(Color.RED);
-        int w = (hp * 100 / maxHP) / 2;
-        g2.fillRect((int)npcCenterX-5,(int)npcCenterY-10,w+1,5);
+        int w2 = (hp * 100 / maxHP);
+        g2.fillRect((int)npcCenterX-5,(int)npcCenterY-10,w1 * w2 / 100, (int) (2*Scale));
     }
 }

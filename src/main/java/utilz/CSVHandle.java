@@ -3,9 +3,14 @@ package utilz;
 import org.apache.commons.csv.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
 
 import static main.GameWindow.ScreenSettings.BaseTileSize;
-import static utilz.Constants.Directions.*;
 import static utilz.Constants.Entities.*;
 import static utilz.Constants.Maps.*;
 
@@ -30,37 +35,42 @@ public class CSVHandle {
         return mapHitbox;
     }
 
-    public String[][] getNPCInformation(String mapCSV) {
+    public String[][] getNPCInformation(String mapCSV) throws IOException {
 
-        CSVParser csvParser = loadCSV("src/main/resources/" + mapCSV + "_npcs.csv");
-        CSVRecord csvRecord = getMapInfo(mapCSV);
+        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/" + mapCSV + "_npcs.csv"));
+        CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                .withFirstRecordAsHeader()
+                .withIgnoreHeaderCase()
+                .withTrim());
 
+        int[] temp = getMapNpcRowsAndColumns(mapCSV);
         //amount of npc's in the map
-        int rows = Integer.parseInt(csvRecord.get(0));
+        int rows = temp[0];
         //amount of npc information
-        int columns = Integer.parseInt(csvRecord.get(1));
+        int columns = temp[1];
 
+//        System.out.println(csvParser.getRecords().size());
+//        System.out.println(csvParser.getHeaderMap().size());
+
+        SortedMap<String,Integer> headerMap = (SortedMap<String, Integer>) csvParser.getHeaderMap();
         int i = 0;
         String[][] npcInfo = new String[rows][columns];
         for (CSVRecord rec : csvParser) {
-            for (int k = 0; k < columns ; k++)
-                npcInfo[i][k] = rec.get(k);
-            i += 1;
+            for (Map.Entry<String, Integer> columnName : headerMap.entrySet()) {
+                npcInfo[i][columnName.getValue()] = rec.get(columnName.getKey());
+            }
+            i++;
         }
-
         closeCSV(csvParser);
 
         return npcInfo;
     }
 
-    public CSVRecord getMapInfo(String mapCSV) {
-        CSVParser csvParser = loadCSV("src/main/resources/" + "maps/allmaps" + "_info.csv");
-        for (CSVRecord rec : csvParser) {
-            if (rec.get(2).equals(mapCSV)) {
-                closeCSV(csvParser);
-                return rec;
-            }
+    private int[] getMapNpcRowsAndColumns(String mapCSV) {
+        switch (mapCSV) {
+            case TEST_MAP -> { return new int[] {7,14};}
         }
+
         return null;
     }
 
@@ -70,51 +80,32 @@ public class CSVHandle {
     //to prepare csv that will be used at runtime
     public void csvWriter() throws IOException {
 
-        //create npc information
-//        File csvFile = new File("src/main/resources/maps/school_outside_npcs.csv");
-//        String[][] npcInfo = npcData();
+        String[][] mapInfo =
+        {
+            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1," + "50," + NPC_01},
+        };
 
-        //create map information
-        File csvFile = new File("src/main/resources/maps/testMap_collision.csv");
-        String[][] mapInfo = mapData();
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get
+                ("src/main/resources/maps/testMap_npcs.csv"));
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
+                .withHeader("ID", "OnMap", "PositionX", "PositionY",
+                        "HitBoxUp", "HitBoxLeft", "HitBoxDown", "HitBoxRight", "Direction",
+                        "CanMove", "Name", "WalkingFrames", "MaxHp", "SpriteAddress"));
 
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(csvFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        System.out.println(Arrays.deepToString(mapInfo));
 
         for (String[] array : mapInfo) {
             StringBuilder line = new StringBuilder();
             for (int i = 0; i < array.length; i++) {
                 String aux = array[i];
                 line.append(aux);
-                if (i != array.length - 1) {
+                csvPrinter.printRecord(aux);
+                if (i != array.length-1) {
                     line.append(',');
                 }
             }
-            line.append("\n");
-            fileWriter.write(line.toString());
         }
-        fileWriter.close();
-    }
-
-    //all maps informations
-    private String[][] mapData() {
-        //npc data rows | npc data columns | map name
-        return new String[][]{
-                {"5,11," + TEST_MAP}
-        };
-    }
-
-    public String[][] npcData() {
-        return new String[][]{
-        //ID | is on map | position: x,y | hitbox: left,down,up,right | direction | can move |
-                // name | aniframe | sprite || max_hp
-            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1" + "50" + NPC_01},
-        };
+        csvPrinter.flush();
     }
 
     public CSVParser loadCSV(String mapCSV) {

@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import static main.GameWindow.ScreenSettings.Scale;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
-import static utilz.Constants.PlayerConstants.STANDING;
+import static utilz.Constants.PlayerConstants.*;
 
 public abstract class Entity {
 
@@ -18,19 +18,17 @@ public abstract class Entity {
 
     //entity position
     protected float x,y;
-    protected int[] hitbox;
+    protected float[] hitbox, attackHitBox;
 
     //entity animation
     protected BufferedImage[][] animations;
     protected String sprite;
     protected int aniAction;
-    protected int aniTick, aniFrame, aniSpeed;
+    protected int aniTick, aniFrame, aniMoveSpeed, attackSpeed;
     protected int direction, aniDirection;
     protected int aniWidth, aniHeight;
-    protected int maxHP, hp;
-
-    //entity movement
     protected float entitySpeed;
+    protected String entityName;
 
     public Entity(float x, float y, String sprite, Playing playing) {
         this.x = x;
@@ -46,52 +44,51 @@ public abstract class Entity {
         aniHeight = (int) (26 * Scale);
         aniAction = STANDING;
         aniDirection = DOWN;
-        aniSpeed = (int) (12 * Scale);
+        aniMoveSpeed = 24;
+        attackSpeed = 12;
         entitySpeed = 0.3f * Scale;
-        maxHP = 50;
-        hp = maxHP;
     }
 
     public void setHitbox(float up, float left, float down, float right) {
-        hitbox = new int[]{(int) up, (int) left, (int) down, (int) right};
+        hitbox = new float[]{(int) up, (int) left, (int) down, (int) right};
     }
 
     public void checkCollisionLeft() {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox, LEFT))
             resetPositionX(-entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox,LEFT))
+        if (playing.getMapManager().getCollision().isEntityHere(this, x, y, hitbox, LEFT))
             resetPositionX(-entitySpeed);
     }
     public void checkCollisionRight() {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,RIGHT))
             resetPositionX(entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox,RIGHT))
+        if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,RIGHT))
             resetPositionX(entitySpeed);
     }
     public void checkCollisionUp() {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,UP))
             resetPositionY(-entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox,UP))
+        if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,UP))
             resetPositionY(-entitySpeed);
     }
     public void checkCollisionDown() {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,DOWN))
             resetPositionY(entitySpeed);
-        if (playing.getMapManager().getCollision().isEntityHere(x,y,hitbox,DOWN))
+        if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,DOWN))
             resetPositionY(entitySpeed);
     }
 
     public int getHp() {
-        return hp;
+        return 0;
     }
 
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
+    public void setHp(int hp) {}
 
-    public int[] getHitbox() {
-        return hitbox;
-    }
+    public int getAction() { return aniAction; }
+
+    public float[] getHitbox() {return hitbox;}
+
+    public String getEntityName() {return entityName;}
 
     public void setPositionX(float x) {
         this.x += x;
@@ -116,7 +113,6 @@ public abstract class Entity {
     public void resetPositionY(float y) {
         this.y += y * -1;
     }
-
     public void update() {}
 
     public void draw(Graphics2D g2) {}

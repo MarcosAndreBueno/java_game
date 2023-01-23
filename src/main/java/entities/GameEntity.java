@@ -8,13 +8,17 @@ import static utilz.Constants.Directions.DOWN;
 public interface GameEntity {
     //in parent class
     public void setHitbox(float left, float down, float up, float right);
-    public int[] getHitbox();
+    public float[] getHitbox();
     public void setPositionX(float x);
     public void setPositionY(float y);
     public float getPositionX();
     public float getPositionY();
     public void resetPositionX(float x);
     public void resetPositionY(float y);
+    public int getHp();
+    public void setHp(int hp);
+    public int getAction();
+    public String getEntityName();
 
     public void checkCollisionLeft();
     public void checkCollisionRight();

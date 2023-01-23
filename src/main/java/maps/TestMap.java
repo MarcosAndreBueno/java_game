@@ -6,12 +6,14 @@ import game_states.Playing;
 import utilz.CSVHandle;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static main.GameWindow.ScreenSettings.ScreenHeight;
 import static main.GameWindow.ScreenSettings.ScreenWidth;
 import static utilz.Constants.Maps.TEST_MAP;
-import static utilz.Constants.NpcCsv.IS_ON_MAP;
+import static utilz.Constants.NpcCsv.*;
 
 public class TestMap extends MapManager{
     private float screenX;
@@ -26,12 +28,16 @@ public class TestMap extends MapManager{
     }
 
     public void loadMapInfo() {
-        npcInfo = new CSVHandle().getNPCInformation(TEST_MAP);
+        try {
+            npcInfo = new CSVHandle().getNPCInformation(TEST_MAP);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ArrayList<Entity> loadEntities() {
         ArrayList<Entity> entities = new ArrayList<>();
-        for (int i = 0; i < 17; i++) {
+        for (int i = 0; i < npcInfo.length; i++) {
             entities.add(new npc_chemist(i, npcInfo, playing));
         }
         return entities;
