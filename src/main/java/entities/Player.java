@@ -32,9 +32,7 @@ public class Player extends Entity implements GameEntity{
 
     public void initialize() {
         loadAnimations();
-        setHitbox(aniHeight/2f, aniWidth/2f, aniHeight, aniWidth/0.5f);
-        aniWidth = (int) (32*Scale);
-        aniHeight= (int) (32*Scale);
+        setHitbox(aniHeight/2f, aniWidth/2.5f, aniHeight/1.3f, aniWidth/1.3f);
         setEntityInitialCenter();
         maxHP = 50;
         hp = maxHP;
@@ -154,37 +152,36 @@ public class Player extends Entity implements GameEntity{
     public void checkCollisionAttack() {
         float[] objectHitbox = new float[4];
 
-//        aniHeight/2f, aniWidth/2f, aniHeight, aniWidth/0.5f
         switch (direction) {
             case UP -> {
                 if (aniAction == ATTACKING_01)
-                    objectHitbox = new float[]{hitbox[UP] - 20, aniWidth / 2f, 10, aniWidth / 2f + 10};
+                    objectHitbox = new float[]{aniHeight/9f, aniWidth/2f, aniHeight/3.2f, aniWidth/1.5f};
                 else if (aniAction == ATTACKING_02)
-                    objectHitbox = new float[]{hitbox[UP] - 40, aniWidth / 2f - 20, 10, aniWidth / 2f + 30};
+                    objectHitbox = new float[]{aniHeight/-8f, aniWidth/-10f, aniHeight/3.2f, aniWidth/0.7f};
                 if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
                     System.out.println("attack up");
             }
             case LEFT -> {
                 if (aniAction == ATTACKING_01)
-                    objectHitbox = new float[]{aniHeight / 2f, hitbox[LEFT] - 30, aniHeight / 2f, 0};
+                    objectHitbox = new float[]{aniHeight/2f, aniWidth/-5f, aniHeight/2f, 0};
                 else if (aniAction == ATTACKING_02)
-                    objectHitbox = new float[]{aniHeight / 4f, hitbox[LEFT] - 40, aniHeight / 2f + 20, 0};
+                    objectHitbox = new float[]{aniHeight/4f, aniWidth/-2.5f, aniHeight/1.2f, 0};
                 if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
                     System.out.println("attack left");
             }
             case DOWN -> {
                 if (aniAction == ATTACKING_01)
-                    objectHitbox = new float[]{0, aniWidth / 2f - 10, hitbox[DOWN] + 10, aniWidth / 2f};
+                    objectHitbox = new float[]{0, aniWidth/2.9f, aniHeight/1.1f, aniWidth/2f};
                 else if (aniAction == ATTACKING_02)
-                    objectHitbox = new float[]{0, aniWidth / 5f - 20, hitbox[DOWN] + 20, aniWidth + 10};
+                    objectHitbox = new float[]{0, aniWidth/-9f, aniHeight/0.9f, aniWidth/0.85f};
                 if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
                     System.out.println("attack down");
             }
             case RIGHT -> {
                 if (aniAction == ATTACKING_01)
-                    objectHitbox = new float[]{aniHeight / 2f, 0, aniHeight / 2f, hitbox[RIGHT] + 20};
+                    objectHitbox = new float[]{aniHeight/2f, 0, aniHeight/2f, aniWidth/0.9f};
                 else if (aniAction == ATTACKING_02)
-                    objectHitbox = new float[]{aniHeight / 4f, 0, aniHeight / 2f + 20, hitbox[RIGHT] + 30};
+                    objectHitbox = new float[]{aniHeight/4f, 0, aniHeight/1.2f, aniWidth/0.8f};
                 if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
                     System.out.println("attack right");
             }

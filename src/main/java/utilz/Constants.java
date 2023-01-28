@@ -29,21 +29,18 @@ public class Constants {
         public static final int IS_ON_MAP = 1;
         public static final int POSITION_X = 2;
         public static final int POSITION_Y = 3;
-        public static final int HITBOX_UP = 4;
-        public static final int HITBOX_LEFT = 5;
-        public static final int HITBOX_DOWN = 6;
-        public static final int HITBOX_RIGHT = 7;
-        public static final int DIRECTION = 8;
-        public static final int CAN_MOVE = 9;
-        public static final int NAME = 10;
-        public static final int ANI_FRAME = 11;
-        public static final int MAX_HP = 12;
-        public static final int SPRITE_ATLAS = 13;
+        public static final int DIRECTION = 4;
+        public static final int CAN_MOVE = 5;
+        public static final int NAME = 6;
+        public static final int ANI_FRAME = 7;
+        public static final int MAX_HP = 8;
+        public static final int SPRITE_ATLAS = 9;
     }
 
     public static class Entities {
         public static final String PLAYER_ATLAS = "characters/player";
-        public static final String NPC_01 = "characters/npc_01_chemist";
+        public static final String NPC_CHEMIST_ATLAS = "characters/npc_chemist";
+        public static final String ENEMY_ORC_ATLAS = "characters/enemy_ogre";
     }
 
     public static class GameStates {

@@ -40,8 +40,8 @@ public abstract class Entity {
 
     //values used for player
     private void setEntityDefaultValues() {
-        aniWidth = (int) (13 * Scale);
-        aniHeight = (int) (26 * Scale);
+        aniWidth = (int) (32*Scale);
+        aniHeight= (int) (32*Scale);
         aniAction = STANDING;
         aniDirection = DOWN;
         aniMoveSpeed = 24;

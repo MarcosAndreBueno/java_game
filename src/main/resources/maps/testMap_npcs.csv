@@ -1,8 +1,8 @@
-ID,OnMap,PositionX,PositionY,HitBoxUp,HitBoxLeft,HitBoxDown,HitBoxRight,Direction,CanMove,Name,WalkingFrames,MaxHp,SpriteAddress
-0,1,40,240,-6,4.0,1.05,0.84,1,1,Chemist,4,50,characters/npc_01_chemist
-1,1,80,110,-6,4.0,1.05,0.84,1,1,Chemist,4,50,characters/npc_01_chemist
-2,1,-180,240,-6,4.0,1.05,0.84,1,0,Chemist,4,50,characters/npc_01_chemist
-3,1,-110,110,-6,4.0,1.05,0.84,1,1,Chemist,4,50,characters/npc_01_chemist
-4,1,-100,0,-6,4.0,1.05,0.84,1,1,Chemist,4,50,characters/npc_01_chemist
-5,1,20,40,-6,4.0,1.05,0.84,1,1,Chemist,4,50,characters/npc_01_chemist
-6,1,-50,140,-6,4.0,1.05,0.84,1,1,Chemist,4,50,characters/npc_01_chemist
+ID,OnMap,PositionX,PositionY,Direction,CanMove,Name,WalkingFrames,MaxHp,SpriteAddress
+0,1,40,240,1,1,Ogre,4,50,characters/enemy_ogre
+1,1,80,110,1,1,Chemist,4,50,characters/npc_01_chemist
+2,1,-180,0,1,0,Chemist,4,50,characters/npc_01_chemist
+3,1,-110,110,1,1,Chemist,4,50,characters/npc_01_chemist
+4,1,-100,0,1,1,Chemist,4,50,characters/npc_01_chemist
+5,1,20,40,1,1,Chemist,4,50,characters/npc_01_chemist
+6,1,-50,140,1,1,Chemist,4,50,characters/npc_01_chemist

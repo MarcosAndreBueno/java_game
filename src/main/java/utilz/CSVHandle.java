@@ -82,7 +82,7 @@ public class CSVHandle {
 
         String[][] mapInfo =
         {
-            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1," + "50," + NPC_01},
+            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1," + "50," + NPC_CHEMIST_ATLAS},
         };
 
         BufferedWriter writer = Files.newBufferedWriter(Paths.get

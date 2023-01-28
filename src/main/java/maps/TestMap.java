@@ -36,10 +36,7 @@ public class TestMap extends MapManager{
     }
 
     public ArrayList<Entity> loadEntities() {
-        ArrayList<Entity> entities = new ArrayList<>();
-        for (int i = 0; i < npcInfo.length; i++) {
-            entities.add(new npc_chemist(i, npcInfo, playing));
-        }
+        ArrayList<Entity> entities = new EntityFactory().testMap(npcInfo, playing);
         return entities;
     }
 
