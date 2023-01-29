@@ -2,6 +2,8 @@ package game_states;
 
 import entities.Entity;
 import entities.Player;
+import entities.enemies.EnemyOgre;
+import entities.npcs.NpcChemist;
 import main.Game;
 import maps.TestMap;
 
@@ -41,14 +43,39 @@ public class Playing implements GameStates{
 
     @Override
     public void keyPressed(KeyEvent e) {
+        ArrayList<Entity> entities1 = getEntities();
+        EnemyOgre enemy = (EnemyOgre) entities1.get(0);
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> { player.setUpPressed(true); player.setAction(WALKING); }
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> { player.setDownPressed(true); player.setAction(WALKING); }
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> { player.setLeftPressed(true); player.setAction(WALKING); }
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> { player.setRightPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_W -> { player.setUpPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_S -> { player.setDownPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_A -> { player.setLeftPressed(true); player.setAction(WALKING); }
+            case KeyEvent.VK_D -> { player.setRightPressed(true); player.setAction(WALKING); }
             case KeyEvent.VK_J -> player.setAction(ATTACKING_01);
             case KeyEvent.VK_L -> player.setAction(ATTACKING_02);
             case KeyEvent.VK_ESCAPE -> { player.resetDirBooleans(); game.getState().changeGameState(); }
+
+            case KeyEvent.VK_T -> {
+                game.getPlaying().getMapManager().getCollision().test -= 5;
+                System.out.println("test: " + game.getPlaying().getMapManager().getCollision().test);}
+            case KeyEvent.VK_Y -> {
+                game.getPlaying().getMapManager().getCollision().test += 5;
+                System.out.println("test: " + game.getPlaying().getMapManager().getCollision().test);}
+            case KeyEvent.VK_UP -> {
+                enemy.setPositionY(-5);
+                enemy.setNpcCenterY(-5);
+                System.out.println("x + player center + hitbox: " + enemy.getPositionX());}
+            case KeyEvent.VK_RIGHT -> {
+                enemy.setPositionX(5);
+                enemy.setNpcCenterX(5);
+                System.out.println("x + player center + hitbox: "  + enemy.getPositionX());}
+            case KeyEvent.VK_LEFT -> {
+                enemy.setPositionX(-5);
+                enemy.setNpcCenterX(-5);
+                System.out.println("x + player center + hitbox: " + enemy.getPositionX());}
+            case KeyEvent.VK_DOWN -> {
+                enemy.setPositionY(5);
+                enemy.setNpcCenterY(5);
+                System.out.println("x + player center + hitbox: "  + enemy.getPositionX());}
         }
     }
 

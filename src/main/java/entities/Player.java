@@ -7,12 +7,12 @@ import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
 
-import main.GameWindow;
 import utilz.Constants.Entities;
 import utilz.LoadSaveImage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 
 public class Player extends Entity implements GameEntity{
 
@@ -23,7 +23,10 @@ public class Player extends Entity implements GameEntity{
     private float playerCenterX;
     private float playerCenterY;
     protected int maxHP, hp;
-    public int attack;
+    public int attack1, attack2;
+    public boolean canPerformAttack;
+
+    protected HashSet<Entity> enemiesHit = new HashSet<>();
 
     public Player(float x, float y, String sprite, Playing playing) {
         super(x, y, sprite, playing);
@@ -36,7 +39,9 @@ public class Player extends Entity implements GameEntity{
         setEntityInitialCenter();
         maxHP = 50;
         hp = maxHP;
-        attack = 10;
+        attack1 = 10;
+        attack2 = 15;
+        canPerformAttack = true;
         entityName = "Player";
     }
 
@@ -56,7 +61,7 @@ public class Player extends Entity implements GameEntity{
         //animation
         if (aniDirection >= ATTACKING_01)
             g2.drawImage(animations[aniDirection][aniFrame],
-                    (int) (playerCenterX-8*Scale*4), (int) (playerCenterY-8*Scale*4),
+                    (int) (playerCenterX-aniWidth), (int) (playerCenterY-aniHeight),
                     aniWidth*3, aniHeight*3, null);
         else
             g2.drawImage(animations[aniDirection][aniFrame], (int) playerCenterX, (int) playerCenterY,
@@ -87,22 +92,24 @@ public class Player extends Entity implements GameEntity{
                 }
                 break;
             case ATTACKING_01:
-                if (checkAniTickFrame(attackSpeed)) {
+                if (checkAniTickFrame(aniAttackSpeed)) {
                     aniFrame++;
                     aniDirection = direction + ATTACKING_01;
                     if (aniFrame >= ATTACKING_01_FRAMES) {
                         aniFrame = 1;
                         aniAction = STANDING;
+                        canPerformAttack = true;
                     }
                 }
                 break;
             case ATTACKING_02:
-                if (checkAniTickFrame(attackSpeed)) {
+                if (checkAniTickFrame(aniAttackSpeed)) {
                     aniFrame++;
                     aniDirection = direction + ATTACKING_02;
                     if (aniFrame >= ATTACKING_02_FRAMES) {
                         aniFrame = 1;
                         aniAction = STANDING;
+                        canPerformAttack = true;
                     }
                 }
                 break;
@@ -128,25 +135,29 @@ public class Player extends Entity implements GameEntity{
             if (leftPressed && !rightPressed) {
                 setPositionX(-entitySpeed);
                 setDirection(LEFT);
-                checkCollisionLeft();
+                checkCollisionLeft(entitySpeed);
             } else if (rightPressed && !leftPressed) {
                 setPositionX(entitySpeed);
                 setDirection(RIGHT);
-                checkCollisionRight();
+                checkCollisionRight(entitySpeed);
             }
             if (upPressed && !downPressed) {
                 setPositionY(-entitySpeed);
                 setDirection(UP);
-                checkCollisionUp();
+                checkCollisionUp(entitySpeed);
             } else if (downPressed && !upPressed) {
                 setPositionY(entitySpeed);
                 setDirection(DOWN);
-                checkCollisionDown();
+                checkCollisionDown(entitySpeed);
             }
 
             setPlayerCenter();
-        } else
-            checkCollisionAttack();
+        } else {
+            if (canPerformAttack) {
+                canPerformAttack = false;
+                checkCollisionAttack();
+            }
+        }
     }
 
     public void checkCollisionAttack() {
@@ -158,34 +169,50 @@ public class Player extends Entity implements GameEntity{
                     objectHitbox = new float[]{aniHeight/9f, aniWidth/2f, aniHeight/3.2f, aniWidth/1.5f};
                 else if (aniAction == ATTACKING_02)
                     objectHitbox = new float[]{aniHeight/-8f, aniWidth/-10f, aniHeight/3.2f, aniWidth/0.7f};
-                if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
-                    System.out.println("attack up");
+
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
             }
             case LEFT -> {
                 if (aniAction == ATTACKING_01)
-                    objectHitbox = new float[]{aniHeight/2f, aniWidth/-5f, aniHeight/2f, 0};
+                    objectHitbox = new float[]{aniHeight/2f, aniWidth/10f, aniHeight/2f, aniHeight/6.4f};
                 else if (aniAction == ATTACKING_02)
-                    objectHitbox = new float[]{aniHeight/4f, aniWidth/-2.5f, aniHeight/1.2f, 0};
-                if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
-                    System.out.println("attack left");
+                    objectHitbox = new float[]{aniHeight/4f, aniWidth/5f, aniHeight/1.2f, aniHeight/6.4f};
+
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
             }
             case DOWN -> {
                 if (aniAction == ATTACKING_01)
                     objectHitbox = new float[]{0, aniWidth/2.9f, aniHeight/1.1f, aniWidth/2f};
                 else if (aniAction == ATTACKING_02)
                     objectHitbox = new float[]{0, aniWidth/-9f, aniHeight/0.9f, aniWidth/0.85f};
-                if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
-                    System.out.println("attack down");
+
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
             }
             case RIGHT -> {
                 if (aniAction == ATTACKING_01)
                     objectHitbox = new float[]{aniHeight/2f, 0, aniHeight/2f, aniWidth/0.9f};
                 else if (aniAction == ATTACKING_02)
                     objectHitbox = new float[]{aniHeight/4f, 0, aniHeight/1.2f, aniWidth/0.8f};
-                if (playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction))
-                    System.out.println("attack right");
+
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
             }
         }
+        if (!enemiesHit.isEmpty()) {
+            performAttack();
+        }
+    }
+
+    private void performAttack() {
+        int hitDamage = 0;
+        switch (aniAction) {
+            case ATTACKING_01 -> hitDamage = -attack1;
+            case ATTACKING_02 -> hitDamage = -attack2;
+        }
+        for (Entity entity : enemiesHit) {
+            entity.setHp(hitDamage);
+            entity.setEntityStatus(direction);
+        }
+        closeEnemiesHit();
     }
 
     //player movement if the screen reaches the edge of the map
@@ -273,11 +300,11 @@ public class Player extends Entity implements GameEntity{
             this.hp = 0;
     }
 
-    public float getPlayerCenterX() {
-        return playerCenterX;
+    public void setEnemiesHit(Entity enemy) {
+        this.enemiesHit.add(enemy);
     }
 
-    public float getPlayerCenterY() {
-        return playerCenterY;
+    private void closeEnemiesHit() {
+        enemiesHit.clear();
     }
 }

@@ -20,10 +20,10 @@ public interface GameEntity {
     public int getAction();
     public String getEntityName();
 
-    public void checkCollisionLeft();
-    public void checkCollisionRight();
-    public void checkCollisionUp();
-    public void checkCollisionDown();
+    public void checkCollisionLeft(float reset);
+    public void checkCollisionRight(float reset);
+    public void checkCollisionUp(float reset);
+    public void checkCollisionDown(float reset);
 
     //in child class
     public void loadAnimations();

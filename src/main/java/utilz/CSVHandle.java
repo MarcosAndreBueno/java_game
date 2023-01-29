@@ -82,15 +82,15 @@ public class CSVHandle {
 
         String[][] mapInfo =
         {
-            {"0," + "1," + "-50,620,"  + "8.6,1.05,3.5,1," + "1," + "0," + "Chemist," + "1," + "50," + NPC_CHEMIST_ATLAS},
+            {"0,1,40,240,1,1,enemy_Ogre,4,50,characters/enemy_ogre"},
+            {"1,1,80,110,1,1,npc_Chemist,4,50,characters/npc_01_chemist"}
         };
 
         BufferedWriter writer = Files.newBufferedWriter(Paths.get
                 ("src/main/resources/maps/testMap_npcs.csv"));
         CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
-                .withHeader("ID", "OnMap", "PositionX", "PositionY",
-                        "HitBoxUp", "HitBoxLeft", "HitBoxDown", "HitBoxRight", "Direction",
-                        "CanMove", "Name", "WalkingFrames", "MaxHp", "SpriteAddress"));
+                .withHeader("ID,OnMap,PositionX,PositionY,Direction,CanMove," +
+                        "Name,WalkingFrames,MaxHp,SpriteAddress"));
 
         System.out.println(Arrays.deepToString(mapInfo));
 

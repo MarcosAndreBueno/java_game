@@ -24,7 +24,7 @@ public class Constants {
         public static final String TEST_MAP = "maps/testMap";
     }
 
-    public static class NpcCsv {
+    public static class NpcAndEnemiesCsv {
         public static final int ID = 0;
         public static final int IS_ON_MAP = 1;
         public static final int POSITION_X = 2;
@@ -35,6 +35,13 @@ public class Constants {
         public static final int ANI_FRAME = 7;
         public static final int MAX_HP = 8;
         public static final int SPRITE_ATLAS = 9;
+    }
+
+    public static class EntityStatus {
+        public static final int ATTACKED_UP = 0;
+        public static final int ATTACKED_LEFT = 1;
+        public static final int ATTACKED_DOWN = 2;
+        public static final int ATTACKED_RIGHT = 3;
     }
 
     public static class Entities {

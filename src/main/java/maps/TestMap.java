@@ -13,7 +13,7 @@ import java.util.Arrays;
 import static main.GameWindow.ScreenSettings.ScreenHeight;
 import static main.GameWindow.ScreenSettings.ScreenWidth;
 import static utilz.Constants.Maps.TEST_MAP;
-import static utilz.Constants.NpcCsv.*;
+import static utilz.Constants.NpcAndEnemiesCsv.*;
 
 public class TestMap extends MapManager{
     private float screenX;

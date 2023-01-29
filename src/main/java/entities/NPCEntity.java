@@ -9,8 +9,7 @@ import java.util.Random;
 
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
-import static utilz.Constants.NpcCsv.*;
-import static utilz.Constants.NpcCsv.SPRITE_ATLAS;
+import static utilz.Constants.NpcAndEnemiesCsv.*;
 import static utilz.Constants.PlayerConstants.WALKING;
 
 public abstract class NPCEntity extends Entity implements GameEntity {
@@ -51,10 +50,10 @@ public abstract class NPCEntity extends Entity implements GameEntity {
     protected void checkCollision() {
         if (pressedButton > -1)
             switch (pressedButton) {
-                case LEFT -> { x += -entitySpeed; npcCenterX += -entitySpeed; checkCollisionLeft(); }
-                case DOWN -> { y += entitySpeed; npcCenterY += entitySpeed; checkCollisionDown(); }
-                case UP -> { y += -entitySpeed; npcCenterY += -entitySpeed; checkCollisionUp(); }
-                case RIGHT -> { x += entitySpeed; npcCenterX += entitySpeed; checkCollisionRight(); }
+                case LEFT -> { x += -entitySpeed; npcCenterX += -entitySpeed; checkCollisionLeft(entitySpeed); }
+                case DOWN -> { y += entitySpeed; npcCenterY += entitySpeed; checkCollisionDown(entitySpeed); }
+                case UP -> { y += -entitySpeed; npcCenterY += -entitySpeed; checkCollisionUp(entitySpeed); }
+                case RIGHT -> { x += entitySpeed; npcCenterX += entitySpeed; checkCollisionRight(entitySpeed); }
             }
     }
 

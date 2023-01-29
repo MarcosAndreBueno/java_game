@@ -1,7 +1,9 @@
 package tiles;
 
 
+import entities.EnemyEntity;
 import entities.Entity;
+import entities.Player;
 import maps.MapManager;
 
 import java.util.ArrayList;
@@ -20,6 +22,15 @@ public class Collision {
 
     public Collision(MapManager mapManager) {
         this.mapManager = mapManager;
+    }
+    public float test;
+    public boolean isOutOfMap(float x, float y, float[] hitbox, int direction) {
+        try {
+            isTileSolid(x,y,hitbox,direction);
+        } catch (IndexOutOfBoundsException e) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isTileSolid(float x, float y, float[] hitbox, int direction) {
@@ -92,6 +103,8 @@ public class Collision {
         float actualEntityCornerOne = -1;
         float actualEntityCornerTwo = -1;
 
+        boolean movingEntityIsPlayer = movingEntity.getEntityName().equals("Player");
+
         for (Entity actualEntity : entities) {
             boolean collision = false;
             boolean attack = false;
@@ -112,8 +125,9 @@ public class Collision {
                 }
 
                 //first check: are entities close enough?
-                if (movingEntityAction == ATTACKING_01 ||
-                        movingEntityAction == ATTACKING_02) {
+                if ((movingEntityAction == ATTACKING_01 ||
+                        movingEntityAction == ATTACKING_02) &&
+                                actualEntity.getEntityName().startsWith("enemy")) {
                     if (((entityDirection == LEFT || entityDirection == UP) &&
                         ((int) movingEntityDirection / BaseTileSize <= (int) actualEntityOppositeDirection / BaseTileSize) &&
                         ((int) movingEntityOppositeDirection / BaseTileSize >= (int) actualEntityOppositeDirection / BaseTileSize))
@@ -145,11 +159,12 @@ public class Collision {
 
                 if (walking && collision)
                     return true;
+
                 else if (attack && collision)
-                    if (movingEntityAction == ATTACKING_01)
-                        System.out.println("attack 1");
-                    else if (movingEntityAction == ATTACKING_02)
-                        System.out.println("attack 2");
+                    if (movingEntityIsPlayer)
+                        ((Player) movingEntity).setEnemiesHit(actualEntity);
+                    else
+                        ((EnemyEntity) movingEntity).setPlayerHit(true);
             }
         }
         return false;

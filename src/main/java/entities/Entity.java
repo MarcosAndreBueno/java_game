@@ -24,11 +24,12 @@ public abstract class Entity {
     protected BufferedImage[][] animations;
     protected String sprite;
     protected int aniAction;
-    protected int aniTick, aniFrame, aniMoveSpeed, attackSpeed;
+    protected int aniTick, aniFrame, aniMoveSpeed, aniAttackSpeed;
     protected int direction, aniDirection;
     protected int aniWidth, aniHeight;
     protected float entitySpeed;
     protected String entityName;
+    protected int entityStatus = -1;
 
     public Entity(float x, float y, String sprite, Playing playing) {
         this.x = x;
@@ -45,7 +46,7 @@ public abstract class Entity {
         aniAction = STANDING;
         aniDirection = DOWN;
         aniMoveSpeed = 24;
-        attackSpeed = 12;
+        aniAttackSpeed = 12;
         entitySpeed = 0.3f * Scale;
     }
 
@@ -53,29 +54,29 @@ public abstract class Entity {
         hitbox = new float[]{(int) up, (int) left, (int) down, (int) right};
     }
 
-    public void checkCollisionLeft() {
+    public void checkCollisionLeft(float reset) {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox, LEFT))
-            resetPositionX(-entitySpeed);
+            resetPositionX(-reset);
         if (playing.getMapManager().getCollision().isEntityHere(this, x, y, hitbox, LEFT))
-            resetPositionX(-entitySpeed);
+            resetPositionX(-reset);
     }
-    public void checkCollisionRight() {
+    public void checkCollisionRight(float reset) {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,RIGHT))
-            resetPositionX(entitySpeed);
+            resetPositionX(reset);
         if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,RIGHT))
-            resetPositionX(entitySpeed);
+            resetPositionX(reset);
     }
-    public void checkCollisionUp() {
+    public void checkCollisionUp(float reset) {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,UP))
-            resetPositionY(-entitySpeed);
+            resetPositionY(-reset);
         if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,UP))
-            resetPositionY(-entitySpeed);
+            resetPositionY(-reset);
     }
-    public void checkCollisionDown() {
+    public void checkCollisionDown(float reset) {
         if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,DOWN))
-            resetPositionY(entitySpeed);
+            resetPositionY(reset);
         if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,DOWN))
-            resetPositionY(entitySpeed);
+            resetPositionY(reset);
     }
 
     public int getHp() {
@@ -114,6 +115,7 @@ public abstract class Entity {
         this.y += y * -1;
     }
     public void update() {}
-
     public void draw(Graphics2D g2) {}
+
+    protected void setEntityStatus(int status) {this.entityStatus = status;}
 }

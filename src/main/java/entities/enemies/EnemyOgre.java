@@ -7,24 +7,28 @@ import utilz.LoadSaveImage;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static main.GameWindow.ScreenSettings.Scale;
-import static utilz.Constants.NpcCsv.*;
+import static main.GameWindow.ScreenSettings.*;
+import static utilz.Constants.Directions.*;
+import static utilz.Constants.EntityStatus.*;
+import static utilz.Constants.NpcAndEnemiesCsv.*;
 import static utilz.Constants.PlayerConstants.STANDING;
 import static utilz.Constants.PlayerConstants.WALKING;
 
-public class enemy_ogre extends EnemyEntity {
+public class EnemyOgre extends EnemyEntity {
 
     protected int maxHP, hp;
+    protected float pushBack;
 
-    public enemy_ogre(int npcID, String[][] npcInfo, Playing playing) {
+    public EnemyOgre(int npcID, String[][] npcInfo, Playing playing) {
         super(npcID, npcInfo, playing);
         initialize();
     }
 
     private void initialize() {
         loadAnimations();
-        setHitbox(aniHeight/6f, aniWidth/4.5f, aniHeight/1.3f, aniWidth/1.3f);
+        setHitbox(0, aniWidth/4.5f, aniHeight/1.3f, aniWidth/1.3f);
         setEntityInitialCenter();
+        pushBack = BaseTileSize * 2 * Scale;
         aniIndexI = Integer.parseInt(npcInfo[npcID][DIRECTION]);
         maxHP = Integer.parseInt(npcInfo[npcID][MAX_HP]);
         hp = maxHP;
@@ -72,6 +76,45 @@ public class enemy_ogre extends EnemyEntity {
 
         //updates NPC position after it moves and checks for collisions
         checkCollision();
+
+        //updates NPC status like attacked
+        checkStatus();
+    }
+
+    private void checkStatus() {
+        if (entityStatus != -1) {
+            switch (entityStatus) {
+                case ATTACKED_UP -> {
+                    y += -entitySpeed * pushBack;
+                    npcCenterY += -entitySpeed * pushBack;
+                    if (checkIfOutOfMap(UP, x, y - BaseTileSize)) {
+                        resetPositionY(-entitySpeed * pushBack);
+                    }
+                }
+                case ATTACKED_LEFT -> {
+                    x += -entitySpeed * pushBack;
+                    npcCenterX += -entitySpeed * pushBack;
+                    if (checkIfOutOfMap(LEFT, x - BaseTileSize, y)) {
+                        resetPositionX(-entitySpeed * pushBack);
+                    }
+                }
+                case ATTACKED_DOWN -> {
+                    y += entitySpeed * pushBack;
+                    npcCenterY += entitySpeed * pushBack;
+                    if (checkIfOutOfMap(DOWN, x, y + BaseTileSize)) {
+                        resetPositionY(entitySpeed * pushBack);
+                    }
+                }
+                case ATTACKED_RIGHT -> {
+                    x += entitySpeed * pushBack;
+                    npcCenterX += entitySpeed * pushBack;
+                    if (checkIfOutOfMap(RIGHT, x + BaseTileSize, y)) {
+                        resetPositionX(entitySpeed * pushBack);
+                    }
+                }
+            }
+            entityStatus = -1;
+        }
     }
 
     private void updateAnimationTick() {
@@ -120,13 +163,5 @@ public class enemy_ogre extends EnemyEntity {
         g2.setColor(Color.RED);
         int w2 = (hp * 100 / maxHP);
         g2.fillRect((int)(npcCenterX-Scale*1.5f),(int)(npcCenterY-Scale*1.5f),w1 * w2 / 100, (int) (2*Scale));
-    }
-
-    public float getNpcCenterX() {
-        return npcCenterX;
-    }
-
-    public float getNpcCenterY() {
-        return npcCenterY;
     }
 }

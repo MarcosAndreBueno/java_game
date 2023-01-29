@@ -8,16 +8,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static main.GameWindow.ScreenSettings.Scale;
-import static utilz.Constants.Directions.*;
-import static utilz.Constants.NpcCsv.*;
+import static utilz.Constants.NpcAndEnemiesCsv.*;
 import static utilz.Constants.PlayerConstants.STANDING;
 import static utilz.Constants.PlayerConstants.WALKING;
 
-public class npc_chemist extends NPCEntity {
+public class NpcChemist extends NPCEntity {
 
     protected int maxHP, hp;
 
-    public npc_chemist(int npcID, String[][] npcInfo, Playing playing) {
+    public NpcChemist(int npcID, String[][] npcInfo, Playing playing) {
         super(npcID, npcInfo, playing);
         initialize();
     }
@@ -26,7 +25,7 @@ public class npc_chemist extends NPCEntity {
         loadAnimations();
         aniWidth = (int) (20*Scale);
         aniHeight= (int) (30*Scale);
-        setHitbox(aniHeight/-6f, aniWidth/6f, aniHeight/1.05f, aniWidth);
+        setHitbox(aniHeight/-6f, aniWidth/6f, aniHeight/1.05f, aniWidth/1.05f);
         setEntityInitialCenter();
         aniIndexI = Integer.parseInt(npcInfo[npcID][DIRECTION]);
         maxHP = Integer.parseInt(npcInfo[npcID][MAX_HP]);
