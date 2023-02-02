@@ -1,10 +1,7 @@
 package entities;
 
-import entities.Entity;
-import entities.GameEntity;
 import game_states.Playing;
 
-import java.awt.*;
 import java.util.Random;
 
 import static main.GameWindow.ScreenSettings.*;
@@ -12,7 +9,7 @@ import static utilz.Constants.Directions.*;
 import static utilz.Constants.NpcAndEnemiesCsv.*;
 import static utilz.Constants.PlayerConstants.WALKING;
 
-public abstract class NPCEntity extends Entity implements GameEntity {
+public abstract class NpcEntity extends Entity implements GameEntity {
 
     protected int aniTick, aniIndexI;
 
@@ -27,7 +24,7 @@ public abstract class NPCEntity extends Entity implements GameEntity {
     protected String[][] npcInfo;
     protected final int npcID;
 
-    public NPCEntity(int npcID, String[][]npcInfo, Playing playing) {
+    public NpcEntity(int npcID, String[][]npcInfo, Playing playing) {
         super(Float.parseFloat(npcInfo[npcID][POSITION_X]),
                 Float.parseFloat(npcInfo[npcID][POSITION_Y]),
                 npcInfo[npcID][SPRITE_ATLAS],

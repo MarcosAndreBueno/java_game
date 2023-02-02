@@ -5,6 +5,8 @@ import game_states.Playing;
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
+import static utilz.Constants.EntityStatus.*;
+import static utilz.Constants.EntityStatus.ATTACKED_RIGHT;
 import static utilz.Constants.PlayerConstants.*;
 
 import utilz.Constants.Entities;
@@ -25,6 +27,7 @@ public class Player extends Entity implements GameEntity{
     protected int maxHP, hp;
     public int attack1, attack2;
     public boolean canPerformAttack;
+    protected float pushBack;
 
     protected HashSet<Entity> enemiesHit = new HashSet<>();
 
@@ -43,6 +46,7 @@ public class Player extends Entity implements GameEntity{
         attack2 = 15;
         canPerformAttack = true;
         entityName = "Player";
+        pushBack = 64 * Scale;
     }
 
     //when the player gets into a new map
@@ -55,16 +59,17 @@ public class Player extends Entity implements GameEntity{
     public void update() {
         updatePlayerInformations();
         updateAnimationTick();
+        checkStatus();
     }
 
     public void draw(Graphics2D g2) {
         //animation
-        if (aniDirection >= ATTACKING_01)
-            g2.drawImage(animations[aniDirection][aniFrame],
+        if (aniAction >= ATTACKING_01)
+            g2.drawImage(animations[aniAction+direction][aniFrame],
                     (int) (playerCenterX-aniWidth), (int) (playerCenterY-aniHeight),
                     aniWidth*3, aniHeight*3, null);
         else
-            g2.drawImage(animations[aniDirection][aniFrame], (int) playerCenterX, (int) playerCenterY,
+            g2.drawImage(animations[direction][aniFrame], (int) playerCenterX, (int) playerCenterY,
                     aniWidth, aniHeight, null);
 
         //HP
@@ -81,12 +86,10 @@ public class Player extends Entity implements GameEntity{
         switch (aniAction) {
             case STANDING:
                 aniFrame = 0;
-                aniDirection = direction;
                 break;
             case WALKING:
                 if (checkAniTickFrame(aniMoveSpeed)) {
                     aniFrame++;
-                    aniDirection = direction;
                     if (aniFrame > WALKING_FRAMES)
                         aniFrame = 1;
                 }
@@ -94,7 +97,6 @@ public class Player extends Entity implements GameEntity{
             case ATTACKING_01:
                 if (checkAniTickFrame(aniAttackSpeed)) {
                     aniFrame++;
-                    aniDirection = direction + ATTACKING_01;
                     if (aniFrame >= ATTACKING_01_FRAMES) {
                         aniFrame = 1;
                         aniAction = STANDING;
@@ -105,7 +107,6 @@ public class Player extends Entity implements GameEntity{
             case ATTACKING_02:
                 if (checkAniTickFrame(aniAttackSpeed)) {
                     aniFrame++;
-                    aniDirection = direction + ATTACKING_02;
                     if (aniFrame >= ATTACKING_02_FRAMES) {
                         aniFrame = 1;
                         aniAction = STANDING;
@@ -129,9 +130,10 @@ public class Player extends Entity implements GameEntity{
 
     private void updatePlayerInformations() {
         if (!leftPressed && !rightPressed && !upPressed && !downPressed &&
-                aniAction != ATTACKING_01 && aniAction != ATTACKING_02)
+                aniAction != ATTACKING_01 && aniAction != ATTACKING_02) {
             setAction(STANDING);
-        else if (aniAction == WALKING){
+        }
+        else if (aniAction == WALKING) {
             if (leftPressed && !rightPressed) {
                 setPositionX(-entitySpeed);
                 setDirection(LEFT);
@@ -231,6 +233,55 @@ public class Player extends Entity implements GameEntity{
             playerCenterY = y - (playing.getMapManager().getMapMaxHeight() - ScreenHeight - ScreenCenterY);
     }
 
+    //checks if player suffered damage
+    private void checkStatus() {
+        if (entityStatus != -1) {
+            switch (entityStatus) {
+                case ATTACKED_UP -> {
+                    y += -entitySpeed * pushBack;
+                    if (checkIfOutOfMap(UP, x, y - BaseTileSize)) {
+                        resetPositionY(-entitySpeed * pushBack);
+                    } else {
+                        playerCenterY += -entitySpeed * pushBack;
+                    }
+                }
+                case ATTACKED_LEFT -> {
+                    x += -entitySpeed * pushBack;
+                    if (checkIfOutOfMap(LEFT, x - BaseTileSize, y)) {
+                        resetPositionX(-entitySpeed * pushBack);
+                    } else {
+                        playerCenterX += -entitySpeed * pushBack;
+                    }
+                }
+                case ATTACKED_DOWN -> {
+                    y += entitySpeed * pushBack;
+                    if (checkIfOutOfMap(DOWN, x, y + BaseTileSize)) {
+                        resetPositionY(entitySpeed * pushBack);
+                    } else {
+                        playerCenterY += entitySpeed * pushBack;
+                    }
+                }
+                case ATTACKED_RIGHT -> {
+                    x += entitySpeed * pushBack;
+                    if (checkIfOutOfMap(RIGHT, x + BaseTileSize, y)) {
+                        resetPositionX(entitySpeed * pushBack);
+                    } else {
+                        playerCenterX += entitySpeed * pushBack;
+                    }
+                }
+            }
+            entityStatus = -1; //reset status
+        }
+    }
+
+    public boolean checkIfOutOfMap(int direction, float x, float y) {
+        try {
+            return playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,direction);
+        } catch (IndexOutOfBoundsException e) {
+            return true;
+        }
+    }
+
     public void loadAnimations() {
         BufferedImage img = LoadSaveImage.GetSpriteAtlas(Entities.PLAYER_ATLAS);
         animations = new BufferedImage[12][9];
@@ -260,10 +311,6 @@ public class Player extends Entity implements GameEntity{
         rightPressed = false;
         upPressed = false;
         downPressed = false;
-    }
-
-    private void setDirection(int direction) {
-        this.direction = direction;
     }
 
     public void setAction(int action) {

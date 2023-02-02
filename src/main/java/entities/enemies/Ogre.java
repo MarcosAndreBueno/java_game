@@ -1,25 +1,30 @@
 package entities.enemies;
 
 import entities.EnemyEntity;
+import entities.Entity;
+import entities.Player;
 import game_states.Playing;
 import utilz.LoadSaveImage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.EntityStatus.*;
 import static utilz.Constants.NpcAndEnemiesCsv.*;
-import static utilz.Constants.PlayerConstants.STANDING;
-import static utilz.Constants.PlayerConstants.WALKING;
+import static utilz.Constants.PlayerConstants.*;
 
-public class EnemyOgre extends EnemyEntity {
+public class Ogre extends EnemyEntity {
 
     protected int maxHP, hp;
     protected float pushBack;
+    protected int sight;
+    protected boolean following, canPerformAttack = true;
+    protected HashSet<Entity> enemiesHit = new HashSet<>();
 
-    public EnemyOgre(int npcID, String[][] npcInfo, Playing playing) {
+    public Ogre(int npcID, String[][] npcInfo, Playing playing) {
         super(npcID, npcInfo, playing);
         initialize();
     }
@@ -28,11 +33,12 @@ public class EnemyOgre extends EnemyEntity {
         loadAnimations();
         setHitbox(0, aniWidth/4.5f, aniHeight/1.3f, aniWidth/1.3f);
         setEntityInitialCenter();
-        pushBack = BaseTileSize * 2 * Scale;
+        pushBack = 64 * Scale;
         aniIndexI = Integer.parseInt(npcInfo[npcID][DIRECTION]);
         maxHP = Integer.parseInt(npcInfo[npcID][MAX_HP]);
         hp = maxHP;
         entityName = npcInfo[npcID][NAME];
+        sight = 10;
     }
 
     public void loadAnimations() {
@@ -41,9 +47,8 @@ public class EnemyOgre extends EnemyEntity {
         int tempI = 8;
         //walk movement
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 9; j++) {
+            for (int j = 0; j < 9; j++)
                 animations[i][j] = img.getSubimage(j * 64, tempI * 64, 64, 64);
-            }
             tempI += 1;
         }
         //attack animations
@@ -65,7 +70,7 @@ public class EnemyOgre extends EnemyEntity {
         py = playing.getPlayer().getPositionY();
 
         //NPC movement
-        if (npcInfo[npcID][CAN_MOVE].equals("1"))
+        if (npcInfo[npcID][CAN_MOVE].equals("1") && !following)
             randomMovement();
 
         //change image after few frames
@@ -77,10 +82,54 @@ public class EnemyOgre extends EnemyEntity {
         //updates NPC position after it moves and checks for collisions
         checkCollision();
 
-        //updates NPC status like attacked
+        //updates NPC status, like attacked
         checkStatus();
+
+        //check enemy action based on distance from enemy to player
+        checkEnemyAction();
+
+        if (aniAction == ATTACKING_01 && canPerformAttack) {
+            checkCollisionAttack();
+            canPerformAttack = false;
+        }
     }
 
+    private void checkEnemyAction() {
+        Player player = playing.getPlayer();
+
+        int playerX = (int) (player.getPositionX() + ScreenCenterX) / BaseTileSize;
+        int playerY = (int) (player.getPositionY() + ScreenCenterY) / BaseTileSize;
+        int ogreX = (int) (x + ScreenCenterX) / BaseTileSize;
+        int ogreY = (int) (y + ScreenCenterY) / BaseTileSize;
+
+        //if the player is in enemy sight
+        if (Math.abs(ogreX - playerX) <= sight && Math.abs(ogreY - playerY) <= sight) {
+            following = true;
+            //attack player
+            if (Math.abs(ogreX - playerX) < 5 && Math.abs(ogreY - playerY) < 5) {
+                setAction(ATTACKING_01);
+                resetPressedButtons();
+            }
+            //follow player
+            else {
+                setAction(WALKING);
+                if (playerX < ogreX) {
+                    setPressedButton(LEFT); setDirection(LEFT);  }
+                if (playerX > ogreX) {
+                    setPressedButton(RIGHT); setDirection(RIGHT); }
+                if (playerY < ogreY) {
+                    setPressedButton(UP); setDirection(UP); }
+                if (playerY > ogreY) {
+                    setPressedButton(DOWN); setDirection(DOWN); }
+                }
+        }
+        //if the player isn't in enemy sight
+        else {
+            following = false;
+        }
+    }
+
+    //checks if enemy suffered damage
     private void checkStatus() {
         if (entityStatus != -1) {
             switch (entityStatus) {
@@ -113,27 +162,44 @@ public class EnemyOgre extends EnemyEntity {
                     }
                 }
             }
-            entityStatus = -1;
+            entityStatus = -1; //reset status
         }
     }
 
     private void updateAnimationTick() {
-        aniTick++;
-        if (aniTick >= aniMoveSpeed) {
-            aniTick = 0;
-            switch (aniAction) {
-                case STANDING:
-                    aniFrame = 0;
-                    aniDirection = direction;
-                    break;
-                case WALKING:
+        switch (aniAction) {
+            case STANDING:
+                aniFrame = 0;
+                break;
+            case WALKING:
+                if (checkAniTickFrame(aniMoveSpeed)) {
                     aniFrame++;
-                    aniDirection = direction;
-                    if (aniFrame >= Integer.parseInt(npcInfo[npcID][ANI_FRAME]))
+                    if (aniFrame >= WALKING_FRAMES)
                         aniFrame = 1;
-                    break;
-            }
+                }
+                break;
+            case ATTACKING_01:
+                if (checkAniTickFrame(aniAttackSpeed)) {
+                    aniFrame++;
+                    if (aniFrame >= ATTACKING_01_FRAMES-2) {
+                        aniFrame = 1;
+                        setAction(STANDING);
+                        canPerformAttack = true;
+                    }
+                }
+                break;
         }
+    }
+
+    private boolean checkAniTickFrame(int aniSpeed) {
+        if(aniTick >= aniSpeed) {
+            aniTick = 0;
+            return true;
+        }
+        else
+            aniTick++;
+
+        return false;
     }
 
     @Override
@@ -153,15 +219,20 @@ public class EnemyOgre extends EnemyEntity {
     @Override
     public void draw(Graphics2D g2) {
         //animations
-        g2.drawImage(animations[aniDirection][aniFrame], (int)npcCenterX,(int)npcCenterY,
-                aniWidth, aniHeight, null);
+        if (aniAction == ATTACKING_01)
+            g2.drawImage(animations[direction+ATTACKING_01][aniFrame],
+                    (int) (npcCenterX-aniWidth), (int) (npcCenterY-aniHeight),
+                    aniWidth*3, aniHeight*3, null);
+        else
+            g2.drawImage(animations[direction][aniFrame], (int)npcCenterX,(int)npcCenterY,
+                    aniWidth, aniHeight, null);
 
         //HP
         int w1 = (int) (30*Scale);
         g2.setColor(Color.BLACK);
-        g2.fillRect((int)(npcCenterX-Scale*1.5f),(int)(npcCenterY-Scale*1.5f),w1,(int) (2*Scale));
+        g2.fillRect((int)(npcCenterX-Scale),(int)(npcCenterY-Scale*1.5f),w1,(int) (2*Scale));
         g2.setColor(Color.RED);
         int w2 = (hp * 100 / maxHP);
-        g2.fillRect((int)(npcCenterX-Scale*1.5f),(int)(npcCenterY-Scale*1.5f),w1 * w2 / 100, (int) (2*Scale));
+        g2.fillRect((int)(npcCenterX-Scale),(int)(npcCenterY-Scale*1.5f),w1 * w2 / 100, (int) (2*Scale));
     }
 }

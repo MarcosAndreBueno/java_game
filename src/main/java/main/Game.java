@@ -1,6 +1,6 @@
 package main;
 
-import game_states.GameMenu;
+import game_states.Pause;
 import game_states.Playing;
 import game_states.State;
 
@@ -14,7 +14,7 @@ public class Game implements Runnable{
     private GamePanel gamePanel;
 
     private Playing playing;
-    private GameMenu menu;
+    private Pause menu;
     private State state;
 
     // FPS
@@ -37,7 +37,7 @@ public class Game implements Runnable{
 
     private void initialize() {
         state = new State();
-        menu = new GameMenu(this);
+        menu = new Pause(this);
         playing = new Playing(this);
     }
 
@@ -65,7 +65,7 @@ public class Game implements Runnable{
         return playing;
     }
 
-    public GameMenu getMenu() {
+    public Pause getMenu() {
         return menu;
     }
 
@@ -120,7 +120,7 @@ public class Game implements Runnable{
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
 //                System.out.println("FPS: " + frames + " | UPS: " + updates);
-                gameTime += 1;
+                gameTime++;
                 frames = 0;
                 updates = 0;
             }

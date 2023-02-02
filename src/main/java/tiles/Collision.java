@@ -23,15 +23,6 @@ public class Collision {
     public Collision(MapManager mapManager) {
         this.mapManager = mapManager;
     }
-    public float test;
-    public boolean isOutOfMap(float x, float y, float[] hitbox, int direction) {
-        try {
-            isTileSolid(x,y,hitbox,direction);
-        } catch (IndexOutOfBoundsException e) {
-            return true;
-        }
-        return false;
-    }
 
     public boolean isTileSolid(float x, float y, float[] hitbox, int direction) {
         float entityDirection;
@@ -126,8 +117,7 @@ public class Collision {
 
                 //first check: are entities close enough?
                 if ((movingEntityAction == ATTACKING_01 ||
-                        movingEntityAction == ATTACKING_02) &&
-                                actualEntity.getEntityName().startsWith("enemy")) {
+                        movingEntityAction == ATTACKING_02)) {
                     if (((entityDirection == LEFT || entityDirection == UP) &&
                         ((int) movingEntityDirection / BaseTileSize <= (int) actualEntityOppositeDirection / BaseTileSize) &&
                         ((int) movingEntityOppositeDirection / BaseTileSize >= (int) actualEntityOppositeDirection / BaseTileSize))
@@ -159,7 +149,6 @@ public class Collision {
 
                 if (walking && collision)
                     return true;
-
                 else if (attack && collision)
                     if (movingEntityIsPlayer)
                         ((Player) movingEntity).setEnemiesHit(actualEntity);

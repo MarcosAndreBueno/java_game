@@ -7,9 +7,9 @@ import java.awt.event.KeyEvent;
 
 import static main.GameWindow.ScreenSettings.*;
 
-public class GameMenu implements GameStates{
+public class Pause implements GameStates{
     private Game game;
-    public GameMenu(Game game) {
+    public Pause(Game game) {
         this.game = game;
     }
 

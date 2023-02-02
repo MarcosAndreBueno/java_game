@@ -1,8 +1,2 @@
 ID,OnMap,PositionX,PositionY,Direction,CanMove,Name,WalkingFrames,MaxHp,SpriteAddress
-0,1,240,140,1,1,enemy_Ogre,4,50,characters/enemy_ogre
-1,1,80,110,1,1,enemy_Ogre,4,50,characters/enemy_ogre
-2,1,-500,0,1,1,enemy_Ogre,4,50,characters/enemy_ogre
-3,1,-110,110,1,1,enemy_Ogre,4,50,characters/enemy_ogre
-4,1,-100,0,1,1,enemy_Ogre,4,50,characters/enemy_ogre
-5,1,20,40,1,1,enemy_Ogre,4,50,characters/enemy_ogre
-6,1,-50,240,1,1,enemy_Ogre,4,50,characters/enemy_ogre
+0,1,0,0,1,1,enemy_Ogre,4,50,characters/enemy_ogre

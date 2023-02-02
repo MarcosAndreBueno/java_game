@@ -1,6 +1,6 @@
 package entities.npcs;
 
-import entities.NPCEntity;
+import entities.NpcEntity;
 import game_states.Playing;
 import utilz.LoadSaveImage;
 
@@ -12,11 +12,11 @@ import static utilz.Constants.NpcAndEnemiesCsv.*;
 import static utilz.Constants.PlayerConstants.STANDING;
 import static utilz.Constants.PlayerConstants.WALKING;
 
-public class NpcChemist extends NPCEntity {
+public class Chemist extends NpcEntity {
 
     protected int maxHP, hp;
 
-    public NpcChemist(int npcID, String[][] npcInfo, Playing playing) {
+    public Chemist(int npcID, String[][] npcInfo, Playing playing) {
         super(npcID, npcInfo, playing);
         initialize();
     }
@@ -69,11 +69,9 @@ public class NpcChemist extends NPCEntity {
             switch (aniAction) {
                 case STANDING:
                     aniFrame = 0;
-                    aniDirection = direction;
                     break;
                 case WALKING:
                     aniFrame++;
-                    aniDirection = direction;
                     if (aniFrame >= Integer.parseInt(npcInfo[npcID][ANI_FRAME]))
                         aniFrame = 1;
                     break;
@@ -98,7 +96,7 @@ public class NpcChemist extends NPCEntity {
     @Override
     public void draw(Graphics2D g2) {
         //animations
-        g2.drawImage(animations[aniDirection][aniFrame], (int)npcCenterX,(int)npcCenterY,
+        g2.drawImage(animations[direction][aniFrame], (int)npcCenterX,(int)npcCenterY,
                 aniWidth, aniHeight, null);
 
         //HP

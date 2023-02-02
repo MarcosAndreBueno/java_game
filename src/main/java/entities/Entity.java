@@ -25,7 +25,7 @@ public abstract class Entity {
     protected String sprite;
     protected int aniAction;
     protected int aniTick, aniFrame, aniMoveSpeed, aniAttackSpeed;
-    protected int direction, aniDirection;
+    protected int direction;
     protected int aniWidth, aniHeight;
     protected float entitySpeed;
     protected String entityName;
@@ -44,7 +44,6 @@ public abstract class Entity {
         aniWidth = (int) (32*Scale);
         aniHeight= (int) (32*Scale);
         aniAction = STANDING;
-        aniDirection = DOWN;
         aniMoveSpeed = 24;
         aniAttackSpeed = 12;
         entitySpeed = 0.3f * Scale;
@@ -77,6 +76,10 @@ public abstract class Entity {
             resetPositionY(reset);
         if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,DOWN))
             resetPositionY(reset);
+    }
+
+    protected void setDirection(int direction) {
+        this.direction = direction;
     }
 
     public int getHp() {

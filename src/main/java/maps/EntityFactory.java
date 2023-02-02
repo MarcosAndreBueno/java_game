@@ -1,8 +1,8 @@
 package maps;
 
 import entities.Entity;
-import entities.enemies.EnemyOgre;
-import entities.npcs.NpcChemist;
+import entities.enemies.Ogre;
+import entities.npcs.Chemist;
 import game_states.Playing;
 
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ public class EntityFactory {
 
         for (int i = 0; i < npcInfo.length; i++) {
             if (npcInfo[i][NAME].equals("npc_Chemist"))
-                entities.add(new NpcChemist(i, npcInfo, playing));
+                entities.add(new Chemist(i, npcInfo, playing));
             else
-                entities.add(new EnemyOgre(i, npcInfo, playing));
+                entities.add(new Ogre(i, npcInfo, playing));
         }
 
         return entities;

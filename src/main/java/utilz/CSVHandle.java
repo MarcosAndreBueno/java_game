@@ -68,7 +68,7 @@ public class CSVHandle {
 
     private int[] getMapNpcRowsAndColumns(String mapCSV) {
         switch (mapCSV) {
-            case TEST_MAP -> { return new int[] {7,14};}
+            case TEST_MAP -> { return new int[] {1,14};}
         }
 
         return null;

@@ -2,12 +2,14 @@ package entities;
 
 import game_states.Playing;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.NpcAndEnemiesCsv.*;
-import static utilz.Constants.PlayerConstants.WALKING;
+import static utilz.Constants.PlayerConstants.*;
 
 public abstract class EnemyEntity extends Entity implements GameEntity {
 
@@ -56,7 +58,46 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
     }
 
     public boolean checkIfOutOfMap(int direction, float x, float y) {
-        return playing.getMapManager().getCollision().isOutOfMap(x,y,hitbox,direction);
+        try {
+            return playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,direction);
+        } catch (IndexOutOfBoundsException e) {
+            return true;
+        }
+    }
+
+    public void checkCollisionAttack() {
+        float[] objectHitbox = new float[4];
+
+        switch (direction) {
+            case UP -> {
+                objectHitbox = new float[]{-20,0,0,28};
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
+            }
+            case LEFT -> {
+                objectHitbox = new float[]{32,-50,64,1};
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
+            }
+            case DOWN -> {
+                objectHitbox = new float[]{20,0,82,28};
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
+            }
+            case RIGHT -> {
+                objectHitbox = new float[]{16,0,64,70};
+                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
+            }
+        }
+        if (playerHit) {
+            performAttack();
+        }
+    }
+
+    private void performAttack() {
+        int hitDamage = 10;
+
+        playing.getPlayer().setHp(-hitDamage);
+        playing.getPlayer().setEntityStatus(direction);
+
+        playerHit = false;
     }
 
     protected void updatePosition() {
@@ -72,19 +113,25 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
 
     protected void randomMovement() {
         Random random = new Random();
-        int number = random.nextInt(4);
+        int number = random.nextInt(5);
         long currentTime = playing.getGame().getGameTime();
+
         if (currentTime - previousTime >= 1) {
             switch (number) {
-                case LEFT -> { pressedButton = LEFT; direction = LEFT; aniAction = WALKING; }
-                case DOWN -> { pressedButton = DOWN; direction = DOWN; aniAction = WALKING; }
-                case UP -> { pressedButton = UP; direction = UP; aniAction = WALKING; }
-                case RIGHT -> { pressedButton = RIGHT; direction = RIGHT; aniAction = WALKING; }
+                case UP -> { setPressedButton(UP); setDirection(UP); setAction(WALKING); }
+                case LEFT -> { setPressedButton(LEFT); setDirection(LEFT); setAction(WALKING); }
+                case DOWN -> { setPressedButton(DOWN); setDirection(DOWN); setAction(WALKING); }
+                case RIGHT -> { setPressedButton(RIGHT); setDirection(RIGHT); setAction(WALKING); }
+                case 4 -> { resetPressedButtons(); setAction(STANDING); }
             }
             previousTime = currentTime;
         }
     }
-
+    
+    protected void setAction(int action) {
+        this.aniAction = action;
+    }
+    
     @Override
     public void resetPositionX(float x) {
         this.x += x * -1;
@@ -105,11 +152,12 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
         this.playerHit = playerHit;
     }
 
-    public void setNpcCenterX(float npcCenterX) {
-        this.npcCenterX += npcCenterX;
+    protected void setPressedButton(int pressedButton) {
+        this.pressedButton = pressedButton;
     }
 
-    public void setNpcCenterY(float npcCenterY) {
-        this.npcCenterY += npcCenterY;
+    protected void resetPressedButtons() {
+        this.pressedButton = -1;
     }
+    
 }
