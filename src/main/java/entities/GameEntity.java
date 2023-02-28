@@ -13,8 +13,15 @@ public interface GameEntity {
     public void setPositionY(float y);
     public float getPositionX();
     public float getPositionY();
+    public float getEntityCenterX();
+    public float getEntityCenterY();
+    public void increasePositionX(float x);
+    public void increasePositionY(float y);
     public void resetPositionX(float x);
     public void resetPositionY(float y);
+    public int getDirection();
+    public void setDirection(int direction);
+
     public int getHp();
     public void setHp(int hp);
     public int getAction();

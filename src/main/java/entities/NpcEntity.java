@@ -15,7 +15,6 @@ public abstract class NpcEntity extends Entity implements GameEntity {
 
     protected float oldX = playing.getPlayer().getPositionX();
     protected float oldY = playing.getPlayer().getPositionY();
-    protected float npcCenterX, npcCenterY;
     protected float px, py;
 
     protected long previousTime = playing.getGame().getGameTime();
@@ -36,37 +35,37 @@ public abstract class NpcEntity extends Entity implements GameEntity {
 
     public void setEntityInitialCenter() {
         if (playing.getPlayer().getPositionX() >= 0)
-            npcCenterX = x + ScreenCenterX - playing.getPlayer().getPositionX();
+            entityCenterX = x + ScreenCenterX - playing.getPlayer().getPositionX();
         else
-            npcCenterX = x + ScreenCenterX;
+            entityCenterX = x + ScreenCenterX;
         if (playing.getPlayer().getPositionY() >= 0)
-            npcCenterY = y + ScreenCenterY - playing.getPlayer().getPositionY();
+            entityCenterY = y + ScreenCenterY - playing.getPlayer().getPositionY();
         else
-            npcCenterY = y + ScreenCenterY;
+            entityCenterY = y + ScreenCenterY;
     }
     protected void checkCollision() {
         if (pressedButton > -1)
             switch (pressedButton) {
-                case LEFT -> { x += -entitySpeed; npcCenterX += -entitySpeed; checkCollisionLeft(entitySpeed); }
-                case DOWN -> { y += entitySpeed; npcCenterY += entitySpeed; checkCollisionDown(entitySpeed); }
-                case UP -> { y += -entitySpeed; npcCenterY += -entitySpeed; checkCollisionUp(entitySpeed); }
-                case RIGHT -> { x += entitySpeed; npcCenterX += entitySpeed; checkCollisionRight(entitySpeed); }
+                case LEFT -> { x += -entitySpeed; entityCenterX += -entitySpeed; checkCollisionLeft(entitySpeed); }
+                case DOWN -> { y += entitySpeed; entityCenterY += entitySpeed; checkCollisionDown(entitySpeed); }
+                case UP -> { y += -entitySpeed; entityCenterY += -entitySpeed; checkCollisionUp(entitySpeed); }
+                case RIGHT -> { x += entitySpeed; entityCenterX += entitySpeed; checkCollisionRight(entitySpeed); }
             }
     }
 
     protected void updatePosition() {
         if (px > 0 && px + ScreenWidth < playing.getMapManager().getMapMaxWidth())
-            npcCenterX = npcCenterX - (px - oldX);
+            entityCenterX = entityCenterX - (px - oldX);
         oldX = px;
         if (py > 0 && py + ScreenHeight < playing.getMapManager().getMapMaxHeight())
-            npcCenterY = npcCenterY - (py - oldY);
+            entityCenterY = entityCenterY - (py - oldY);
         oldY = py;
     }
 
     @Override
     public void resetPositionX(float x) {
         this.x += x * -1;
-        this.npcCenterX += x * -1;
+        this.entityCenterX += x * -1;
     }
 
     protected void randomMovement() {
@@ -87,7 +86,7 @@ public abstract class NpcEntity extends Entity implements GameEntity {
     @Override
     public void resetPositionY(float y) {
         this.y += y * -1;
-        this.npcCenterY += y * -1;
+        this.entityCenterY += y * -1;
     }
 
     public String getName() {

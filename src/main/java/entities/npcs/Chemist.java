@@ -96,15 +96,15 @@ public class Chemist extends NpcEntity {
     @Override
     public void draw(Graphics2D g2) {
         //animations
-        g2.drawImage(animations[direction][aniFrame], (int)npcCenterX,(int)npcCenterY,
+        g2.drawImage(animations[direction][aniFrame], (int)entityCenterX,(int)entityCenterY,
                 aniWidth, aniHeight, null);
 
         //HP
         int w1 = (int) (25*Scale);
         g2.setColor(Color.BLACK);
-        g2.fillRect((int)(npcCenterX-Scale*2),(int)(npcCenterY-Scale*5),w1,(int) (2*Scale));
+        g2.fillRect((int)(entityCenterX-Scale*2),(int)(entityCenterY-Scale*5),w1,(int) (2*Scale));
         g2.setColor(Color.RED);
         int w2 = (hp * 100 / maxHP);
-        g2.fillRect((int)(npcCenterX-Scale*2),(int)(npcCenterY-Scale*5),w1 * w2 / 100, (int) (2*Scale));
+        g2.fillRect((int)(entityCenterX-Scale*2),(int)(entityCenterY-Scale*5),w1 * w2 / 100, (int) (2*Scale));
     }
 }

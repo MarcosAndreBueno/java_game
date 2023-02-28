@@ -1,5 +1,6 @@
 package game_states;
 
+import entities.EnemyEntity;
 import entities.Entity;
 import entities.Player;
 import entities.enemies.Ogre;
@@ -11,6 +12,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import static utilz.Constants.Directions.*;
+import static utilz.Constants.Directions.DOWN;
 import static utilz.Constants.Entities.*;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.PlayerConstants.WALKING;
@@ -25,7 +28,7 @@ public class Playing implements GameStates{
     public Playing(Game game) {
         this.game = game;
         this.testMap = new TestMap(this);
-        this.player = new Player(-100, -100, PLAYER_ATLAS, this);
+        this.player = new Player(-100, 30, PLAYER_ATLAS, this);
         loadMapInfo();
         loadEntities();
     }
@@ -42,7 +45,10 @@ public class Playing implements GameStates{
     @Override
     public void keyPressed(KeyEvent e) {
         ArrayList<Entity> entities1 = getEntities();
-        Ogre enemy = (Ogre) entities1.get(0);
+        EnemyEntity enemy = (EnemyEntity) entities1.get(0);
+
+        float pushDistance = 8 * 16;
+
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> { player.setUpPressed(true); player.setAction(WALKING); }
             case KeyEvent.VK_S -> { player.setDownPressed(true); player.setAction(WALKING); }
@@ -51,6 +57,8 @@ public class Playing implements GameStates{
             case KeyEvent.VK_J -> player.setAction(ATTACKING_01);
             case KeyEvent.VK_L -> player.setAction(ATTACKING_02);
             case KeyEvent.VK_ESCAPE -> { player.resetDirBooleans(); game.getState().changeGameState(); }
+
+            case KeyEvent.VK_SHIFT -> player.setSpeed();
         }
     }
 
@@ -60,6 +68,8 @@ public class Playing implements GameStates{
             case KeyEvent.VK_S, KeyEvent.VK_DOWN -> player.setDownPressed(false);
             case KeyEvent.VK_A, KeyEvent.VK_LEFT -> player.setLeftPressed(false);
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> player.setRightPressed(false);
+
+            case KeyEvent.VK_SHIFT -> player.setSpeed();
         }
     }
 

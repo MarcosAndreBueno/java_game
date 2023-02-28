@@ -7,6 +7,7 @@ import entities.Player;
 import maps.MapManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static main.GameWindow.ScreenSettings.*;
 import static main.GameWindow.ScreenSettings.BaseTileSize;
@@ -23,8 +24,46 @@ public class Collision {
     public Collision(MapManager mapManager) {
         this.mapManager = mapManager;
     }
+    public void pushEntity(Entity entity, int hitDirection, float pushDistance) {
+        float tempX = entity.getPositionX();
+        float tempY = entity.getPositionY();
+        float tempCenterX = entity.getEntityCenterX();
+        float tempCenterY = entity.getEntityCenterY();
+        try {
+            switch (hitDirection) {
+                case UP -> {
+                    entity.increasePositionY(-pushDistance);
+                    entity.checkCollisionUp(pushDistance);
+                    isEntityHere(entity);
+                }
+                case LEFT -> {
+                    entity.increasePositionX(-pushDistance);
+                    entity.checkCollisionLeft(pushDistance);
+                    isEntityHere(entity);
+                }
+                case DOWN -> {
+                    entity.increasePositionY(pushDistance);
+                    entity.checkCollisionDown(pushDistance);
+                    isEntityHere(entity);
+                }
+                case RIGHT -> {
+                    entity.increasePositionX(pushDistance);
+                    entity.checkCollisionRight(pushDistance);
+                    isEntityHere(entity);
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {
+            entity.setPositionX(tempX);
+            entity.setPositionY(tempY);
+        }
+    }
 
-    public boolean isTileSolid(float x, float y, float[] hitbox, int direction) {
+    public boolean isTileSolid(Entity entity) {
+        float x = entity.getPositionX();
+        float y = entity.getPositionY();
+        float[] hitbox = entity.getHitbox();
+        int direction = entity.getDirection();
+
         float entityDirection;
         float checkCornerOne;
         float checkCornerTwo;
@@ -61,18 +100,23 @@ public class Collision {
         return false;
     }
 
-    public boolean isEntityHere(Entity movingEntity, float entityX, float entityY, float[] entityHitbox, int entityDirection) {
+    public boolean isEntityHere(Entity movingEntity) {
+        float entityX = movingEntity.getPositionX();
+        float entityY = movingEntity.getPositionY();
+        float[] entityHitbox = movingEntity.getHitbox();
+        int entityDirection = movingEntity.getDirection();
+
         //prepare movingEntity variables
         float movingEntityDirection,movingEntityOppositeDirection,movingEntityCornerOne,movingEntityCornerTwo;
         int oppositeDirection, movingEntityAction = movingEntity.getAction();
 
+        //hitbox values
         if (entityDirection == UP || entityDirection == DOWN) {
             if (entityDirection == UP)
                 oppositeDirection = DOWN;
             else
                 oppositeDirection = UP;
             movingEntityDirection = entityY + entityHitbox[entityDirection];
-            movingEntityOppositeDirection = entityY + entityHitbox[oppositeDirection];
             movingEntityCornerOne = entityX + entityHitbox[LEFT];
             movingEntityCornerTwo = entityX + entityHitbox[RIGHT];
         }else {
@@ -81,12 +125,10 @@ public class Collision {
             else
                 oppositeDirection = LEFT;
             movingEntityDirection = entityX + entityHitbox[entityDirection];
-            movingEntityOppositeDirection = entityX + entityHitbox[oppositeDirection];
             movingEntityCornerOne = entityY + entityHitbox[UP];
             movingEntityCornerTwo = entityY + entityHitbox[DOWN];
         }
 
-    // checks the 4 corners of each entity's hitbox on the map
         ArrayList<Entity> entities = mapManager.getPlaying().getEntities();
 
         float actualEntityOppositeDirection = -1;
@@ -94,70 +136,77 @@ public class Collision {
         float actualEntityCornerOne = -1;
         float actualEntityCornerTwo = -1;
 
-        boolean movingEntityIsPlayer = movingEntity.getEntityName().equals("Player");
-
+        // checks the 4 corners of each entity's hitbox on the map
         for (Entity actualEntity : entities) {
-            boolean collision = false;
-            boolean attack = false;
-            boolean walking = false;
             if (!actualEntity.equals(movingEntity)) {
                 float[] actualEntityHitbox = actualEntity.getHitbox();
 
+                //hitbox values
                 if (entityDirection == UP || entityDirection == DOWN) {
                     actualEntityOppositeDirection = actualEntity.getPositionY() + actualEntityHitbox[oppositeDirection];
-                    actualEntityDirection = actualEntity.getPositionY() + actualEntityHitbox[entityDirection];
                     actualEntityCornerOne = actualEntity.getPositionX() + actualEntityHitbox[LEFT];
                     actualEntityCornerTwo = actualEntity.getPositionX() + actualEntityHitbox[RIGHT];
                 } else {
                     actualEntityOppositeDirection = actualEntity.getPositionX() + actualEntityHitbox[oppositeDirection];
-                    actualEntityDirection = actualEntity.getPositionX() + actualEntityHitbox[entityDirection];
                     actualEntityCornerOne = actualEntity.getPositionY() + actualEntityHitbox[UP];
                     actualEntityCornerTwo = actualEntity.getPositionY() + actualEntityHitbox[DOWN];
                 }
 
-                //first check: are entities close enough?
-                if ((movingEntityAction == ATTACKING_01 ||
-                        movingEntityAction == ATTACKING_02)) {
-                    if (((entityDirection == LEFT || entityDirection == UP) &&
-                        ((int) movingEntityDirection / BaseTileSize <= (int) actualEntityOppositeDirection / BaseTileSize) &&
-                        ((int) movingEntityOppositeDirection / BaseTileSize >= (int) actualEntityOppositeDirection / BaseTileSize))
-                            ||
-                        ((entityDirection == RIGHT || entityDirection == DOWN) &&
-                        ((int) movingEntityDirection / BaseTileSize >= (int) actualEntityOppositeDirection / BaseTileSize) &&
-                        ((int) movingEntityOppositeDirection / BaseTileSize <= (int) actualEntityOppositeDirection / BaseTileSize)))
-                        attack = true;
-                }
-                else if (movingEntityAction == WALKING) {
-                    if ((int) movingEntityDirection / BaseTileSize  == (int) actualEntityOppositeDirection / BaseTileSize)
-                        walking = true;
-                }
+                //first check: are entities in the same line/column?
+                if ((int) movingEntityDirection  == (int) actualEntityOppositeDirection) {
 
                 //second check: are entities colliding?
-                if (walking || attack) {
                     //if moving entity has a hitbox smaller than the actual entity
-                    if ((int) movingEntityCornerOne / BaseTileSize <= (int) actualEntityCornerTwo / BaseTileSize
+                    if ((int) movingEntityCornerOne <= (int) actualEntityCornerTwo
                             &&
-                        (int) movingEntityCornerTwo / BaseTileSize >= (int) actualEntityCornerOne / BaseTileSize)
-                        collision = true;
+                        (int) movingEntityCornerTwo >= (int) actualEntityCornerOne)
+                        return true;
 
                         //if moving entity has a hitbox larger than the actual entity
-                    else if ((int) actualEntityCornerOne / BaseTileSize <= (int) movingEntityCornerTwo / BaseTileSize
+                    else if ((int) actualEntityCornerOne <= (int) movingEntityCornerTwo
                             &&
-                            (int) actualEntityCornerTwo / BaseTileSize >= (int) movingEntityCornerOne / BaseTileSize)
-                        collision = true;
+                            (int) actualEntityCornerTwo >= (int) movingEntityCornerOne)
+                        return true;
                 }
-
-                if (walking && collision)
-                    return true;
-                else if (attack && collision)
-                    if (movingEntityIsPlayer)
-                        ((Player) movingEntity).setEnemiesHit(actualEntity);
-                    else
-                        ((EnemyEntity) movingEntity).setPlayerHit(true);
             }
         }
         return false;
     }
+
+    public HashSet<Entity> checkCollisionAttack(Entity movingEntity, int weaponRange, int weaponCornerOne, int weaponCornerTwo) {
+        ArrayList<Entity> entities = mapManager.getPlaying().getEntities();
+        HashSet<Entity> enemiesHit = new HashSet<>();
+
+        int playerX = (int) (movingEntity.getPositionX());
+        int playerY = (int) (movingEntity.getPositionY());
+
+        int movingEntityDirection = movingEntity.getDirection();
+
+        for (Entity entity : entities) {
+            if (!entity.equals(movingEntity)) {
+                int enemyX = (int) (entity.getPositionX());
+                int enemyY = (int) (entity.getPositionY());
+
+                if (movingEntityDirection == LEFT || movingEntityDirection == RIGHT) {
+                int distanceX = Math.abs(playerX - enemyX);
+                if (distanceX <= weaponRange &&
+                        playerY + weaponCornerOne >= enemyY + entity.getHitbox()[UP] &&
+                        playerY + weaponCornerTwo <= enemyY + entity.getHitbox()[DOWN])
+                    enemiesHit.add(entity);
+                }
+
+                else if (movingEntityDirection == UP || movingEntityDirection == DOWN) {
+                    int distanceY = Math.abs(playerY - enemyY);
+                    if (distanceY <= weaponRange &&
+                            playerX + weaponCornerOne >= enemyX + entity.getHitbox()[LEFT] &&
+                            playerX + weaponCornerTwo <= enemyX + entity.getHitbox()[RIGHT])
+                        enemiesHit.add(entity);
+                }
+            }
+        }
+        return enemiesHit;
+    }
+
 
     public void setMapManager(MapManager mapManager) {
         this.mapManager = mapManager;

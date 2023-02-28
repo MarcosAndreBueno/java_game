@@ -15,17 +15,20 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
 
     protected int aniTick, aniIndexI;
 
-    protected float oldX = playing.getPlayer().getPositionX();
-    protected float oldY = playing.getPlayer().getPositionY();
-    protected float npcCenterX, npcCenterY;
-    protected float px, py;
-
     protected long previousTime = playing.getGame().getGameTime();
+    protected long testTime = playing.getGame().getGameTime();
     protected int pressedButton = -1;
 
     protected String[][] npcInfo;
     protected final int npcID;
-    protected boolean playerHit;
+
+    protected int maxHP, hp;
+    protected int sightRange, attackRange;
+    protected int pushBack, hitDamage;
+    protected long cooldownCounter = System.currentTimeMillis();
+    protected int attackCooldown, attack1Damage;
+    protected float attack1PushBack;
+    protected boolean following, playerHit, canPerformAttack;
 
     public EnemyEntity(int npcID, String[][]npcInfo, Playing playing) {
         super(Float.parseFloat(npcInfo[npcID][POSITION_X]),
@@ -39,76 +42,36 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
 
     public void setEntityInitialCenter() {
         if (playing.getPlayer().getPositionX() >= 0)
-            npcCenterX = x + ScreenCenterX - playing.getPlayer().getPositionX();
+            entityCenterX = x + ScreenCenterX - playing.getPlayer().getPositionX();
         else
-            npcCenterX = x + ScreenCenterX;
+            entityCenterX = x + ScreenCenterX;
         if (playing.getPlayer().getPositionY() >= 0)
-            npcCenterY = y + ScreenCenterY - playing.getPlayer().getPositionY();
+            entityCenterY = y + ScreenCenterY - playing.getPlayer().getPositionY();
         else
-            npcCenterY = y + ScreenCenterY;
+            entityCenterY = y + ScreenCenterY;
     }
     protected void checkCollision() {
         if (pressedButton > -1)
             switch (pressedButton) {
-                case UP -> { y += -entitySpeed; npcCenterY += -entitySpeed; checkCollisionUp(entitySpeed); }
-                case LEFT -> { x += -entitySpeed; npcCenterX += -entitySpeed; checkCollisionLeft(entitySpeed); }
-                case DOWN -> { y += entitySpeed; npcCenterY += entitySpeed; checkCollisionDown(entitySpeed); }
-                case RIGHT -> { x += entitySpeed; npcCenterX += entitySpeed; checkCollisionRight(entitySpeed); }
+                case UP -> { y += -entitySpeed; entityCenterY += -entitySpeed; checkCollisionUp(entitySpeed); }
+                case LEFT -> { x += -entitySpeed; entityCenterX += -entitySpeed; checkCollisionLeft(entitySpeed); }
+                case DOWN -> { y += entitySpeed; entityCenterY += entitySpeed; checkCollisionDown(entitySpeed); }
+                case RIGHT -> { x += entitySpeed; entityCenterX += entitySpeed; checkCollisionRight(entitySpeed); }
             }
     }
 
-    public boolean checkIfOutOfMap(int direction, float x, float y) {
-        try {
-            return playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,direction);
-        } catch (IndexOutOfBoundsException e) {
-            return true;
-        }
-    }
+    public void updateEnemyCenter() {
+        float screenDifferenceX = Math.abs(this.x - playing.getPlayer().getPositionX());
+        float screenDifferenceY = Math.abs(this.y - playing.getPlayer().getPositionY());
 
-    public void checkCollisionAttack() {
-        float[] objectHitbox = new float[4];
-
-        switch (direction) {
-            case UP -> {
-                objectHitbox = new float[]{-20,0,0,28};
-                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
-            }
-            case LEFT -> {
-                objectHitbox = new float[]{32,-50,64,1};
-                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
-            }
-            case DOWN -> {
-                objectHitbox = new float[]{20,0,82,28};
-                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
-            }
-            case RIGHT -> {
-                objectHitbox = new float[]{16,0,64,70};
-                playing.getMapManager().getCollision().isEntityHere(this, x, y, objectHitbox, direction);
-            }
-        }
-        if (playerHit) {
-            performAttack();
-        }
-    }
-
-    private void performAttack() {
-        int hitDamage = 10;
-
-        playing.getPlayer().setHp(-hitDamage);
-        playing.getPlayer().setEntityStatus(direction);
-
-        playerHit = false;
-    }
-
-    protected void updatePosition() {
-        //if the screen is moving with player
-        if (px > 0 && px + ScreenWidth < playing.getMapManager().getMapMaxWidth())
-            npcCenterX = npcCenterX - (px - oldX);
-        oldX = px;
-        //if the screen is moving with player
-        if (py > 0 && py + ScreenHeight < playing.getMapManager().getMapMaxHeight())
-            npcCenterY = npcCenterY - (py - oldY);
-        oldY = py;
+        if (playing.getPlayer().getCenterX() > entityCenterX)
+            entityCenterX = playing.getPlayer().getCenterX() - screenDifferenceX;
+        else
+            entityCenterX = playing.getPlayer().getCenterX() + screenDifferenceX;
+        if (playing.getPlayer().getCenterY() > entityCenterY)
+            entityCenterY = playing.getPlayer().getCenterY() - screenDifferenceY;
+        else
+            entityCenterY = playing.getPlayer().getCenterY() + screenDifferenceY;
     }
 
     protected void randomMovement() {
@@ -116,7 +79,7 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
         int number = random.nextInt(5);
         long currentTime = playing.getGame().getGameTime();
 
-        if (currentTime - previousTime >= 1) {
+        if (currentTime - previousTime >= 3000) {
             switch (number) {
                 case UP -> { setPressedButton(UP); setDirection(UP); setAction(WALKING); }
                 case LEFT -> { setPressedButton(LEFT); setDirection(LEFT); setAction(WALKING); }
@@ -127,21 +90,34 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
             previousTime = currentTime;
         }
     }
-    
+
+    protected boolean canAttack() {
+        if (System.currentTimeMillis() - cooldownCounter >= attackCooldown) {
+            cooldownCounter = System.currentTimeMillis();
+            return true;
+        }
+
+        return false;
+    }
+
     protected void setAction(int action) {
         this.aniAction = action;
     }
     
     @Override
     public void resetPositionX(float x) {
-        this.x += x * -1;
-        this.npcCenterX += x * -1;
+        this.x += x * - 1;
+        this.entityCenterX += x * -1;
     }
 
     @Override
     public void resetPositionY(float y) {
         this.y += y * -1;
-        this.npcCenterY += y * -1;
+        this.entityCenterY += y * -1;
+    }
+
+    public void pushEntity(float pushDistance, int hitDirection) {
+        playing.getMapManager().getCollision().pushEntity(this, hitDirection, pushDistance);
     }
 
     public String getName() {
@@ -159,5 +135,4 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
     protected void resetPressedButtons() {
         this.pressedButton = -1;
     }
-    
 }

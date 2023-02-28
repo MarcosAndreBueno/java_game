@@ -20,6 +20,14 @@ public class Constants {
         public static final int ATTACKING_02_FRAMES = 6;
     }
 
+    public static class EnemyConstants {
+        public static final int STANDING = 0;
+        public static final int WALKING = 1;
+        public static final int WALKING_FRAMES = 8;
+        public static final int ATTACKING_01 = 4;
+        public static final int ATTACKING_01_FRAMES = 6;
+    }
+
     public static class Maps {
         public static final String TEST_MAP = "maps/testMap";
     }

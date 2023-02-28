@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import static main.GameWindow.ScreenSettings.Scale;
+import static main.GameWindow.ScreenSettings.ScreenHeight;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
@@ -18,18 +19,20 @@ public abstract class Entity {
 
     //entity position
     protected float x,y;
+    //center camera on player
+    protected float entityCenterX, entityCenterY;
+
     protected float[] hitbox, attackHitBox;
 
     //entity animation
     protected BufferedImage[][] animations;
     protected String sprite;
     protected int aniAction;
-    protected int aniTick, aniFrame, aniMoveSpeed, aniAttackSpeed;
+    protected int aniTick, aniFrame, attackFrame, aniMoveSpeed, aniAttackSpeed;
     protected int direction;
     protected int aniWidth, aniHeight;
     protected float entitySpeed;
     protected String entityName;
-    protected int entityStatus = -1;
 
     public Entity(float x, float y, String sprite, Playing playing) {
         this.x = x;
@@ -54,31 +57,35 @@ public abstract class Entity {
     }
 
     public void checkCollisionLeft(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox, LEFT))
+        if (playing.getMapManager().getCollision().isTileSolid(this))
             resetPositionX(-reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this, x, y, hitbox, LEFT))
+        if (playing.getMapManager().getCollision().isEntityHere(this))
             resetPositionX(-reset);
     }
     public void checkCollisionRight(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,RIGHT))
+        if (playing.getMapManager().getCollision().isTileSolid(this))
             resetPositionX(reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,RIGHT))
+        if (playing.getMapManager().getCollision().isEntityHere(this))
             resetPositionX(reset);
     }
     public void checkCollisionUp(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,UP))
+        if (playing.getMapManager().getCollision().isTileSolid(this))
             resetPositionY(-reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,UP))
+        if (playing.getMapManager().getCollision().isEntityHere(this))
             resetPositionY(-reset);
     }
     public void checkCollisionDown(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(x,y,hitbox,DOWN))
+        if (playing.getMapManager().getCollision().isTileSolid(this))
             resetPositionY(reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this, x, y,hitbox,DOWN))
+        if (playing.getMapManager().getCollision().isEntityHere(this))
             resetPositionY(reset);
     }
 
-    protected void setDirection(int direction) {
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
         this.direction = direction;
     }
 
@@ -94,31 +101,36 @@ public abstract class Entity {
 
     public String getEntityName() {return entityName;}
 
-    public void setPositionX(float x) {
+    public void increasePositionX(float x) {
         this.x += x;
     }
-
-    public void setPositionY(float y) {
+    public void increasePositionY(float y) {
         this.y += y;
     }
-
+    public void setPositionX(float x) {
+        this.x = x;
+    }
+    public void setPositionY(float y) {
+        this.y = y;
+    }
     public float getPositionX() {
         return x;
     }
-
     public float getPositionY() {
         return y;
     }
-
+    public float getEntityCenterX() {
+        return entityCenterX;
+    }
+    public float getEntityCenterY() {
+        return entityCenterY;
+    }
     public void resetPositionX(float x) {
         this.x += x * -1;
     }
-
     public void resetPositionY(float y) {
         this.y += y * -1;
     }
     public void update() {}
     public void draw(Graphics2D g2) {}
-
-    protected void setEntityStatus(int status) {this.entityStatus = status;}
 }
