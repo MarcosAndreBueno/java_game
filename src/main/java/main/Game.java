@@ -119,7 +119,6 @@ public class Game implements Runnable{
             //print fps and ups
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                gameTime++;
 //                System.out.println("FPS: " + frames + " | UPS: " + updates);
                 frames = 0;
                 updates = 0;

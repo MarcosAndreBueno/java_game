@@ -43,14 +43,16 @@ public class CSVHandle {
                 .withIgnoreHeaderCase()
                 .withTrim());
 
-        int[] temp = getMapNpcRowsAndColumns(mapCSV);
         //amount of npc's in the map
-        int rows = temp[0];
+        int rows = csvParser.getRecords().size();
         //amount of npc information
-        int columns = temp[1];
+        int columns = csvParser.getHeaderMap().size();
 
-//        System.out.println(csvParser.getRecords().size());
-//        System.out.println(csvParser.getHeaderMap().size());
+        reader = Files.newBufferedReader(Paths.get("src/main/resources/" + mapCSV + "_npcs.csv"));
+        csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                .withFirstRecordAsHeader()
+                .withIgnoreHeaderCase()
+                .withTrim());
 
         SortedMap<String,Integer> headerMap = (SortedMap<String, Integer>) csvParser.getHeaderMap();
         int i = 0;
@@ -62,16 +64,9 @@ public class CSVHandle {
             i++;
         }
         closeCSV(csvParser);
+        closeReader(reader);
 
         return npcInfo;
-    }
-
-    private int[] getMapNpcRowsAndColumns(String mapCSV) {
-        switch (mapCSV) {
-            case TEST_MAP -> { return new int[] {1,14};}
-        }
-
-        return null;
     }
 
     public void csvModifyValues() {
@@ -129,6 +124,14 @@ public class CSVHandle {
     private void closeCSV(CSVParser csvParser) {
         try {
             csvParser.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void closeReader(Reader reader) {
+        try {
+            reader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

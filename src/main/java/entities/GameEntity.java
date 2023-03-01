@@ -21,6 +21,9 @@ public interface GameEntity {
     public void resetPositionY(float y);
     public int getDirection();
     public void setDirection(int direction);
+    public void updateStatusCooldown();
+    public void setEntityCooldown(int entityStatus);
+    public int getEntityStatus();
 
     public int getHp();
     public void setHp(int hp);

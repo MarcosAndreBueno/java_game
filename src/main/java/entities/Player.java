@@ -5,8 +5,9 @@ import game_states.Playing;
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
-import static utilz.Constants.EntityStatus.*;
-import static utilz.Constants.EntityStatus.ATTACKED_RIGHT;
+
+import static utilz.Constants.EntityConstants.*;
+import static utilz.Constants.*;
 import static utilz.Constants.PlayerConstants.*;
 
 import utilz.Constants.Entities;
@@ -14,7 +15,6 @@ import utilz.LoadSaveImage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Player extends Entity implements GameEntity{
@@ -22,10 +22,14 @@ public class Player extends Entity implements GameEntity{
     //player movement
     private boolean upPressed, downPressed, leftPressed, rightPressed;
 
+    protected int aniAttackSpeed, aniDyingSpeed, aniPerishingSpeed;
+
     protected int maxHP, hp;
     public int attack1Damage, attack2Damage;
     public boolean canPerformAttack;
     protected float attack1PushBack, attack2PushBack;
+
+    protected long damaged;
 
     public Player(float x, float y, String sprite, Playing playing) {
         super(x, y, sprite, playing);
@@ -38,9 +42,13 @@ public class Player extends Entity implements GameEntity{
         setEntityInitialCenter();
         maxHP = 50;
         hp = maxHP;
+        aniAttackSpeed = 12;
+        aniDyingSpeed = 70;
+        aniPerishingSpeed = 150;
         attack1Damage = 10;
-        attack2Damage = 15;
+        attack2Damage = 20;
         entityName = "Player";
+        entityStatus = NORMAL;
         attack1PushBack = 8 * BaseTileSize;
         attack2PushBack = 10 * BaseTileSize;
     }
@@ -53,31 +61,17 @@ public class Player extends Entity implements GameEntity{
     }
 
     public void update() {
-        updatePlayerInformations();
-        updateAnimationTick();
+        if (aniAction != PlayerConstants.DYING)
+            updatePlayerInformations();
+        else
+            playerDying();
     }
 
-    public void draw(Graphics2D g2) {
-        //animation
-        if (aniAction >= ATTACKING_01)
-            g2.drawImage(animations[aniAction+direction][aniFrame],
-                    (int) (entityCenterX-aniWidth), (int) (entityCenterY-aniHeight),
-                    aniWidth*3, aniHeight*3, null);
-        else
-            g2.drawImage(animations[direction][aniFrame], (int) entityCenterX, (int) entityCenterY,
-                    aniWidth, aniHeight, null);
-
-        //hitbox
-        g2.drawRect((int) (entityCenterX+hitbox[LEFT]), (int) (entityCenterY+hitbox[UP]),
-                (int) (hitbox[RIGHT]-hitbox[LEFT]), (int) (hitbox[DOWN]-hitbox[UP]));
-
-        //HP
-        int w1 = (int) (100 * Scale);
-        g2.setColor(Color.BLACK);
-        g2.fillRect(30,20, w1, (int) (4 * Scale));
-        g2.setColor(Color.RED);
-        int w2 = hp * 100 / maxHP;
-        g2.fillRect(30,20,w1 * w2 / 100,(int) (4 * Scale));
+    private void playerDying() {
+        if (entityStatus != PERISHING)
+            updateAnimationTick();
+        else if (checkAniTickFrame(aniPerishingSpeed))
+            setEntityStatus(GAME_OVER);
     }
 
     //update image after few frames
@@ -113,6 +107,15 @@ public class Player extends Entity implements GameEntity{
                     }
                     if (aniFrame >= ATTACKING_02_FRAMES-1)
                         canPerformAttack = true;
+                }
+                break;
+            case PlayerConstants.DYING:
+                if (checkAniTickFrame(aniDyingSpeed) && entityStatus != PERISHING) {
+                    aniFrame++;
+                    if (aniFrame >= PlayerConstants.DYING_FRAMES) {
+                        setEntityStatus(PERISHING);
+                        aniFrame = PlayerConstants.DYING_FRAMES-1;
+                    }
                 }
                 break;
         }
@@ -160,13 +163,8 @@ public class Player extends Entity implements GameEntity{
             }
         }
         updatePlayerCenter();
-    }
-
-    public void setSpeed() {
-        if (entitySpeed == 3)
-            entitySpeed = 0.3f * 2;
-        else
-            entitySpeed = 3;
+        updateStatusCooldown();
+        updateAnimationTick();
     }
 
     public void performAttack() {
@@ -237,7 +235,7 @@ public class Player extends Entity implements GameEntity{
 
     public void loadAnimations() {
         BufferedImage img = LoadSaveImage.GetSpriteAtlas(Entities.PLAYER_ATLAS);
-        animations = new BufferedImage[12][9];
+        animations = new BufferedImage[13][9];
         int tempI = 8;
         //walk movement
         for (int i = 0; i < 4; i++) {
@@ -256,6 +254,11 @@ public class Player extends Entity implements GameEntity{
             }
             tempI += 3;
             tempJ = 0;
+        }
+        //dying animation
+        tempI = 20;
+        for (int j = 0; j < 6; j++) {
+            animations[12][j] = img.getSubimage(j * 64, tempI * 64, 64, 64);
         }
     }
 
@@ -286,6 +289,17 @@ public class Player extends Entity implements GameEntity{
         this.rightPressed = rightPressed;
     }
 
+    public void setEntityCooldown(int status) {
+        switch (status) {
+            case DAMAGED -> { damaged = System.currentTimeMillis(); entityStatus = DAMAGED; }
+        }
+    }
+
+    public void updateStatusCooldown() {
+        if (System.currentTimeMillis() - damaged >= 2000)
+            entityStatus = NORMAL;
+    }
+
     public void pushEntity(float pushDistance, int hitDirection) {
         playing.getMapManager().getCollision().pushEntity(this, hitDirection, pushDistance);
     }
@@ -300,15 +314,33 @@ public class Player extends Entity implements GameEntity{
         this.hp += value;
         if (this.hp > maxHP)
             this.hp = maxHP;
-        else if (this.hp < 0)
-            this.hp = 0;
+        else if (this.hp < 0) {
+            setAction(PlayerConstants.DYING);
+            resetAniFrame();
+        }
     }
 
-    public float getCenterX() {
-        return entityCenterX;
-    }
+    public void draw(Graphics2D g2) {
+        if (aniAction == PlayerConstants.DYING)
+            g2.drawImage(animations[PlayerConstants.DYING][aniFrame], (int) entityCenterX,
+                    (int) entityCenterY, aniWidth, aniHeight, null);
+        else if (entityStatus == NORMAL || entityStatus == DAMAGED && System.currentTimeMillis() % 2 == 0) {
+            //animation
+            if (aniAction == ATTACKING_01 || aniAction == ATTACKING_02)
+                g2.drawImage(animations[aniAction + direction][aniFrame],
+                        (int) (entityCenterX - aniWidth), (int) (entityCenterY - aniHeight),
+                        aniWidth * 3, aniHeight * 3, null);
+            else
+                g2.drawImage(animations[direction][aniFrame], (int) entityCenterX,
+                        (int) entityCenterY, aniWidth, aniHeight, null);
+        }
 
-    public float getCenterY() {
-        return entityCenterY;
+        //HP
+        int w1 = (int) (100 * Scale);
+        g2.setColor(Color.BLACK);
+        g2.fillRect(30,20, w1, (int) (4 * Scale));
+        g2.setColor(Color.RED);
+        int w2 = hp * 100 / maxHP;
+        g2.fillRect(30,20,w1 * w2 / 100,(int) (4 * Scale));
     }
 }

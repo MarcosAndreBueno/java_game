@@ -24,11 +24,10 @@ public class Collision {
     public Collision(MapManager mapManager) {
         this.mapManager = mapManager;
     }
+
     public void pushEntity(Entity entity, int hitDirection, float pushDistance) {
         float tempX = entity.getPositionX();
         float tempY = entity.getPositionY();
-        float tempCenterX = entity.getEntityCenterX();
-        float tempCenterY = entity.getEntityCenterY();
         try {
             switch (hitDirection) {
                 case UP -> {

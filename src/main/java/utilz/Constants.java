@@ -9,23 +9,42 @@ public class Constants {
         public static final int RIGHT = 3;
     }
 
+    //for status variables
+    public static class EntityConstants {
+        public static final int NORMAL = 0;
+        public static final int DAMAGED = 1;
+        public static final int PERISHING = 2;
+        public static final int DEAD = 3;
+        public static final int GAME_OVER = 4;
+
+    }
+
+    //for actions and animations variables
     public static class PlayerConstants {
+        //actions
         public static final int STANDING = 0;
         public static final int WALKING = 1;
         public static final int ATTACKING_01 = 4;
         public static final int ATTACKING_02 = 8;
+        public static final int DYING = 12;
         //number of animation frames
         public static final int WALKING_FRAMES = 8;
         public static final int ATTACKING_01_FRAMES = 8;
         public static final int ATTACKING_02_FRAMES = 6;
+        public static final int DYING_FRAMES = 6;
     }
 
+    //for actions and animations variables
     public static class EnemyConstants {
+        //actions
         public static final int STANDING = 0;
         public static final int WALKING = 1;
-        public static final int WALKING_FRAMES = 8;
         public static final int ATTACKING_01 = 4;
+        public static final int DYING = 8;
+        //number of animation frames
+        public static final int WALKING_FRAMES = 8;
         public static final int ATTACKING_01_FRAMES = 6;
+        public static final int DYING_FRAMES = 6;
     }
 
     public static class Maps {
@@ -45,13 +64,6 @@ public class Constants {
         public static final int SPRITE_ATLAS = 9;
     }
 
-    public static class EntityStatus {
-        public static final int ATTACKED_UP = 0;
-        public static final int ATTACKED_LEFT = 1;
-        public static final int ATTACKED_DOWN = 2;
-        public static final int ATTACKED_RIGHT = 3;
-    }
-
     public static class Entities {
         public static final String PLAYER_ATLAS = "characters/player";
         public static final String NPC_CHEMIST_ATLAS = "characters/npc_chemist";
@@ -61,5 +73,6 @@ public class Constants {
     public static class GameStates {
         public static final int MENU = 1;
         public static final int PLAYING = 2;
+        public static final int GAME_OVER = 3;
     }
 }

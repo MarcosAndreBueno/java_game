@@ -4,7 +4,7 @@ import entities.EnemyEntity;
 import entities.Entity;
 import entities.Player;
 import game_states.Playing;
-import utilz.Constants;
+import utilz.Constants.*;
 import utilz.LoadSaveImage;
 
 import java.awt.*;
@@ -14,6 +14,7 @@ import java.util.HashSet;
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.EnemyConstants.*;
+import static utilz.Constants.EntityConstants.*;
 import static utilz.Constants.NpcAndEnemiesCsv.*;
 
 public class Ogre extends EnemyEntity {
@@ -27,7 +28,6 @@ public class Ogre extends EnemyEntity {
         loadAnimations();
         setHitbox(aniHeight/4f, aniWidth/4f, aniHeight, aniWidth/1.33f);
         setEntityInitialCenter();
-        pushBack = (int) (64 * Scale);
         aniIndexI = Integer.parseInt(npcInfo[npcID][DIRECTION]);
         maxHP = Integer.parseInt(npcInfo[npcID][MAX_HP]);
         hp = maxHP;
@@ -35,15 +35,15 @@ public class Ogre extends EnemyEntity {
         sightRange = (int) (64 * Scale);
         attackRange = (int) (aniHeight / 1.23f);
         aniAttackSpeed = 16;
-        attackCooldown = 1500;
-        attack1Damage = 15;
-        attack1PushBack = 10 * BaseTileSize;
-        hitDamage = 10;
+        aniDyingSpeed = 40;
+        aniPerishingSpeed = 120;
+        attackingDamage = 20;
+        pushBack = (int) (64 * Scale);
     }
 
     public void loadAnimations() {
         BufferedImage img = LoadSaveImage.GetSpriteAtlas(sprite);
-        animations = new BufferedImage[8][9];
+        animations = new BufferedImage[9][9];
         int tempI = 8;
         //walk movement
         for (int i = 0; i < 4; i++) {
@@ -62,10 +62,29 @@ public class Ogre extends EnemyEntity {
             tempI += 3;
             tempJ = 0;
         }
+        //dying animation
+        tempI = 20;
+        for (int j = 0; j < 6; j++) {
+            animations[8][j] = img.getSubimage(j * 64, tempI * 64, 64, 64);
+        }
     }
 
     @Override
     public void update() {
+        if (aniAction != EnemyConstants.DYING)
+            updateEntityInformations();
+        else
+            entityDying();
+    }
+
+    private void entityDying() {
+        if (entityStatus != PERISHING)
+            updateAnimationTick();
+        else if (checkAniTickFrame(aniPerishingSpeed))
+            setEntityStatus(DEAD);
+    }
+
+    public void updateEntityInformations() {
         //NPC movement
         if (npcInfo[npcID][CAN_MOVE].equals("1") && !following)
             randomMovement();
@@ -87,6 +106,8 @@ public class Ogre extends EnemyEntity {
                 canPerformAttack = false;
                 performAttack();
             }
+
+        updateStatusCooldown();
     }
 
     protected void checkEnemyAction() {
@@ -104,9 +125,10 @@ public class Ogre extends EnemyEntity {
         if (distanceX <= sightRange && distanceY <= sightRange) {
             //attack player
             if (distanceX <= attackRange && distanceY <= attackRange) {
-                if (canAttack()) {
+                if (!attackCooldown && aniAction != ATTACKING_01) {
                     resetPressedButtons();
                     setAction(ATTACKING_01);
+                    resetAniFrame();
                 }
             }
             //follow player
@@ -149,8 +171,12 @@ public class Ogre extends EnemyEntity {
 
         if (!enemiesHit.isEmpty()) {
             for (Entity entity : enemiesHit) {
-                entity.setHp(hitDamage);
-                ((Player) entity).pushEntity(pushBack, direction);
+                if (entity.getEntityStatus() != DAMAGED && entity.getEntityName().startsWith("Player")) {
+                    entity.setHp(-attackingDamage);
+                    ((Player) entity).pushEntity(pushBack, direction);
+                    ((Player) entity).setEntityCooldown(DAMAGED);
+                }
+                setEntityCooldown(ATTACKING_01);
             }
         }
     }
@@ -170,13 +196,22 @@ public class Ogre extends EnemyEntity {
                 break;
             case ATTACKING_01:
                 if (checkAniTickFrame(aniAttackSpeed)) {
-                    attackFrame++;
-                    if (attackFrame >= ATTACKING_01_FRAMES) {
-                        attackFrame = 1;
+                    aniFrame++;
+                    if (aniFrame >= ATTACKING_01_FRAMES) {
+                        aniFrame = 1;
                         setAction(STANDING);
                     }
-                    if (attackFrame >= ATTACKING_01_FRAMES - 1)
+                    if (aniFrame >= ATTACKING_01_FRAMES - 1)
                         canPerformAttack = true;
+                }
+                break;
+            case EnemyConstants.DYING:
+                if (checkAniTickFrame(aniDyingSpeed) && entityStatus != PERISHING) {
+                    aniFrame++;
+                    if (aniFrame >= EnemyConstants.DYING_FRAMES) {
+                        setEntityStatus(PERISHING);
+                        aniFrame = EnemyConstants.DYING_FRAMES-1;
+                    }
                 }
                 break;
         }
@@ -187,40 +222,27 @@ public class Ogre extends EnemyEntity {
             aniTick = 0;
             return true;
         }
-        else
+        else {
             aniTick++;
-
-        return false;
-    }
-
-    @Override
-    public int getHp() {
-        return hp;
-    }
-
-    @Override
-    public void setHp(int value) {
-        this.hp += value;
-        if (this.hp > maxHP)
-            this.hp = maxHP;
-        else if (this.hp < 0)
-            this.hp = 0;
+            return false;
+        }
     }
 
     @Override
     public void draw(Graphics2D g2) {
         //animations
         if (aniAction == ATTACKING_01)
-            g2.drawImage(animations[aniAction+direction][attackFrame],
+            g2.drawImage(animations[ATTACKING_01+direction][aniFrame],
                     (int) (entityCenterX-aniWidth), (int) (entityCenterY-aniHeight),
                     aniWidth*3, aniHeight*3, null);
+        else if (aniAction == EnemyConstants.DYING) {
+            if (entityStatus != PERISHING || System.currentTimeMillis() % 2 == 0)
+                g2.drawImage(animations[EnemyConstants.DYING][aniFrame], (int) entityCenterX, (int) entityCenterY,
+                        aniWidth, aniHeight, null);
+        }
         else
             g2.drawImage(animations[direction][aniFrame], (int)entityCenterX,(int)entityCenterY,
                     aniWidth, aniHeight, null);
-
-        //hitbox
-        g2.drawRect((int) (entityCenterX+hitbox[LEFT]), (int) (entityCenterY+hitbox[UP]),
-                (int) (hitbox[RIGHT]-hitbox[LEFT]), (int) (hitbox[DOWN]-hitbox[UP]));
 
         //HP
         int w1 = (int) (30*Scale);

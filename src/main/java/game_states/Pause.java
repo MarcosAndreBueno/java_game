@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 import static main.GameWindow.ScreenSettings.*;
+import static utilz.Constants.GameStates.PLAYING;
 
 public class Pause implements GameStates{
     private Game game;
@@ -20,7 +21,7 @@ public class Pause implements GameStates{
             case KeyEvent.VK_S, KeyEvent.VK_DOWN -> System.out.println("s");
             case KeyEvent.VK_A, KeyEvent.VK_LEFT -> System.out.println("a");
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> System.out.println("d");
-            case KeyEvent.VK_ESCAPE -> game.getState().changeGameState();
+            case KeyEvent.VK_ESCAPE -> game.getState().changeGameState(PLAYING);
         }
     }
 

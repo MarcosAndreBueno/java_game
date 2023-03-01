@@ -89,6 +89,10 @@ public abstract class NpcEntity extends Entity implements GameEntity {
         this.entityCenterY += y * -1;
     }
 
+    public void updateStatusCooldown() {
+    }
+    public void setEntityCooldown(int entityStatus){}
+
     public String getName() {
         return npcInfo[npcID][NAME];
     }

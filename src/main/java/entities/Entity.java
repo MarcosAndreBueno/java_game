@@ -1,16 +1,11 @@
 package entities;
 
 import game_states.Playing;
-import tiles.Collision;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import static main.GameWindow.ScreenSettings.Scale;
-import static main.GameWindow.ScreenSettings.ScreenHeight;
-import static utilz.Constants.Directions.*;
-import static utilz.Constants.Directions.UP;
 import static utilz.Constants.PlayerConstants.*;
 
 public abstract class Entity {
@@ -22,13 +17,13 @@ public abstract class Entity {
     //center camera on player
     protected float entityCenterX, entityCenterY;
 
-    protected float[] hitbox, attackHitBox;
+    protected float[] hitbox;
 
     //entity animation
     protected BufferedImage[][] animations;
     protected String sprite;
-    protected int aniAction;
-    protected int aniTick, aniFrame, attackFrame, aniMoveSpeed, aniAttackSpeed;
+    protected int aniAction, entityStatus;
+    protected int aniTick, aniFrame, aniMoveSpeed;
     protected int direction;
     protected int aniWidth, aniHeight;
     protected float entitySpeed;
@@ -48,7 +43,6 @@ public abstract class Entity {
         aniHeight= (int) (32*Scale);
         aniAction = STANDING;
         aniMoveSpeed = 24;
-        aniAttackSpeed = 12;
         entitySpeed = 0.3f * Scale;
     }
 
@@ -125,12 +119,22 @@ public abstract class Entity {
     public float getEntityCenterY() {
         return entityCenterY;
     }
+
+    public void setEntityStatus(int entityStatus) {
+        this.entityStatus = entityStatus;
+    }
+
+    public int getEntityStatus() {
+        return entityStatus;
+    }
+
     public void resetPositionX(float x) {
         this.x += x * -1;
     }
     public void resetPositionY(float y) {
         this.y += y * -1;
     }
+    protected void resetAniFrame() { this.aniFrame = 0; }
     public void update() {}
     public void draw(Graphics2D g2) {}
 }
