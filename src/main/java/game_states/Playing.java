@@ -5,7 +5,7 @@ import entities.Entity;
 import entities.Player;
 
 import main.Game;
-import maps.TestMap;
+import maps.StoneCave;
 import utilz.Constants;
 
 import java.awt.*;
@@ -23,13 +23,13 @@ public class Playing implements GameStates{
     private Game game;
     protected Player player;
     protected ArrayList<Entity> entities;
-    protected TestMap testMap;
+    protected StoneCave testMap;
 
 
     public Playing(Game game) {
         this.game = game;
-        this.testMap = new TestMap(this);
-        this.player = new Player(-100, 30, PLAYER_ATLAS, this);
+        this.testMap = new StoneCave(this);
+        this.player = new Player(800, 10, PLAYER_ATLAS, this);
         loadMapInfo();
         loadEntities();
     }
@@ -99,7 +99,7 @@ public class Playing implements GameStates{
         return player;
     }
 
-    public TestMap getMapManager() {
+    public StoneCave getMapManager() {
         return testMap;
     }
 

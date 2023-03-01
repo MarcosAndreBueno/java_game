@@ -1,21 +1,18 @@
 package maps;
 
 import entities.Entity;
-import entities.npcs.*;
 import game_states.Playing;
 import utilz.CSVHandle;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static main.GameWindow.ScreenSettings.ScreenHeight;
 import static main.GameWindow.ScreenSettings.ScreenWidth;
-import static utilz.Constants.Maps.TEST_MAP;
-import static utilz.Constants.NpcAndEnemiesCsv.*;
+import static utilz.Constants.Maps.LEVEL_ONE;
 
-public class TestMap extends MapManager{
+public class StoneCave extends MapManager{
     private float screenX;
     private float screenY;
     private float screenW;
@@ -23,13 +20,13 @@ public class TestMap extends MapManager{
 
     private String[][] npcInfo;
 
-    public TestMap(Playing playing) {
-        super(playing, TEST_MAP);
+    public StoneCave(Playing playing) {
+        super(playing, LEVEL_ONE);
     }
 
     public void loadMapInfo() {
         try {
-            npcInfo = new CSVHandle().getNPCInformation(TEST_MAP);
+            npcInfo = new CSVHandle().getNPCInformation(LEVEL_ONE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

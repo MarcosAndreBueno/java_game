@@ -48,7 +48,7 @@ public class Constants {
     }
 
     public static class Maps {
-        public static final String TEST_MAP = "maps/testMap";
+        public static final String LEVEL_ONE = "maps/stone_cave";
     }
 
     public static class NpcAndEnemiesCsv {

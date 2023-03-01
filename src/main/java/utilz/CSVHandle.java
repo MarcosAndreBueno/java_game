@@ -2,6 +2,8 @@ package utilz;
 
 import org.apache.commons.csv.*;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,7 +19,7 @@ import static utilz.Constants.Maps.*;
 
 public class CSVHandle {
 
-    Exception exception = new Exception();
+    public int[][] imgInfo;
 
     public int[][] getMapHitbox(String mapCSV, int mapWidth, int mapHeight) {
         CSVParser csvParser = loadCSV("src/main/resources/" + mapCSV + "_collision.csv");
@@ -75,32 +77,22 @@ public class CSVHandle {
     //to prepare csv that will be used at runtime
     public void csvWriter() throws IOException {
 
-        String[][] mapInfo =
-        {
-            {"0,1,40,240,1,1,enemy_Ogre,4,50,characters/enemy_ogre"},
-            {"1,1,80,110,1,1,npc_Chemist,4,50,characters/npc_01_chemist"}
-        };
+        File csvFile = new File("new file.csv");
+        FileWriter fileWriter = new FileWriter(csvFile);
 
-        BufferedWriter writer = Files.newBufferedWriter(Paths.get
-                ("src/main/resources/maps/testMap_npcs.csv"));
-        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
-                .withHeader("ID,OnMap,PositionX,PositionY,Direction,CanMove," +
-                        "Name,WalkingFrames,MaxHp,SpriteAddress"));
-
-        System.out.println(Arrays.deepToString(mapInfo));
-
-        for (String[] array : mapInfo) {
+        for (int[] array : imgInfo) {
             StringBuilder line = new StringBuilder();
             for (int i = 0; i < array.length; i++) {
-                String aux = array[i];
-                line.append(aux);
-                csvPrinter.printRecord(aux);
-                if (i != array.length-1) {
+                String x = Integer.toString(array[i]);
+                line.append(x);
+                if (i != array.length - 1) {
                     line.append(',');
                 }
             }
+            line.append("\n");
+            fileWriter.write(line.toString());
         }
-        csvPrinter.flush();
+        fileWriter.close();
     }
 
     public CSVParser loadCSV(String mapCSV) {
@@ -134,6 +126,31 @@ public class CSVHandle {
             reader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void findSolids() {
+        BufferedImage img = LoadSaveImage.GetSpriteAtlas(LEVEL_ONE);
+
+        imgInfo = new int[img.getHeight() / BaseTileSize][img.getWidth() / BaseTileSize];
+
+        for (int i = 0; i < img.getHeight(); i++) {
+            for (int j = 0; j < img.getWidth(); j++) {
+
+                //if tile is already identified as solid, jump to the next tile
+                if (imgInfo[i / BaseTileSize][j / BaseTileSize] == 1) {
+                    j = ((j + BaseTileSize) / BaseTileSize) * BaseTileSize;
+                }
+                else {
+                    Color color = new Color(img.getRGB(j, i));
+
+                    //compare pixel color by color number
+                    if (color.getRed() == 255 && color.getGreen() == 0 && color.getBlue() == 153) {
+                        imgInfo[i / BaseTileSize][j / BaseTileSize] = 1;
+                        j = ((j + BaseTileSize) / BaseTileSize) * BaseTileSize;
+                    }
+                }
+            }
         }
     }
 }
