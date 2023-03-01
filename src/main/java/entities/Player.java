@@ -207,8 +207,10 @@ public class Player extends Entity implements GameEntity{
                 case ATTACKING_02 -> { hitDamage = -attack2Damage; push = attack2PushBack; }
             }
             for (Entity entity : enemiesHit) {
-                entity.setHp(hitDamage);
-                ((EnemyEntity) entity).pushEntity(push, direction);
+                if (entity.getAction() != EnemyConstants.DYING) {
+                    entity.setHp(hitDamage);
+                    ((EnemyEntity) entity).pushEntity(push, direction);
+                }
             }
         }
     }

@@ -171,7 +171,9 @@ public class Ogre extends EnemyEntity {
 
         if (!enemiesHit.isEmpty()) {
             for (Entity entity : enemiesHit) {
-                if (entity.getEntityStatus() != DAMAGED && entity.getEntityName().startsWith("Player")) {
+                if (entity.getEntityName().startsWith("Player") &&
+                        entity.getEntityStatus() != DAMAGED ||
+                        entity.getAction() != EnemyConstants.DYING) {
                     entity.setHp(-attackingDamage);
                     ((Player) entity).pushEntity(pushBack, direction);
                     ((Player) entity).setEntityCooldown(DAMAGED);
