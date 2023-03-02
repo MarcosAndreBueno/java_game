@@ -1,10 +1,12 @@
 package main;
 
+import game_states.GameOver;
 import game_states.Pause;
 import game_states.Playing;
 import game_states.State;
 
 import java.awt.*;
+import java.awt.event.KeyListener;
 
 import static utilz.Constants.GameStates.*;
 
@@ -14,7 +16,8 @@ public class Game implements Runnable{
     private GamePanel gamePanel;
 
     private Playing playing;
-    private Pause menu;
+    private Pause pause;
+    private GameOver gameOver;
     private State state;
 
     // FPS
@@ -36,9 +39,10 @@ public class Game implements Runnable{
     }
 
     private void initialize() {
-        state = new State();
-        menu = new Pause(this);
+        state = new State(this);
+        pause = new Pause(this);
         playing = new Playing(this);
+        gameOver = new GameOver(this);
     }
 
     private void startGameThread() {
@@ -48,29 +52,41 @@ public class Game implements Runnable{
 
     public void update() {
         switch (state.getGameState()) {
-            case MENU -> menu.update();
-            case PLAYING -> {
-                playing.update();
-            }
+            case PAUSE -> pause.update();
+            case PLAYING -> { playing.update();}
+            case GAME_OVER -> { gameOver.update();}
         }
     }
 
     public void draw(Graphics2D g2) {
-        playing.draw(g2);
-        if (state.getGameState() == MENU)
-            menu.draw(g2);
+        switch (state.getGameState()) {
+            case PAUSE -> { playing.draw(g2); pause.draw(g2); }
+            case PLAYING -> { playing.draw(g2);}
+            case GAME_OVER -> { playing.draw(g2); gameOver.draw(g2);}
+        }
     }
+
+    public void restartPlaying() {
+        playing = new Playing(this);
+        getState().changeGameState(PLAYING);
+    }
+
+    public void exit() { System.exit(0); }
 
     public Playing getPlaying() {
         return playing;
     }
 
-    public Pause getMenu() {
-        return menu;
+    public Pause getPause() {
+        return pause;
     }
 
     public State getState() {
         return state;
+    }
+
+    public GameOver getGameOver() {
+        return gameOver;
     }
 
     public void windowsFocusLost() {
@@ -119,7 +135,7 @@ public class Game implements Runnable{
             //print fps and ups
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
+//                System.out.println("FPS: " + frames + " | UPS: " + updates);
                 frames = 0;
                 updates = 0;
             }

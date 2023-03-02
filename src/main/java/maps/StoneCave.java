@@ -5,6 +5,7 @@ import game_states.Playing;
 import utilz.CSVHandle;
 
 import java.awt.*;
+import java.awt.image.RasterFormatException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -69,7 +70,10 @@ public class StoneCave extends MapManager{
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(mapSprite.getSubimage((int)screenX, (int)screenY, (int)screenW, (int)screenH),
-                0,0,null);
+        try {
+            g2.drawImage(mapSprite.getSubimage((int)screenX, (int)screenY, (int)screenW, (int)screenH),
+                    0,0,null);
+        } catch (RasterFormatException ignored) {
+        }
     }
 }

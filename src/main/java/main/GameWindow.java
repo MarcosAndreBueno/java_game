@@ -17,7 +17,6 @@ public class GameWindow {
         gameWindow.pack(); //apply screen options to window
         gameWindow.setLocationRelativeTo(null);
         gameWindow.setVisible(true);
-
         //block and reset inputs if window changes
         gameWindow.addWindowFocusListener(new WindowFocusListener() {
             @Override

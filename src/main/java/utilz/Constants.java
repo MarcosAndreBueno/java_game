@@ -15,7 +15,6 @@ public class Constants {
         public static final int DAMAGED = 1;
         public static final int PERISHING = 2;
         public static final int DEAD = 3;
-        public static final int GAME_OVER = 4;
 
     }
 
@@ -69,7 +68,7 @@ public class Constants {
     }
 
     public static class GameStates {
-        public static final int MENU = 1;
+        public static final int PAUSE = 1;
         public static final int PLAYING = 2;
         public static final int GAME_OVER = 3;
     }

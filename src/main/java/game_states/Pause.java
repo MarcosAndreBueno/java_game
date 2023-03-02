@@ -1,6 +1,7 @@
 package game_states;
 
 import main.Game;
+import utilz.Constants;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -10,8 +11,11 @@ import static utilz.Constants.GameStates.PLAYING;
 
 public class Pause implements GameStates{
     private Game game;
+    private int previousGameState;
+
     public Pause(Game game) {
         this.game = game;
+        this.previousGameState = PLAYING;
     }
 
     @Override
@@ -21,7 +25,7 @@ public class Pause implements GameStates{
             case KeyEvent.VK_S, KeyEvent.VK_DOWN -> System.out.println("s");
             case KeyEvent.VK_A, KeyEvent.VK_LEFT -> System.out.println("a");
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> System.out.println("d");
-            case KeyEvent.VK_ESCAPE -> game.getState().changeGameState(PLAYING);
+            case KeyEvent.VK_ESCAPE -> game.getState().changeGameState(previousGameState);
         }
     }
 
@@ -33,6 +37,10 @@ public class Pause implements GameStates{
             case KeyEvent.VK_A, KeyEvent.VK_LEFT -> System.out.println("a");
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> System.out.println("d");
         }
+    }
+
+    public void setPreviousPage(int gameState) {
+        this.previousGameState = gameState;
     }
 
     public void draw(Graphics2D g2) {

@@ -8,6 +8,7 @@ import static utilz.Constants.Directions.UP;
 
 import static utilz.Constants.EntityStatusConstants.*;
 import static utilz.Constants.*;
+import static utilz.Constants.GameStates.GAME_OVER;
 import static utilz.Constants.PlayerConstants.*;
 
 import utilz.Constants.Entities;
@@ -71,7 +72,7 @@ public class Player extends Entity implements GameEntity{
         if (entityStatus != PERISHING)
             updateAnimationTick();
         else if (checkAniTickFrame(aniPerishingSpeed))
-            setEntityStatus(GAME_OVER);
+            playing.getGame().getState().changeGameState(GAME_OVER);
     }
 
     //update image after few frames

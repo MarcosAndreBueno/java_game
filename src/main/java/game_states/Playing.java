@@ -21,23 +21,23 @@ public class Playing implements GameStates{
     private Game game;
     protected Player player;
     protected ArrayList<Entity> entities;
-    protected StoneCave testMap;
+    protected StoneCave levelOne;
 
 
     public Playing(Game game) {
         this.game = game;
-        this.testMap = new StoneCave(this);
+        this.levelOne = new StoneCave(this);
         this.player = new Player(800, 10, PLAYER_ATLAS_01, this);
         loadMapInfo();
         loadEntities();
     }
 
     private void loadMapInfo() {
-        testMap.loadMapInfo();
+        levelOne.loadMapInfo();
     }
 
     private void loadEntities() {
-        entities = testMap.loadEntities();
+        entities = levelOne.loadEntities();
         entities.add(player);
     }
 
@@ -60,7 +60,7 @@ public class Playing implements GameStates{
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE -> {
                 player.resetDirBooleans();
-                game.getState().changeGameState(MENU);
+                game.getState().changeGameState(PAUSE);
             }
         }
     }
@@ -76,13 +76,13 @@ public class Playing implements GameStates{
 
     @Override
     public void draw(Graphics2D g2) {
-        testMap.draw(g2);
+        levelOne.draw(g2);
         for (Entity npc : entities) if (npc != null && npc.getEntityStatus() != DEAD) npc.draw(g2);
     }
 
     @Override
     public void update() {
-        testMap.update();
+        levelOne.update();
         for (Entity npc : entities) if (npc != null && npc.getEntityStatus() != DEAD) npc.update();
         entities.removeIf(npc -> npc.getEntityStatus() == DEAD);
         if (entities.get(entities.size()-1).getEntityStatus() == GAME_OVER)
@@ -94,7 +94,7 @@ public class Playing implements GameStates{
     }
 
     public StoneCave getMapManager() {
-        return testMap;
+        return levelOne;
     }
 
     public Game getGame() {
