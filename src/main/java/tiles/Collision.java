@@ -26,35 +26,63 @@ public class Collision {
     }
 
     public void pushEntity(Entity entity, int hitDirection, float pushDistance) {
-        float tempX = entity.getPositionX();
-        float tempY = entity.getPositionY();
+        float lastX = entity.getPositionX();
+        float lastY = entity.getPositionY();
+        int tempDirection = entity.getDirection();
+        boolean collision = false;
+        int aux = 0;
+
         try {
-            switch (hitDirection) {
-                case UP -> {
-                    entity.increasePositionY(-pushDistance);
-                    entity.checkCollisionUp(pushDistance);
-                    isEntityHere(entity);
+            for (int i = 1; i < pushDistance+1; i++) {
+                switch (hitDirection) {
+                    case UP -> {
+                        aux = -i;
+                        entity.setDirection(UP);
+                        entity.increasePositionY(aux);
+                        if (entity.checkCollision())
+                            collision = true;
+                        else
+                            lastY = entity.getPositionY();
+                        entity.decreasePositionY(aux);
+                    }
+                    case LEFT -> {
+                        aux = -i;
+                        entity.setDirection(LEFT);
+                        entity.increasePositionX(aux);
+                        if (entity.checkCollision())
+                            collision = true;
+                        else
+                            lastX = entity.getPositionX();
+                        entity.decreasePositionX(aux);
+                    }
+                    case DOWN -> {
+                        aux = i;
+                        entity.setDirection(DOWN);
+                        entity.increasePositionY(aux);
+                        if (entity.checkCollision())
+                            collision = true;
+                        else
+                            lastY = entity.getPositionY();
+                        entity.decreasePositionY(aux);
+                    }
+                    case RIGHT -> {
+                        aux = i;
+                        entity.setDirection(RIGHT);
+                        entity.increasePositionX(aux);
+                        if (entity.checkCollision())
+                            collision = true;
+                        else
+                            lastX = entity.getPositionX();
+                        entity.decreasePositionX(aux);
+                    }
                 }
-                case LEFT -> {
-                    entity.increasePositionX(-pushDistance);
-                    entity.checkCollisionLeft(pushDistance);
-                    isEntityHere(entity);
-                }
-                case DOWN -> {
-                    entity.increasePositionY(pushDistance);
-                    entity.checkCollisionDown(pushDistance);
-                    isEntityHere(entity);
-                }
-                case RIGHT -> {
-                    entity.increasePositionX(pushDistance);
-                    entity.checkCollisionRight(pushDistance);
-                    isEntityHere(entity);
-                }
+                if (collision)
+                    break;
             }
-        } catch (IndexOutOfBoundsException e) {
-            entity.setPositionX(tempX);
-            entity.setPositionY(tempY);
-        }
+        } catch (IndexOutOfBoundsException ignored) {}
+        entity.setPositionX(lastX);
+        entity.setPositionY(lastY);
+        entity.setDirection(tempDirection);
     }
 
     public boolean isTileSolid(Entity entity) {

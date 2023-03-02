@@ -14,7 +14,7 @@ import java.util.HashSet;
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.EnemyConstants.*;
-import static utilz.Constants.EntityConstants.*;
+import static utilz.Constants.EntityStatusConstants.*;
 import static utilz.Constants.NpcAndEnemiesCsv.*;
 
 public class Ogre extends EnemyEntity {
@@ -32,7 +32,8 @@ public class Ogre extends EnemyEntity {
         maxHP = Integer.parseInt(npcInfo[npcID][MAX_HP]);
         hp = maxHP;
         entityName = npcInfo[npcID][NAME];
-        sightRange = (int) (64 * Scale);
+        direction = Integer.parseInt(npcInfo[npcID][DIRECTION]);
+        sightRange = (int) (80 * Scale);
         attackRange = (int) (aniHeight / 1.23f);
         aniAttackSpeed = 16;
         aniDyingSpeed = 40;
@@ -78,6 +79,7 @@ public class Ogre extends EnemyEntity {
     }
 
     private void entityDying() {
+        updateEnemyCenter();
         if (entityStatus != PERISHING)
             updateAnimationTick();
         else if (checkAniTickFrame(aniPerishingSpeed))
@@ -96,7 +98,7 @@ public class Ogre extends EnemyEntity {
         updateEnemyCenter();
 
         //updates NPC position after it moves and checks for collisions
-        checkCollision();
+        checkMoveCollision();
 
         //check enemy action based on distance from enemy to player
         checkEnemyAction();
@@ -171,12 +173,13 @@ public class Ogre extends EnemyEntity {
 
         if (!enemiesHit.isEmpty()) {
             for (Entity entity : enemiesHit) {
-                if (entity.getEntityName().startsWith("Player") &&
-                        entity.getEntityStatus() != DAMAGED ||
-                        entity.getAction() != EnemyConstants.DYING) {
-                    entity.setHp(-attackingDamage);
-                    ((Player) entity).pushEntity(pushBack, direction);
-                    ((Player) entity).setEntityCooldown(DAMAGED);
+                if (entity.getEntityName().startsWith("Player") && entity.getEntityStatus() != DAMAGED &&
+                        entity.getEntityStatus() != DEAD) {
+                    if (entity.getAction() != PlayerConstants.DYING) {
+                        entity.setHp(-attackingDamage);
+                        ((Player) entity).pushEntity(pushBack, direction);
+                        ((Player) entity).setEntityCooldown(DAMAGED);
+                    }
                 }
                 setEntityCooldown(ATTACKING_01);
             }

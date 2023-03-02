@@ -29,9 +29,6 @@ public abstract class MapManager {
         mapSprite = LoadSaveImage.GetSpriteAtlas(mapName);
         mapMaxWidth = mapSprite.getWidth();
         mapMaxHeight = mapSprite.getHeight();
-        System.out.println(mapName);
-        System.out.println(mapSprite.getWidth() + " " + mapSprite.getHeight());
-        System.out.println(mapSprite.getWidth()/16 + " " + mapSprite.getHeight()/16);
         collision.setMapManager(this);
         mapHitbox = csvHandle.getMapHitbox(mapName, mapMaxWidth, mapMaxHeight);
     }

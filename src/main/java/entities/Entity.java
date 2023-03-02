@@ -46,33 +46,17 @@ public abstract class Entity {
         entitySpeed = 0.3f * Scale;
     }
 
-    public void setHitbox(float up, float left, float down, float right) {
-        hitbox = new float[]{(int) up, (int) left, (int) down, (int) right};
+    public boolean checkCollision() {
+        if (playing.getMapManager().getCollision().isTileSolid(this))
+            return true;
+        if (playing.getMapManager().getCollision().isEntityHere(this))
+            return true;
+
+        return false;
     }
 
-    public void checkCollisionLeft(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(this))
-            resetPositionX(-reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this))
-            resetPositionX(-reset);
-    }
-    public void checkCollisionRight(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(this))
-            resetPositionX(reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this))
-            resetPositionX(reset);
-    }
-    public void checkCollisionUp(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(this))
-            resetPositionY(-reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this))
-            resetPositionY(-reset);
-    }
-    public void checkCollisionDown(float reset) {
-        if (playing.getMapManager().getCollision().isTileSolid(this))
-            resetPositionY(reset);
-        if (playing.getMapManager().getCollision().isEntityHere(this))
-            resetPositionY(reset);
+    public void setHitbox(float up, float left, float down, float right) {
+        hitbox = new float[]{(int) up, (int) left, (int) down, (int) right};
     }
 
     public int getDirection() {
@@ -101,6 +85,12 @@ public abstract class Entity {
     public void increasePositionY(float y) {
         this.y += y;
     }
+    public void decreasePositionX(float x) {
+        this.x += x * -1;
+    }
+    public void decreasePositionY(float y) {
+        this.y += y * -1;
+    }
     public void setPositionX(float x) {
         this.x = x;
     }
@@ -128,12 +118,6 @@ public abstract class Entity {
         return entityStatus;
     }
 
-    public void resetPositionX(float x) {
-        this.x += x * -1;
-    }
-    public void resetPositionY(float y) {
-        this.y += y * -1;
-    }
     protected void resetAniFrame() { this.aniFrame = 0; }
     public void update() {}
     public void draw(Graphics2D g2) {}

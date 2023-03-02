@@ -10,7 +10,7 @@ public class Constants {
     }
 
     //for status variables
-    public static class EntityConstants {
+    public static class EntityStatusConstants {
         public static final int NORMAL = 0;
         public static final int DAMAGED = 1;
         public static final int PERISHING = 2;
@@ -65,9 +65,7 @@ public class Constants {
     }
 
     public static class Entities {
-        public static final String PLAYER_ATLAS = "characters/player";
-        public static final String NPC_CHEMIST_ATLAS = "characters/npc_chemist";
-        public static final String ENEMY_ORC_ATLAS = "characters/enemy_ogre";
+        public static final String PLAYER_ATLAS_01 = "characters/player";
     }
 
     public static class GameStates {

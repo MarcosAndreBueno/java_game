@@ -7,6 +7,7 @@ import java.util.Random;
 import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.NpcAndEnemiesCsv.*;
+import static utilz.Constants.PlayerConstants.STANDING;
 import static utilz.Constants.PlayerConstants.WALKING;
 
 public abstract class NpcEntity extends Entity implements GameEntity {
@@ -43,55 +44,54 @@ public abstract class NpcEntity extends Entity implements GameEntity {
         else
             entityCenterY = y + ScreenCenterY;
     }
-    protected void checkCollision() {
+    protected void checkMoveCollision() {
         if (pressedButton > -1)
             switch (pressedButton) {
-                case LEFT -> { x += -entitySpeed; entityCenterX += -entitySpeed; checkCollisionLeft(entitySpeed); }
-                case DOWN -> { y += entitySpeed; entityCenterY += entitySpeed; checkCollisionDown(entitySpeed); }
-                case UP -> { y += -entitySpeed; entityCenterY += -entitySpeed; checkCollisionUp(entitySpeed); }
-                case RIGHT -> { x += entitySpeed; entityCenterX += entitySpeed; checkCollisionRight(entitySpeed); }
+                case UP ->    { y += -entitySpeed; entityCenterY += -entitySpeed; if (checkCollision()) decreasePositionY(-entitySpeed); }
+                case LEFT ->  { x += -entitySpeed; entityCenterX += -entitySpeed; if (checkCollision()) decreasePositionX(-entitySpeed); }
+                case DOWN ->  { y +=  entitySpeed; entityCenterY +=  entitySpeed; if (checkCollision()) decreasePositionY(entitySpeed); }
+                case RIGHT -> { x +=  entitySpeed; entityCenterX +=  entitySpeed; if (checkCollision()) decreasePositionX(entitySpeed); }
             }
     }
 
-    protected void updatePosition() {
-        if (px > 0 && px + ScreenWidth < playing.getMapManager().getMapMaxWidth())
-            entityCenterX = entityCenterX - (px - oldX);
-        oldX = px;
-        if (py > 0 && py + ScreenHeight < playing.getMapManager().getMapMaxHeight())
-            entityCenterY = entityCenterY - (py - oldY);
-        oldY = py;
-    }
+    public void updateEnemyCenter() {
+        float screenDifferenceX = Math.abs(this.x - playing.getPlayer().getPositionX());
+        float screenDifferenceY = Math.abs(this.y - playing.getPlayer().getPositionY());
 
-    @Override
-    public void resetPositionX(float x) {
-        this.x += x * -1;
-        this.entityCenterX += x * -1;
+        if (playing.getPlayer().getPositionX() > this.x)
+            entityCenterX = playing.getPlayer().getEntityCenterX() - screenDifferenceX;
+        else
+            entityCenterX = playing.getPlayer().getEntityCenterX() + screenDifferenceX;
+        if (playing.getPlayer().getPositionY() > this.y)
+            entityCenterY = playing.getPlayer().getEntityCenterY() - screenDifferenceY;
+        else
+            entityCenterY = playing.getPlayer().getEntityCenterY() + screenDifferenceY;
     }
 
     protected void randomMovement() {
         Random random = new Random();
-        int number = random.nextInt(4);
-        long currentTime = playing.getGame().getGameTime();
-        if (currentTime - previousTime >= 1) {
+        int number = random.nextInt(5);
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - previousTime >= 1700) {
             switch (number) {
-                case LEFT -> { pressedButton = LEFT; direction = LEFT; aniAction = WALKING; }
-                case DOWN -> { pressedButton = DOWN; direction = DOWN; aniAction = WALKING; }
-                case UP -> { pressedButton = UP; direction = UP; aniAction = WALKING; }
+                case LEFT  -> { pressedButton = LEFT;  direction = LEFT;  aniAction = WALKING; }
+                case DOWN  -> { pressedButton = DOWN;  direction = DOWN;  aniAction = WALKING; }
+                case UP    -> { pressedButton = UP;    direction = UP;    aniAction = WALKING; }
                 case RIGHT -> { pressedButton = RIGHT; direction = RIGHT; aniAction = WALKING; }
+                case 4 -> { resetPressedButtons(); aniAction = STANDING; }
             }
             previousTime = currentTime;
         }
     }
 
-    @Override
-    public void resetPositionY(float y) {
-        this.y += y * -1;
-        this.entityCenterY += y * -1;
-    }
-
     public void updateStatusCooldown() {
     }
     public void setEntityCooldown(int entityStatus){}
+
+    protected void resetPressedButtons() {
+        this.pressedButton = -1;
+    }
 
     public String getName() {
         return npcInfo[npcID][NAME];

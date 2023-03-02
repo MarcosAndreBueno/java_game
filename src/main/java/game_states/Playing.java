@@ -1,6 +1,5 @@
 package game_states;
 
-import entities.EnemyEntity;
 import entities.Entity;
 import entities.Player;
 
@@ -13,8 +12,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import static utilz.Constants.Entities.*;
-import static utilz.Constants.EntityConstants.DEAD;
-import static utilz.Constants.EntityConstants.GAME_OVER;
+import static utilz.Constants.EntityStatusConstants.DEAD;
 import static utilz.Constants.GameStates.*;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.PlayerConstants.WALKING;
@@ -29,7 +27,7 @@ public class Playing implements GameStates{
     public Playing(Game game) {
         this.game = game;
         this.testMap = new StoneCave(this);
-        this.player = new Player(800, 10, PLAYER_ATLAS, this);
+        this.player = new Player(800, 10, PLAYER_ATLAS_01, this);
         loadMapInfo();
         loadEntities();
     }
@@ -45,28 +43,24 @@ public class Playing implements GameStates{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        ArrayList<Entity> entities1 = getEntities();
-        EnemyEntity enemy = (EnemyEntity) entities1.get(0);
-
+        if (player.getAction() != Constants.PlayerConstants.DYING) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W, KeyEvent.VK_UP ->
+                { player.setUpPressed(true); player.setAction(WALKING); }
+                case KeyEvent.VK_S, KeyEvent.VK_DOWN ->
+                { player.setDownPressed(true); player.setAction(WALKING); }
+                case KeyEvent.VK_A, KeyEvent.VK_LEFT ->
+                { player.setLeftPressed(true); player.setAction(WALKING); }
+                case KeyEvent.VK_D, KeyEvent.VK_RIGHT ->
+                { player.setRightPressed(true); player.setAction(WALKING); }
+                case KeyEvent.VK_J -> player.setAction(ATTACKING_01);
+                case KeyEvent.VK_L -> player.setAction(ATTACKING_02);
+            }
+        }
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_W -> { player.setUpPressed(true); player.setAction(WALKING); }
-            case KeyEvent.VK_S -> { player.setDownPressed(true); player.setAction(WALKING); }
-            case KeyEvent.VK_A -> { player.setLeftPressed(true); player.setAction(WALKING); }
-            case KeyEvent.VK_D -> { player.setRightPressed(true); player.setAction(WALKING); }
-            case KeyEvent.VK_J -> player.setAction(ATTACKING_01);
-            case KeyEvent.VK_L -> player.setAction(ATTACKING_02);
             case KeyEvent.VK_ESCAPE -> {
                 player.resetDirBooleans();
                 game.getState().changeGameState(MENU);
-            }
-
-            case KeyEvent.VK_ENTER -> {
-                System.out.println("informations ");
-                System.out.println("player x:  " + player.getPositionX()     + " y:  " + player.getPositionY());
-                System.out.println("player cx: " + player.getEntityCenterX() + " cy: " + player.getEntityCenterY());
-                System.out.println("enemy  x:  " + enemy.getPositionX()      + " y:  " + enemy.getPositionY());
-                System.out.println("enemy  cx: " + enemy.getEntityCenterX()  + " cy: " + enemy.getEntityCenterY());
-                System.out.println("-------------------------------------------------------------------");
             }
         }
     }

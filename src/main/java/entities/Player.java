@@ -6,7 +6,7 @@ import static main.GameWindow.ScreenSettings.*;
 import static utilz.Constants.Directions.*;
 import static utilz.Constants.Directions.UP;
 
-import static utilz.Constants.EntityConstants.*;
+import static utilz.Constants.EntityStatusConstants.*;
 import static utilz.Constants.*;
 import static utilz.Constants.PlayerConstants.*;
 
@@ -139,22 +139,26 @@ public class Player extends Entity implements GameEntity{
         }
         else if (aniAction == WALKING) {
             if (leftPressed && !rightPressed) {
-                increasePositionX(-entitySpeed);
                 setDirection(LEFT);
-                checkCollisionLeft(entitySpeed);
+                increasePositionX(-entitySpeed);
+                if (checkCollision())
+                    decreasePositionX(-entitySpeed);
             } else if (rightPressed && !leftPressed) {
-                increasePositionX(entitySpeed);
                 setDirection(RIGHT);
-                checkCollisionRight(entitySpeed);
+                increasePositionX(entitySpeed);
+                if (checkCollision())
+                    decreasePositionX(entitySpeed);
             }
             if (upPressed && !downPressed) {
-                increasePositionY(-entitySpeed);
                 setDirection(UP);
-                checkCollisionUp(entitySpeed);
+                increasePositionY(-entitySpeed);
+                if (checkCollision())
+                    decreasePositionY(-entitySpeed);
             } else if (downPressed && !upPressed) {
-                increasePositionY(entitySpeed);
                 setDirection(DOWN);
-                checkCollisionDown(entitySpeed);
+                increasePositionY(entitySpeed);
+                if (checkCollision())
+                    decreasePositionY(entitySpeed);
             }
         } else if (aniAction == ATTACKING_01 || aniAction == ATTACKING_02){
             if (canPerformAttack) {
@@ -236,7 +240,7 @@ public class Player extends Entity implements GameEntity{
     }
 
     public void loadAnimations() {
-        BufferedImage img = LoadSaveImage.GetSpriteAtlas(Entities.PLAYER_ATLAS);
+        BufferedImage img = LoadSaveImage.GetSpriteAtlas(Entities.PLAYER_ATLAS_01);
         animations = new BufferedImage[13][9];
         int tempI = 8;
         //walk movement

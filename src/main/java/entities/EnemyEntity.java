@@ -47,13 +47,13 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
         else
             entityCenterY = y + ScreenCenterY;
     }
-    protected void checkCollision() {
+    protected void checkMoveCollision() {
         if (pressedButton > -1)
             switch (pressedButton) {
-                case UP -> { y += -entitySpeed; entityCenterY += -entitySpeed; checkCollisionUp(entitySpeed); }
-                case LEFT -> { x += -entitySpeed; entityCenterX += -entitySpeed; checkCollisionLeft(entitySpeed); }
-                case DOWN -> { y += entitySpeed; entityCenterY += entitySpeed; checkCollisionDown(entitySpeed); }
-                case RIGHT -> { x += entitySpeed; entityCenterX += entitySpeed; checkCollisionRight(entitySpeed); }
+                case UP ->    { y += -entitySpeed; if (checkCollision()) decreasePositionY(-entitySpeed); }
+                case LEFT ->  { x += -entitySpeed; if (checkCollision()) decreasePositionX(-entitySpeed); }
+                case DOWN ->  { y +=  entitySpeed; if (checkCollision()) decreasePositionY(entitySpeed); }
+                case RIGHT -> { x +=  entitySpeed; if (checkCollision()) decreasePositionX(entitySpeed); }
             }
     }
 
@@ -78,9 +78,9 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
 
         if (currentTime - previousTime >= 1700) {
             switch (number) {
-                case UP -> { setPressedButton(UP); setDirection(UP); setAction(EnemyConstants.WALKING); }
-                case LEFT -> { setPressedButton(LEFT); setDirection(LEFT); setAction(EnemyConstants.WALKING); }
-                case DOWN -> { setPressedButton(DOWN); setDirection(DOWN); setAction(EnemyConstants.WALKING); }
+                case UP    -> { setPressedButton(UP);    setDirection(UP);    setAction(EnemyConstants.WALKING); }
+                case LEFT  -> { setPressedButton(LEFT);  setDirection(LEFT);  setAction(EnemyConstants.WALKING); }
+                case DOWN  -> { setPressedButton(DOWN);  setDirection(DOWN);  setAction(EnemyConstants.WALKING); }
                 case RIGHT -> { setPressedButton(RIGHT); setDirection(RIGHT); setAction(EnemyConstants.WALKING); }
                 case 4 -> { resetPressedButtons(); setAction(EnemyConstants.STANDING); }
             }
@@ -90,18 +90,6 @@ public abstract class EnemyEntity extends Entity implements GameEntity {
 
     protected void setAction(int action) {
         this.aniAction = action;
-    }
-    
-    @Override
-    public void resetPositionX(float x) {
-        this.x += x * - 1;
-        this.entityCenterX += x * -1;
-    }
-
-    @Override
-    public void resetPositionY(float y) {
-        this.y += y * -1;
-        this.entityCenterY += y * -1;
     }
 
     public void pushEntity(float pushDistance, int hitDirection) {

@@ -17,8 +17,8 @@ public interface GameEntity {
     public float getEntityCenterY();
     public void increasePositionX(float x);
     public void increasePositionY(float y);
-    public void resetPositionX(float x);
-    public void resetPositionY(float y);
+    public void decreasePositionX(float x);
+    public void decreasePositionY(float y);
     public int getDirection();
     public void setDirection(int direction);
     public void updateStatusCooldown();
@@ -30,10 +30,7 @@ public interface GameEntity {
     public int getAction();
     public String getEntityName();
 
-    public void checkCollisionLeft(float reset);
-    public void checkCollisionRight(float reset);
-    public void checkCollisionUp(float reset);
-    public void checkCollisionDown(float reset);
+    public boolean checkCollision();
 
     //in child class
     public void loadAnimations();

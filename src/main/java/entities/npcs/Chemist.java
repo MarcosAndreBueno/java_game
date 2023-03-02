@@ -56,10 +56,10 @@ public class Chemist extends NpcEntity {
         updateAnimationTick();
 
         //updates NPC position when game screen moves
-        updatePosition();
+        updateEnemyCenter();
 
         //updates NPC position after it moves and checks for collisions
-        checkCollision();
+        checkMoveCollision();
     }
 
     private void updateAnimationTick() {

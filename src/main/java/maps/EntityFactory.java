@@ -15,7 +15,7 @@ public class EntityFactory {
         ArrayList<Entity> entities = new ArrayList<>();
 
         for (int i = 0; i < npcInfo.length; i++) {
-            if (npcInfo[i][NAME].equals("npc_Chemist"))
+            if (npcInfo[i][NAME].startsWith("npc"))
                 entities.add(new Chemist(i, npcInfo, playing));
             else
                 entities.add(new Ogre(i, npcInfo, playing));
